@@ -8,13 +8,14 @@
 import UIKit
 
 final class AnalysisViewController: UIViewController {
-    private let viewModel: AnalysisViewModelProtocol
+    private let viewModel: BaseViewModelProtocol
     
-    init(viewModel: AnalysisViewModelProtocol) {
+    init(viewModel: BaseViewModelProtocol) {
         self.viewModel = viewModel
         super.init(nibName: nil, bundle: nil)
     }
     
+    @available(*, unavailable)
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }

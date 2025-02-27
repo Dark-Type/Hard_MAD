@@ -7,12 +7,12 @@
 
 actor Container {
     private var dependencies: [String: Any] = [:]
-    
+
     func register<T>(_ type: T.Type, dependency: Any) {
         let key = String(describing: type)
         dependencies[key] = dependency
     }
-    
+
     func resolve<T>() async -> T {
         let key = String(describing: T.self)
         guard let dependency = dependencies[key] as? T else {

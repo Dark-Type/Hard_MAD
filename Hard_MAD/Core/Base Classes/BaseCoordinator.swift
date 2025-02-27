@@ -5,12 +5,10 @@
 //  Created by dark type on 27.02.2025.
 //
 
-
 import UIKit
 
 @MainActor
 class BaseCoordinator: Coordinator {
-    
     var childCoordinators: [Coordinator] = []
     let navigationController: UINavigationController
     let container: Container

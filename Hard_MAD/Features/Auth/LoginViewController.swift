@@ -11,6 +11,7 @@ final class LoginViewController: UIViewController {
     private let viewModel: LoginViewModel
     
     // MARK: - UI Components
+
     private lazy var loginButton: UIButton = {
         let button = UIButton(type: .system)
         button.setTitle("Login", for: .normal)
@@ -22,10 +23,8 @@ final class LoginViewController: UIViewController {
         return button
     }()
     
-  
-    
-    
     // MARK: - Initialization
+
     init(viewModel: LoginViewModel) {
         self.viewModel = viewModel
         super.init(nibName: nil, bundle: nil)
@@ -37,6 +36,7 @@ final class LoginViewController: UIViewController {
     }
     
     // MARK: - Lifecycle
+
     override func viewDidLoad() {
         super.viewDidLoad()
         setupUI()
@@ -44,11 +44,10 @@ final class LoginViewController: UIViewController {
     }
     
     // MARK: - Setup
+
     private func setupUI() {
         view.backgroundColor = .systemBackground
         title = "Login"
-        
-      
         
         view.addSubview(loginButton)
         
@@ -79,6 +78,7 @@ final class LoginViewController: UIViewController {
     }
     
     // MARK: - Actions
+
     @objc private func loginButtonTapped() {
         Task {
             await viewModel.login()

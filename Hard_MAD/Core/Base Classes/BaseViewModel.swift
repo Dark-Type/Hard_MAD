@@ -63,4 +63,16 @@ class BaseViewModel {
         self.error = error
         showError?(error.localizedDescription)
     }
+
+    // MARK: - Date Formatting
+
+    func formatUTCDate(_ date: Date = Date()) -> String {
+        dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
+        return dateFormatter.string(from: date)
+    }
+
+    func parseUTCDate(_ dateString: String) -> Date? {
+        dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
+        return dateFormatter.date(from: dateString)
+    }
 }
