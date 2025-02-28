@@ -84,7 +84,6 @@ final class JournalViewController: UIViewController {
     }
     
     private func setupNavigationBar() {
-        title = "Journal"
         navigationItem.rightBarButtonItem = UIBarButtonItem(customView: addButton)
     }
     

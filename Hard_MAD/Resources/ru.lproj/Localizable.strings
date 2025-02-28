@@ -1,0 +1,73 @@
+/* 
+  Localizable.strings
+  Hard_MAD
+
+  Created by dark type on 28.02.2025.
+  
+*/
+/*
+  Common UI elements
+*/
+
+"common.save" = "Сохранить";
+
+/*
+  Auth Screen
+*/
+"auth.title" = "Добро \nпожаловать";
+"auth.placeholder" = "Войти через Apple ID";
+
+
+/*
+  Journal Screen
+*/
+"journal.title" = "Что вы сейчас чувствуете?";
+"journal.cell.title" = "Я чувтствую";
+"journal.button.title" = "Добавить запись";
+
+
+/*
+  Emotions Screen
+*/
+"emotions.title" = "Выберите эмоцию, лучше всего описывающую, что вы сейчас чувствуете";
+
+/*
+  Record Screen
+*/
+"record.title" = "Запись";
+"record.question1" = "Чем вы занимались?";
+"record.question2" = "С кем вы были?";
+"record.question3" = "Где вы были?";
+
+/*
+  Analysis Screen
+*/
+"analysis.title.categories" = "Эмоции по категориям";
+"analysis.title.week" = "Эмоции по дням недели";
+"analysis.title.frequent" = "Самые частые эмоции";
+"analysis.title.daily" = "Ваше настроение в течение дня";
+
+
+/*
+  Settings Screen
+*/
+"settings.title" = "Настройки";
+"settings.notifications" = "Присылать напоминания";
+"settings.notificatoins.add" = "Добавить напоминание";
+"settings.login.touch" = "Вход по отпечатку пальца";
+
+
+
+/*
+  TabBar View
+*/
+"tabbar.journal" = "Журнал";
+"tabbar.analysis" = "Статистика";
+"tabbar.settings" = "Настройки";
+
+
+/*
+  Error messages
+*/
+"error.generic" = "Что-то пошло не так";
+"error.network" = "Проверьте подключение к интернету";

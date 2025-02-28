@@ -1,0 +1,73 @@
+/* 
+  Localizable.strings
+  Hard_MAD
+
+  Created by dark type on 28.02.2025.
+  
+*/
+/*
+  Common UI elements
+*/
+
+"common.save" = "Save";
+
+/*
+  Auth Screen
+*/
+"auth.title" = "Welcome";
+"auth.placeholder" = "Sign in with Apple ID";
+
+
+/*
+  Journal Screen
+*/
+"journal.title" = "How do you feel right now?";
+"journal.cell.title" = "I feel";
+"journal.button.title" = "Add record";
+
+
+/*
+  Emotions Screen
+*/
+"emotions.title" = "Choose an emotion, that describes you the best right now";
+
+/*
+  Record Screen
+*/
+"record.title" = "Record";
+"record.question1" = "What did you do?";
+"record.question2" = "With whom were you?";
+"record.question3" = "Where were you?";
+
+/*
+  Analysis Screen
+*/
+"analysis.title.categories" = "Emotions by categories";
+"analysis.title.week" = "Emotions by days of the week";
+"analysis.title.frequent" = "Most frequent emotions";
+"analysis.title.daily" = "Your emotions throught the day";
+
+
+/*
+  Settings Screen
+*/
+"settings.title" = "Settings";
+"settings.notifications" = "Send notifications";
+"settings.notificatoins.add" = "Add a notification";
+"settings.login.touch" = "Login with Touch ID";
+
+
+
+/*
+  TabBar View
+*/
+"tabbar.journal" = "Journal";
+"tabbar.analysis" = "Stats";
+"tabbar.settings" = "Settings";
+
+
+/*
+  Error messages
+*/
+"error.generic" = "Something went wrong";
+"error.network" = "Check your internet connection";

@@ -57,6 +57,13 @@ final class MainTabBarCoordinator: BaseCoordinator {
         )
         
         self.tabBarController = tabBarController
+        
+        let tabBar = tabBarController.tabBar
+        tabBar.tintColor = .white
+        tabBar.unselectedItemTintColor = UIColor(red: 153/255, green: 153/255, blue: 153/255, alpha: 1)
+        tabBar.frame.size.height = 49
+        tabBar.backgroundColor = UIColor(red: 51/255, green: 51/255, blue: 51/255, alpha: 1)
+        
         navigationController.setViewControllers([tabBarController], animated: true)
         navigationController.setNavigationBarHidden(true, animated: false)
     }
@@ -67,21 +74,21 @@ final class MainTabBarCoordinator: BaseCoordinator {
         settings: UINavigationController
     ) {
         journal.tabBarItem = UITabBarItem(
-            title: "Journal",
-            image: UIImage(systemName: "book"),
-            selectedImage: UIImage(systemName: "book.fill")
+            title: L10n.TabBar.journal,
+            image: UIImage(named: "journalTabBar"),
+            selectedImage: UIImage(named: "journalTabBar")
         )
         
         analysis.tabBarItem = UITabBarItem(
-            title: "Analysis",
-            image: UIImage(systemName: "chart.bar"),
-            selectedImage: UIImage(systemName: "chart.bar.fill")
+            title: L10n.TabBar.analysis,
+            image: UIImage(named: "statsTabBar"),
+            selectedImage: UIImage(named: "statsTabBar")
         )
         
         settings.tabBarItem = UITabBarItem(
-            title: "Settings",
-            image: UIImage(systemName: "gear"),
-            selectedImage: UIImage(systemName: "gear")
+            title: L10n.TabBar.settings,
+            image: UIImage(named: "settingsTabBar"),
+            selectedImage: UIImage(named: "settingsTabBar")
         )
     }
 }

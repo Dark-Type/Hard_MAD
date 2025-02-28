@@ -23,7 +23,7 @@ final class AnalysisViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         setupUI()
-        title = "Analysis"
+ 
     }
     
     private func setupUI() {

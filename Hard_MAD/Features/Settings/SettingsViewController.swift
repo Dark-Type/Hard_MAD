@@ -22,7 +22,7 @@ final class SettingsViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         setupUI()
-        title = "Settings"
+ 
     }
     
     private func setupUI() {
