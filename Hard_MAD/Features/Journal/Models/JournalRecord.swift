@@ -21,16 +21,16 @@ struct JournalRecord: Sendable {
 }
 
 enum Emotion: String, Sendable, CaseIterable {
-    case burnout = "выгорание"
-    case chill = "спокойствие"
-    case productivity = "продуктивность"
-    case anxious = "беспокойство"
-    case happy = "счастье"
-    case tired = "усталость"
+    case burnout = "Выгорание"
+    case chill = "Спокойствие"
+    case productivity = "Продуктивность"
+    case anxious = "Беспокойство"
+    case happy = "Счастье"
+    case tired = "Усталость"
     
     var color: UIColor {
         switch self {
-        case  .anxious:
+        case .anxious:
             return UIColor(red: 1.0, green: 0.0, blue: 0.0, alpha: 1.0)
         case .burnout, .tired:
             return UIColor(red: 0.0, green: 0.667, blue: 1.0, alpha: 1.0)
@@ -61,6 +61,23 @@ enum Emotion: String, Sendable, CaseIterable {
             return UIImage(named: "happinessEmotions") ?? UIImage(systemName: "face.smiling.fill")!
         case .tired:
             return UIImage(named: "tiredEmotions") ?? UIImage(systemName: "moon.zzz.fill")!
+        }
+    }
+    
+    var description: String {
+        switch self {
+        case .burnout:
+            return "Чувство истощения, эмоциональное опустошение"
+        case .chill:
+            return "Состояние покоя и расслабления"
+        case .productivity:
+            return "Ощущение эффективности и мотивации"
+        case .anxious:
+            return "Беспокойство и нервное напряжение"
+        case .happy:
+            return "Чувство радости и удовлетворения"
+        case .tired:
+            return "Физическая и эмоциональная усталость"
         }
     }
 }
