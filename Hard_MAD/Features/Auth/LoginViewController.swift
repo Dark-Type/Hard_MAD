@@ -114,7 +114,7 @@ final class LoginViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        //FontUtils.printAvailableFonts()
+        FontUtils.printAvailableFonts()
         setupGradientBackground()
         setupUI()
         bindViewModel()

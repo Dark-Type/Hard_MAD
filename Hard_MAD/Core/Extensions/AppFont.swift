@@ -9,8 +9,9 @@ import UIKit
 
 enum AppFont: String {
     case fancy = "Gwen-Trial-Bold"
-    case regular = "VelaSansGX-ExtraLight_SemiBold"
+    case regular = "VelaSansGX-ExtraLight_Regular"
     case fancySmall = "GwenText-Trial-SemiBold"
+    case bold = "VelaSansGX-ExtraLight_SemiBold"
 
     func size(_ size: CGFloat) -> UIFont {
         if let font = UIFont(name: rawValue, size: size) {
@@ -22,7 +23,9 @@ enum AppFont: String {
             return .systemFont(ofSize: size)
         case .regular:
             return .boldSystemFont(ofSize: size)
-        case . fancySmall:
+        case .fancySmall:
+            return .boldSystemFont(ofSize: size)
+        case .bold:
             return .boldSystemFont(ofSize: size)
         }
     }

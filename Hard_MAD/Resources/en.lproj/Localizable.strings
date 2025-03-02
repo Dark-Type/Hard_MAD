@@ -24,6 +24,20 @@
 "journal.title" = "How do you feel right now?";
 "journal.cell.title" = "I feel";
 "journal.button.title" = "Add record";
+"statistics.records.title" = "Total";
+"statistics.records.one" = "record";
+"statistics.records.few" = "records";
+"statistics.records.many" = "records";
+
+"statistics.today.title" = "Today";
+"statistics.today.one" = "record";
+"statistics.today.few" = "records";
+"statistics.today.many" = "records";
+
+"statistics.streak.title" = "Streak";
+"statistics.streak.one" = "day";
+"statistics.streak.few" = "days";
+"statistics.streak.many" = "days";
 
 
 /*
@@ -71,3 +85,7 @@
 */
 "error.generic" = "Something went wrong";
 "error.network" = "Check your internet connection";
+
+
+
+

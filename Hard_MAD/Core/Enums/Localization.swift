@@ -10,8 +10,53 @@ import UIKit
 enum L10n {
     enum Common {
         static let save = "common.save".localized
+           
+        enum Statistics {
+            enum Records {
+                static func plural(_ count: Int) -> String {
+                    let key = "statistics.records"
+                    return String.localizedPlural(for: count, key: key)
+                }
+            }
+               
+            enum Today {
+                static let title = "statistics.today.title".localized
+                static func plural(_ count: Int) -> String {
+                    let key = "statistics.today"
+                    return String.localizedPlural(for: count, key: key)
+                }
+            }
+               
+            enum Streak {
+                static let title = "statistics.streak.title".localized
+                static func plural(_ count: Int) -> String {
+                    let key = "statistics.streak"
+                    return String.localizedPlural(for: count, key: key)
+                }
+            }
+               
+            static func format(type: StatType, count: Int) -> String {
+                let title: String
+                let plural: String
+                   
+                switch type {
+                case .records:
+                    title = ""
+                    plural = Records.plural(count)
+                    return "\(count) \(plural)"
+                case .today:
+                    title = Today.title
+                    plural = Today.plural(count)
+                case .streak:
+                    title = Streak.title
+                    plural = Streak.plural(count)
+                }
+                   
+                return "\(title): \(count) \(plural)"
+            }
+        }
     }
-    
+
     enum Auth {
         static let title = "auth.title".localized
         static let placeholder = "auth.placeholder".localized
@@ -86,5 +131,45 @@ private extension String {
     
     func localized(with arguments: CVarArg...) -> String {
         return String(format: localized, arguments: arguments)
+    }
+
+    static func localizedPlural(for number: Int, key: String) -> String {
+        let form = RussianPluralForm.forNumber(number)
+        
+        let suffixKey: String
+        switch form {
+        case .one:
+            suffixKey = "\(key).one"
+        case .few:
+            suffixKey = "\(key).few"
+        case .many:
+            suffixKey = "\(key).many"
+        }
+        
+        return NSLocalizedString(suffixKey, comment: "")
+    }
+}
+
+enum RussianPluralForm {
+    case one
+    case few
+    case many
+    
+    static func forNumber(_ number: Int) -> RussianPluralForm {
+        let lastDigit = number % 10
+        let lastTwoDigits = number % 100
+        
+        if lastTwoDigits >= 11 && lastTwoDigits <= 19 {
+            return .many
+        }
+        
+        switch lastDigit {
+        case 1:
+            return .one
+        case 2, 3, 4:
+            return .few
+        default:
+            return .many
+        }
     }
 }

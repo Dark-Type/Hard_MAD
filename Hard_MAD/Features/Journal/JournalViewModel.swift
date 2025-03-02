@@ -11,6 +11,8 @@ final class JournalViewModel: BaseViewModel {
 
     private let container: Container
     @Published private(set) var records: [JournalRecord] = []
+    @Published private(set) var statistics: JournalStatistics?
+    @Published private(set) var todayEmotions: [Emotion] = []
     
     // MARK: - Initialization
 
@@ -24,6 +26,8 @@ final class JournalViewModel: BaseViewModel {
     override func initialize() async {
         do {
             try await loadRecords()
+            try await loadStatistics()
+            try await loadTodayEmotions()
         } catch {
             handleError(error)
         }
@@ -34,10 +38,12 @@ final class JournalViewModel: BaseViewModel {
     func addNewRecord(_ record: JournalRecord) async {
         do {
             try await withLoading { [self] in
-                let mockService: JournalServiceProtocol = await container.resolve()
-                await mockService.saveRecord(record)
-
+                let service: JournalServiceProtocol = await container.resolve()
+                await service.saveRecord(record)
+                
                 self.records.append(record)
+                try await self.loadStatistics()
+                try await self.loadTodayEmotions()
             }
         } catch {
             handleError(error)
@@ -48,9 +54,21 @@ final class JournalViewModel: BaseViewModel {
 
     private func loadRecords() async throws {
         try await withLoading { [self] in
-            let mockService: JournalServiceProtocol = await container.resolve()
-            self.records = await mockService.fetchRecords()
+            let service: JournalServiceProtocol = await container.resolve()
+            self.records = await service.fetchRecords()
         }
+    }
+    
+    private func loadStatistics() async throws {
+        try await withLoading { [self] in
+            let service: JournalServiceProtocol = await container.resolve()
+            self.statistics = await service.fetchStatistics()
+        }
+    }
+    
+    private func loadTodayEmotions() async throws {
+        let service: JournalServiceProtocol = await container.resolve()
+        todayEmotions = await service.fetchTodayEmotions()
     }
     
     func getFormattedDate(for record: JournalRecord) -> String {

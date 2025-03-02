@@ -21,9 +21,46 @@ struct JournalRecord: Sendable {
 }
 
 enum Emotion: String, Sendable, CaseIterable {
-    case happy = "Happy"
-    case sad = "Sad"
-    case angry = "Angry"
-    case anxious = "Anxious"
-    case peaceful = "Peaceful"
+    case burnout = "выгорание"
+    case chill = "спокойствие"
+    case productivity = "продуктивность"
+    case anxious = "беспокойство"
+    case happy = "счастье"
+    case tired = "усталость"
+    
+    var color: UIColor {
+        switch self {
+        case  .anxious:
+            return UIColor(red: 1.0, green: 0.0, blue: 0.0, alpha: 1.0)
+        case .burnout, .tired:
+            return UIColor(red: 0.0, green: 0.667, blue: 1.0, alpha: 1.0)
+        case .chill:
+            return UIColor(red: 0.0, green: 1.0, blue: 0.333, alpha: 1.0)
+        case .happy, .productivity:
+            return UIColor(red: 1.0, green: 0.667, blue: 0.0, alpha: 1.0)
+        }
+    }
+    
+    var gradientColors: (start: UIColor, end: UIColor) {
+        let startColor = color
+        let endColor = color.withAlphaComponent(0.0)
+        return (startColor, endColor)
+    }
+    
+    var image: UIImage {
+        switch self {
+        case .burnout:
+            return UIImage(named: "burnoutEmotions") ?? UIImage(systemName: "flame.fill")!
+        case .chill:
+            return UIImage(named: "chillEmotions") ?? UIImage(systemName: "cloud.fill")!
+        case .productivity:
+            return UIImage(named: "productivityEmotions") ?? UIImage(systemName: "bolt.fill")!
+        case .anxious:
+            return UIImage(named: "anxiousEmotions") ?? UIImage(systemName: "exclamationmark.triangle.fill")!
+        case .happy:
+            return UIImage(named: "happinessEmotions") ?? UIImage(systemName: "face.smiling.fill")!
+        case .tired:
+            return UIImage(named: "tiredEmotions") ?? UIImage(systemName: "moon.zzz.fill")!
+        }
+    }
 }

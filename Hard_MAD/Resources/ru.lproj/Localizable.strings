@@ -21,10 +21,22 @@
 /*
   Journal Screen
 */
-"journal.title" = "Что вы сейчас чувствуете?";
+"journal.title" = "Что вы сейчас \nчувствуете?";
 "journal.cell.title" = "Я чувтствую";
 "journal.button.title" = "Добавить запись";
+"statistics.records.one" = "запись";
+"statistics.records.few" = "записи";
+"statistics.records.many" = "записей";
 
+"statistics.today.title" = "в день";
+"statistics.today.one" = "запись";
+"statistics.today.few" = "записи";
+"statistics.today.many" = "записей";
+
+"statistics.streak.title" = "cерия";
+"statistics.streak.one" = "день";
+"statistics.streak.few" = "дня";
+"statistics.streak.many" = "дней";
 
 /*
   Emotions Screen
