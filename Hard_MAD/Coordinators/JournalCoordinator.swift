@@ -37,13 +37,14 @@ final class JournalCoordinator: BaseCoordinator {
     }
     
     private func showRecordScreen(recordBuilder: RecordBuilder) async {
-        let viewController = RecordViewController(recordBuilder: recordBuilder)
-        viewController.onRecordComplete = { [weak self] record in
-            guard let self = self else { return }
-            await self.handleRecordCompletion(record)
+            let viewModel = RecordViewModel(container: container, recordBuilder: recordBuilder)
+            let viewController = RecordViewController(viewModel: viewModel)
+            viewController.onRecordComplete = { [weak self] record in
+                guard let self = self else { return }
+                await self.handleRecordCompletion(record)
+            }
+            navigationController.pushViewController(viewController, animated: true)
         }
-        navigationController.pushViewController(viewController, animated: true)
-    }
     
     private func handleRecordCompletion(_ record: JournalRecord) async {
         guard let journalVC = navigationController.viewControllers.first as? JournalViewController else {

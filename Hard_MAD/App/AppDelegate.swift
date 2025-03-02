@@ -18,6 +18,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         Task {
             await container.register(AuthServiceProtocol.self, dependency: MockAuthService())
             await container.register(JournalServiceProtocol.self, dependency: MockJournalService())
+            await container.register(QuestionServiceProtocol.self, dependency: MockQuestionService())
         }
         return true
     }

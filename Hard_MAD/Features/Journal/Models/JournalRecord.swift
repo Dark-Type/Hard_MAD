@@ -9,13 +9,17 @@ import UIKit
 struct JournalRecord: Sendable {
     let id: UUID
     let emotion: Emotion
-    let note: String
+    let answer0: String
+    let answer1: String
+    let answer2: String
     let createdAt: Date
     
-    init(emotion: Emotion, note: String) {
+    init(emotion: Emotion, answer0: String, answer1: String, answer2: String) {
         self.id = UUID()
         self.emotion = emotion
-        self.note = note
+        self.answer0 = answer0
+        self.answer1 = answer1
+        self.answer2 = answer2
         self.createdAt = Date()
     }
 }
