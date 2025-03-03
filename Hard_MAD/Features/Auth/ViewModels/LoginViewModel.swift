@@ -9,12 +9,12 @@
 final class LoginViewModel: BaseViewModel {
     private let authService: AuthServiceProtocol
     var onLoginSuccess: (@Sendable () async -> Void)?
-    
+
     init(authService: AuthServiceProtocol) {
         self.authService = authService
         super.init()
     }
-    
+
     func login() async {
         do {
             try await withLoading {

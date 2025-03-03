@@ -7,64 +7,57 @@
 import Foundation
 
 final class SettingsViewModel: BaseViewModel {
-    private var container: Container
-    private var authService: AuthServiceProtocol?
-    private var notificationService: NotificationServiceProtocol?
+    // MARK: - Dependencies
+
+    private let authService: AuthServiceProtocol
+    private let notificationService: NotificationServiceProtocol
     
-    init(container: Container) {
-        self.container = container
+    // MARK: - Initialization
+
+    init(
+        authService: AuthServiceProtocol,
+        notificationService: NotificationServiceProtocol
+    ) {
+        self.authService = authService
+        self.notificationService = notificationService
+        super.init()
     }
     
-    private func resolveServices() async {
-        if authService == nil {
-            authService = await container.resolve()
-        }
-        
-        if notificationService == nil {
-            notificationService = await container.resolve()
-        }
-    }
-    
+    // MARK: - User Profile Methods
+
     func getUserProfile() async -> UserProfile? {
-        await resolveServices()
-        return await authService?.getCurrentUser()
+        return await authService.getCurrentUser()
     }
     
+    // MARK: - Notification Methods
+
     func getNotifications() async -> [NotificationTime] {
-        await resolveServices()
-        return await notificationService?.getNotifications() ?? []
+        return await notificationService.getNotifications()
     }
     
     func addNotification(time: String) async -> NotificationTime {
-        await resolveServices()
-        if let service = notificationService {
-            return await service.addNotification(time: time)
-        }
-        return NotificationTime(time: time)
+        return await notificationService.addNotification(time: time)
     }
     
     func removeNotification(id: UUID) async -> Bool {
-        await resolveServices()
-        return await notificationService?.removeNotification(id: id) ?? false
+        return await notificationService.removeNotification(id: id)
     }
     
     func isNotificationsEnabled() async -> Bool {
-        await resolveServices()
-        return await notificationService?.isNotificationsEnabled() ?? false
+        return await notificationService.isNotificationsEnabled()
     }
     
     func setNotificationsEnabled(_ enabled: Bool) async {
-        await resolveServices()
-        await notificationService?.setNotificationsEnabled(enabled)
+        await notificationService.setNotificationsEnabled(enabled)
     }
     
+    // MARK: - TouchID Methods
+
     func isTouchIDEnabled() async -> Bool {
-        await resolveServices()
-        return await authService?.isTouchIDEnabled() ?? false
+        return await authService.isTouchIDEnabled()
     }
     
     func setTouchIDEnabled(_ enabled: Bool) async {
-        await resolveServices()
-        await authService?.setTouchIDEnabled(enabled)
+        await authService.setTouchIDEnabled(enabled)
     }
 }

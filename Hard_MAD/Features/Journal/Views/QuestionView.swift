@@ -8,7 +8,7 @@
 import UIKit
 
 final class QuestionView: UIView {
-    private struct Constants {
+    private enum Constants {
         static let itemHeight: CGFloat = 36
         static let spacing: CGFloat = 8
         static let unselectedColor = UIColor(red: 44/255, green: 44/255, blue: 46/255, alpha: 1)
@@ -62,7 +62,7 @@ final class QuestionView: UIView {
             }
             
             let lastAttribute = attributes.max { a, b in
-                return a.frame.maxY < b.frame.maxY
+                a.frame.maxY < b.frame.maxY
             }!
             
             let height = lastAttribute.frame.maxY + sectionInset.bottom
@@ -95,7 +95,7 @@ final class QuestionView: UIView {
     
     private let questionLabel: UILabel = {
         let label = UILabel()
-        label.font = .systemFont(ofSize: 16, weight: .medium)
+        label.font = UIFont.appFont(AppFont.regular, size: 16)
         label.textColor = .white
         label.numberOfLines = 0
         label.translatesAutoresizingMaskIntoConstraints = false
@@ -120,7 +120,7 @@ final class QuestionView: UIView {
     private lazy var textEntryView: UIView = {
         let view = UIView()
         view.backgroundColor = Constants.unselectedColor
-        view.layer.cornerRadius = Constants.itemHeight / 2
+        view.layer.cornerRadius = Constants.itemHeight/2
         view.isHidden = true
         view.translatesAutoresizingMaskIntoConstraints = false
         return view
@@ -128,7 +128,7 @@ final class QuestionView: UIView {
     
     private lazy var textField: UITextField = {
         let textField = UITextField()
-        textField.font = .systemFont(ofSize: 14)
+        textField.font = UIFont.appFont(AppFont.regular, size: 14)
         textField.textColor = .white
         textField.tintColor = .white
         textField.delegate = self
@@ -139,7 +139,7 @@ final class QuestionView: UIView {
     
     private var answers: [String] = []
     private var selectedAnswers: Set<String> = []
-    private var onAnswerSelected: ((String) -> Void)
+    private var onAnswerSelected: (String) -> Void
     private var textEntryWidthConstraint: NSLayoutConstraint?
     private var collectionViewHeightConstraint: NSLayoutConstraint?
     
@@ -153,6 +153,7 @@ final class QuestionView: UIView {
         questionLabel.text = question
     }
     
+    @available(*, unavailable)
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
@@ -289,7 +290,7 @@ final class QuestionView: UIView {
     class AnswerCell: UICollectionViewCell {
         let label: UILabel = {
             let label = UILabel()
-            label.font = .systemFont(ofSize: 14)
+            label.font = UIFont.appFont(AppFont.regular, size: 16)
             label.textColor = .white
             label.translatesAutoresizingMaskIntoConstraints = false
             label.numberOfLines = 1
@@ -299,7 +300,7 @@ final class QuestionView: UIView {
         override init(frame: CGRect) {
             super.init(frame: frame)
             
-            contentView.layer.cornerRadius = Constants.itemHeight / 2
+            contentView.layer.cornerRadius = Constants.itemHeight/2
             contentView.backgroundColor = Constants.unselectedColor
             
             contentView.addSubview(label)
@@ -312,6 +313,7 @@ final class QuestionView: UIView {
             ])
         }
         
+        @available(*, unavailable)
         required init?(coder: NSCoder) {
             fatalError("init(coder:) has not been implemented")
         }
@@ -336,7 +338,7 @@ final class QuestionView: UIView {
             super.init(frame: frame)
             
             contentView.backgroundColor = Constants.unselectedColor
-            contentView.layer.cornerRadius = Constants.plusButtonSize / 2
+            contentView.layer.cornerRadius = Constants.plusButtonSize/2
             
             contentView.addSubview(plusButton)
             
@@ -348,6 +350,7 @@ final class QuestionView: UIView {
             ])
         }
         
+        @available(*, unavailable)
         required init?(coder: NSCoder) {
             fatalError("init(coder:) has not been implemented")
         }
@@ -355,6 +358,7 @@ final class QuestionView: UIView {
 }
 
 // MARK: - UICollectionView Delegate & DataSource
+
 extension QuestionView: UICollectionViewDelegate, UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return answers.count + 1
@@ -385,6 +389,7 @@ extension QuestionView: UICollectionViewDelegate, UICollectionViewDataSource {
 }
 
 // MARK: - UICollectionViewDelegateFlowLayout
+
 extension QuestionView: UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         let availableWidth = collectionView.bounds.width - 16
@@ -392,7 +397,7 @@ extension QuestionView: UICollectionViewDelegateFlowLayout {
         if indexPath.item < answers.count {
             let answer = answers[indexPath.item]
             
-            let attributes = [NSAttributedString.Key.font: UIFont.systemFont(ofSize: 14)]
+            let attributes = [NSAttributedString.Key.font: UIFont.appFont(AppFont.regular, size: 14)]
             let textWidth = (answer as NSString).size(withAttributes: attributes).width
             
             let cellWidth = max(textWidth + (Constants.horizontalPadding * 2), Constants.minWidth)
@@ -407,11 +412,12 @@ extension QuestionView: UICollectionViewDelegateFlowLayout {
 }
 
 // MARK: - UITextField Delegate
+
 extension QuestionView: UITextFieldDelegate {
     func textFieldDidChangeSelection(_ textField: UITextField) {
         guard let text = textField.text else { return }
         
-        let attributes = [NSAttributedString.Key.font: textField.font ?? UIFont.systemFont(ofSize: 14)]
+        let attributes = [NSAttributedString.Key.font: textField.font ?? UIFont.appFont(AppFont.regular, size: 14)]
         let textWidth = (text as NSString).size(withAttributes: attributes).width
         let newWidth = max(textWidth + (Constants.horizontalPadding * 2), 120)
         

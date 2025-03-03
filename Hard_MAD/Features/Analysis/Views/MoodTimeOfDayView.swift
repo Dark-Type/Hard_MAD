@@ -21,6 +21,8 @@ final class MoodTimeOfDayView: UIView {
     
     private var timeOfDayLabels: [UILabel] = []
     
+    private let barVerticalSpacing: CGFloat = 2
+    
     override init(frame: CGRect) {
         super.init(frame: frame)
         setupUI()
@@ -66,7 +68,7 @@ final class MoodTimeOfDayView: UIView {
         for (index, time) in times.enumerated() {
             let label = UILabel()
             label.text = time.rawValue
-            label.font = UIFont.systemFont(ofSize: 14, weight: .medium)
+            label.font = UIFont.appFont(AppFont.regular, size: 14)
             label.textAlignment = .center
             label.adjustsFontSizeToFitWidth = true
             label.minimumScaleFactor = 0.7
@@ -144,8 +146,8 @@ final class MoodTimeOfDayView: UIView {
                 
                 let countLabel = UILabel()
                 countLabel.text = "0"
-                countLabel.font = UIFont.systemFont(ofSize: 10, weight: .medium)
-                countLabel.textColor = .lightGray
+                countLabel.font = UIFont.appFont(AppFont.regular, size: 12)
+                countLabel.textColor = UIColor(red: 153 / 255, green: 153 / 255, blue: 153 / 255, alpha: 1)
                 countLabel.textAlignment = .center
                 chartView.addSubview(countLabel)
 
@@ -165,8 +167,15 @@ final class MoodTimeOfDayView: UIView {
                 totalRecords += value.count
             }
             
-            for (emotionType, value) in sortedEmotionTypes {
-                let barHeight = CGFloat(value.percentage) * maxColumnHeight
+            let totalPercentage = sortedEmotionTypes.reduce(0.0) { $0 + $1.value.percentage }
+            
+            let numberOfGaps = max(0, sortedEmotionTypes.count - 1)
+            let totalSpacingHeight = CGFloat(numberOfGaps) * barVerticalSpacing
+            let availableHeight = maxColumnHeight - totalSpacingHeight
+            
+            for (i, (emotionType, value)) in sortedEmotionTypes.enumerated() {
+                let adjustedPercentage = totalPercentage > 0 ? value.percentage / totalPercentage : 0
+                let barHeight = CGFloat(adjustedPercentage) * availableHeight
                 
                 if barHeight >= 5 {
                     let barView = UIView()
@@ -184,9 +193,10 @@ final class MoodTimeOfDayView: UIView {
                     ])
                     
                     let gradientLayer = CAGradientLayer()
+                    let colors = emotionType.gradientType
                     gradientLayer.colors = [
-                        emotionType.color.cgColor,
-                        emotionType.color.withAlphaComponent(0.7).cgColor
+                        colors.0.cgColor,
+                        colors.1.cgColor
                     ]
                     gradientLayer.startPoint = CGPoint(x: 0.5, y: 0)
                     gradientLayer.endPoint = CGPoint(x: 0.5, y: 1)
@@ -197,7 +207,7 @@ final class MoodTimeOfDayView: UIView {
                     let percentLabel = UILabel()
                     percentLabel.text = "\(Int(value.percentage * 100))%"
                     percentLabel.textColor = .black
-                    percentLabel.font = UIFont.systemFont(ofSize: 12, weight: .bold)
+                    percentLabel.font = UIFont.appFont(AppFont.bold, size: 12)
                     percentLabel.textAlignment = .center
                     barView.addSubview(percentLabel)
                     
@@ -210,13 +220,17 @@ final class MoodTimeOfDayView: UIView {
                     percentLabel.isHidden = barHeight < 25
                     
                     currentY -= barHeight
+                    
+                    if i < sortedEmotionTypes.count - 1 {
+                        currentY -= barVerticalSpacing
+                    }
                 }
             }
             
             let countLabel = UILabel()
             countLabel.text = "\(totalRecords)"
-            countLabel.font = UIFont.systemFont(ofSize: 10, weight: .medium)
-            countLabel.textColor = .lightGray
+            countLabel.font = UIFont.appFont(AppFont.regular, size: 12)
+            countLabel.textColor = UIColor(red: 153 / 255, green: 153 / 255, blue: 153 / 255, alpha: 1)
             countLabel.textAlignment = .center
             chartView.addSubview(countLabel)
 

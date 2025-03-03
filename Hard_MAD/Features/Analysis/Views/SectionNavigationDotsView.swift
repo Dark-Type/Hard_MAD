@@ -53,11 +53,11 @@ final class SectionNavigationDotsView: UIView {
         
         let dotSpacing: CGFloat = 10
         let stackHeight = CGFloat(dotViews.count - 1) * dotSpacing + 6
-        let startY = (bounds.height - stackHeight) / 2
+        let startY = (bounds.height - stackHeight)/2
         
         for (index, dot) in dotViews.enumerated() {
             dot.center = CGPoint(
-                x: bounds.width - (dot.bounds.width / 2), 
+                x: bounds.width - (dot.bounds.width/2),
                 y: startY + CGFloat(index) * dotSpacing
             )
         }

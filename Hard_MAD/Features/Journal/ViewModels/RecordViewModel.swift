@@ -10,8 +10,8 @@ import UIKit
 final class RecordViewModel: BaseViewModel {
     // MARK: - Properties
 
-    private let container: Container
     private let recordBuilder: RecordBuilder
+    private let questionService: QuestionServiceProtocol
     
     @Published private(set) var questions: [String] = []
     @Published private(set) var answers: [[String]] = []
@@ -22,36 +22,38 @@ final class RecordViewModel: BaseViewModel {
     
     // MARK: - Initialization
 
-    init(container: Container, recordBuilder: RecordBuilder) {
-        self.container = container
+    init(recordBuilder: RecordBuilder, questionService: QuestionServiceProtocol) {
         self.recordBuilder = recordBuilder
+        self.questionService = questionService
         super.init()
     }
     
     // MARK: - Lifecycle
 
     override func initialize() async {
-        loadHardcodedData()
+        await loadQuestions()
     }
     
     // MARK: - Public Methods
-    
+
     func setAnswer(_ answer: String, forQuestion index: Int) {
         recordBuilder.setAnswer(answer, forQuestion: index)
     }
     
     func addCustomAnswer(_ answer: String, forQuestion index: Int) async {
-        if index >= 0 && index < answers.count {
-            var updatedAnswers = answers[index]
-            if !updatedAnswers.contains(answer) {
-                updatedAnswers.append(answer)
-                var newAnswers = answers
-                newAnswers[index] = updatedAnswers
-                answers = newAnswers
-            }
-            
-            setAnswer(answer, forQuestion: index)
+        guard index >= 0, index < answers.count else { return }
+        
+        await questionService.addCustomAnswer(answer, forQuestion: index)
+        
+        let updatedAnswers = await questionService.getAnswers(forQuestion: index)
+        
+        await MainActor.run {
+            var newAnswers = self.answers
+            newAnswers[index] = updatedAnswers
+            self.answers = newAnswers
         }
+        
+        setAnswer(answer, forQuestion: index)
     }
     
     func buildRecord() -> JournalRecord? {
@@ -60,19 +62,23 @@ final class RecordViewModel: BaseViewModel {
     
     // MARK: - Private Methods
 
-    private func loadHardcodedData() {
-        questions = [
-            L10n.Record.Questions.question1,
-            L10n.Record.Questions.question2,
-            L10n.Record.Questions.question3
-        ]
+    private func loadQuestions() async {
+        var questionsList: [String] = []
+        var answersList: [[String]] = []
         
-        answers = [
-            ["Прием пищи", "Встреча с друзьями", "Тренировка", "Хобби", "Отдых", "Поездка"],
-            ["Один", "Друзья", "Семья", "Коллеги", "Партнер", "Питомцы"],
-            ["Дом", "Работа", "Школа", "Транспорт", "Улица"]
-        ]
-        print(questions)
-        print(answers)
+        let questionCount = 3
+        
+        for i in 0 ..< questionCount {
+            let question = questionService.getQuestion(forIndex: i)
+            let answerOptions = await questionService.getAnswers(forQuestion: i)
+            
+            questionsList.append(question)
+            answersList.append(answerOptions)
+        }
+        
+        await MainActor.run {
+            self.questions = questionsList
+            self.answers = answersList
+        }
     }
 }

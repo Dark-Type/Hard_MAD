@@ -12,7 +12,6 @@ final class StatisticView: UIView {
 
     private let statType: StatType
     
-
     private let titleFontSize: CGFloat = 12
     private let valueFontSize: CGFloat = 12
     
@@ -140,7 +139,7 @@ final class StatisticView: UIView {
     override func layoutSubviews() {
         super.layoutSubviews()
         
-        layer.cornerRadius = bounds.height / 2
+        layer.cornerRadius = bounds.height/2
         
         if let attributedText = label.attributedText {
             let textWidth = attributedText.size().width

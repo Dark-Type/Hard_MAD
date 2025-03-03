@@ -13,11 +13,11 @@ enum TimeOfDay: String, CaseIterable {
     case day = "День"
     case evening = "Вечер"
     case lateEvening = "Поздний вечер"
-    
+
     static func from(date: Date) -> TimeOfDay {
         let calendar = Calendar.current
         let hour = calendar.component(.hour, from: date)
-        
+
         switch hour {
         case 5..<8: return .earlyMorning
         case 8..<12: return .morning

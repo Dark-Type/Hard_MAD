@@ -5,38 +5,70 @@
 //  Created by dark type on 03.03.2025.
 //
 
-enum QuestionMockData {
-    nonisolated(unsafe) static var defaultAnswers: [Int: Set<String>] = [
-        0: ["Happy", "Excited", "Peaceful", "Content"],
-        1: ["Family", "Work", "Health", "Personal Growth", "Relationships"],
-        2: ["Accomplished", "Challenged", "Motivated", "Grateful", "Inspired"]
-    ]
-
-    static func getDefaultQuestion(forIndex index: Int) -> String {
-        switch index {
-        case 0:
-            return "How do you feel?"
-        case 1:
-            return "What area of life does this relate to?"
-        case 2:
-            return "What's your emotional state?"
-        default:
-            return "Question \(index + 1)"
+actor MockQuestionService: QuestionServiceProtocol {
+    private actor DefaultDataStore {
+        private var defaultAnswers: [Int: Set<String>]
+        
+        init() {
+            defaultAnswers = [
+                0: ["Прием пищи", "Встреча с друзьями", "Тренировка", "Хобби", "Отдых", "Поездка"],
+                1: ["Один", "Друзья", "Семья", "Коллеги", "Партнер", "Питомцы"],
+                2: ["Дом", "Работа", "Школа", "Транспорт", "Улица"]
+            ]
+        }
+        
+        func getDefaultAnswers(forQuestion index: Int) -> Set<String> {
+            return defaultAnswers[index, default: []]
+        }
+        
+        func addDefaultAnswer(_ answer: String, forQuestion index: Int) {
+            defaultAnswers[index, default: []].insert(answer)
         }
     }
-}
+    
+    private static let defaultDataStore = DefaultDataStore()
+    
+    private var customAnswers: [Int: Set<String>] = [:]
+    private var initialized = false
+    
+    private let defaultQuestions = [
+        L10n.Record.Questions.question1,
+        L10n.Record.Questions.question2,
+        L10n.Record.Questions.question3
+    ]
+    
+    init() {}
+    
+    private func ensureInitialized() async {
+        if !initialized {
+            for i in 0 ..< defaultQuestions.count {
+                let defaults = await Self.defaultDataStore.getDefaultAnswers(forQuestion: i)
+                customAnswers[i] = defaults
+            }
+            initialized = true
+        }
+    }
+    
+    func getAnswers(forQuestion index: Int) async -> [String] {
+        await ensureInitialized()
+        return Array(customAnswers[index, default: []]).sorted()
+    }
 
-final class MockQuestionService: QuestionServiceProtocol {
-    func getAnswers(forQuestion index: Int) -> [String] {
+    func addCustomAnswer(_ answer: String, forQuestion index: Int) async {
+        await ensureInitialized()
+        customAnswers[index, default: []].insert(answer)
         
-        return Array(QuestionMockData.defaultAnswers[index] ?? [])
+        await Self.defaultDataStore.addDefaultAnswer(answer, forQuestion: index)
     }
 
-    func addCustomAnswer(_ answer: String, forQuestion index: Int) {
-        QuestionMockData.defaultAnswers[index, default: []].insert(answer)
+    nonisolated func getQuestion(forIndex index: Int) -> String {
+        guard index >= 0, index < defaultQuestions.count else {
+            return "Unknown Question"
+        }
+        return defaultQuestions[index]
     }
-
-    func getQuestion(forIndex index: Int) -> String {
-        return QuestionMockData.getDefaultQuestion(forIndex: index)
+    
+    nonisolated func getQuestionCount() -> Int {
+        return defaultQuestions.count
     }
 }

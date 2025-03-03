@@ -46,6 +46,11 @@ final class AppCoordinator: BaseCoordinator {
         self.authCoordinator = authCoordinator
         childCoordinators.append(authCoordinator)
         await authCoordinator.start()
+        Task {
+            await container.register(JournalServiceProtocol.self, dependency: MockJournalService())
+            await container.register(QuestionServiceProtocol.self, dependency: MockQuestionService())
+            await container.register(AnalysisServiceProtocol.self, dependency: MockAnalysisService())
+        }
     }
     
     private func showMainFlow() async {

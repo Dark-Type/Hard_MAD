@@ -7,14 +7,14 @@
 
 import UIKit
 
-@MainActor
 final class JournalCoordinator: BaseCoordinator {
     override func start() async {
-        showJournalScreen()
+        await showJournalScreen()
     }
     
-    private func showJournalScreen() {
-        let viewModel = JournalViewModel(container: container)
+    private func showJournalScreen() async {
+        let factory = factoryProvider.getJournalViewModelFactory()
+        let viewModel = await factory.makeViewModel()
         let viewController = JournalViewController(viewModel: viewModel)
         viewController.onNewEntryTapped = { [weak self] in
             await self?.startNewRecord()
@@ -37,14 +37,15 @@ final class JournalCoordinator: BaseCoordinator {
     }
     
     private func showRecordScreen(recordBuilder: RecordBuilder) async {
-            let viewModel = RecordViewModel(container: container, recordBuilder: recordBuilder)
-            let viewController = RecordViewController(viewModel: viewModel)
-            viewController.onRecordComplete = { [weak self] record in
-                guard let self = self else { return }
-                await self.handleRecordCompletion(record)
-            }
-            navigationController.pushViewController(viewController, animated: true)
+        let factory = factoryProvider.getRecordViewModelFactory()
+        let viewModel = await factory.makeViewModel(recordBuilder: recordBuilder)
+        let viewController = RecordViewController(viewModel: viewModel)
+        viewController.onRecordComplete = { [weak self] record in
+            guard let self = self else { return }
+            await self.handleRecordCompletion(record)
         }
+        navigationController.pushViewController(viewController, animated: true)
+    }
     
     private func handleRecordCompletion(_ record: JournalRecord) async {
         guard let journalVC = navigationController.viewControllers.first as? JournalViewController else {

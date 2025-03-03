@@ -164,7 +164,6 @@ final class WeeklyEmotionsView: UIView {
                 emotionsStackView.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
                 emotionsStackView.widthAnchor.constraint(greaterThanOrEqualToConstant: 80),
                 
-                
                 emotionImagesView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16),
                 emotionImagesView.widthAnchor.constraint(equalToConstant: 108),
                 emotionImagesView.heightAnchor.constraint(equalToConstant: 70),
@@ -195,7 +194,6 @@ final class WeeklyEmotionsView: UIView {
             
             emotionsStackView.arrangedSubviews.forEach { $0.removeFromSuperview() }
             emotionImagesView.subviews.forEach { $0.removeFromSuperview() }
-            
             
             if records.isEmpty {
                 let placeholderView = UIView()
@@ -234,7 +232,6 @@ final class WeeklyEmotionsView: UIView {
                 let imageSize: CGFloat = 30
                 let spacing: CGFloat = 6
                 
-
                 let totalGridHeight = CGFloat(rows) * imageSize + CGFloat(rows - 1) * spacing
                 
                 for i in 0 ..< uniqueEmotions.count {

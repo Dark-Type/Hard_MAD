@@ -7,8 +7,6 @@
 
 import UIKit
 
-import UIKit
-
 final class SettingsViewController: UIViewController {
     // MARK: - UI Components
     
@@ -286,8 +284,6 @@ final class SettingsViewController: UIViewController {
     // MARK: - Data Loading
       
     private func loadData() async {
-        
-        
         if let profile = await viewModel.getUserProfile() {
             await MainActor.run {
                 profileImageView.image = profile.image

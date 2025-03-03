@@ -258,7 +258,7 @@ final class EmotionCircleView: UIView {
         let gradientLayer = CAGradientLayer()
         gradientLayer.frame = bounds
         
-        let colors = emotion.gradientColors
+        let colors = emotion.emotionType.gradientType
         gradientLayer.colors = [colors.start.cgColor, colors.end.cgColor]
         gradientLayer.startPoint = CGPoint(x: 0, y: 0)
         gradientLayer.endPoint = CGPoint(x: 1, y: 1)

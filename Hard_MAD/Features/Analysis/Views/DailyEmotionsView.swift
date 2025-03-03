@@ -167,7 +167,7 @@ class DailyEmotionsView: UIView {
                 }
             }
             
-            let contentTopConstant: CGFloat = 60
+            let contentTopConstant: CGFloat = 100
             
             let verticalCenter = bounds.height / 2 + contentTopConstant / 2
             
@@ -205,7 +205,7 @@ class DailyEmotionsView: UIView {
                 let circleSize: CGFloat = 0.5
                 
                 NSLayoutConstraint.activate([
-                    circle1.centerXAnchor.constraint(equalTo: centerXAnchor, constant: 20),
+                    circle1.centerXAnchor.constraint(equalTo: centerXAnchor),
                     circle1.topAnchor.constraint(equalTo: topAnchor, constant: verticalCenter - bounds.height * 0.25),
                     circle1.widthAnchor.constraint(equalTo: widthAnchor, multiplier: circleSize),
                     circle1.heightAnchor.constraint(equalTo: circle1.widthAnchor),
@@ -270,7 +270,7 @@ class EmotionAnalysisCircleView: UIView {
     private let percentageLabel: UILabel = {
         let label = UILabel()
         label.font = UIFont.appFont(AppFont.regular, size: 20)
-        label.textColor = .white
+        label.textColor = .black
         label.textAlignment = .center
         return label
     }()
@@ -314,10 +314,10 @@ class EmotionAnalysisCircleView: UIView {
         
         percentageLabel.text = "\(Int(percentage * 100))%"
         
-        let color = type.color
+        let colors = type.gradientType
         gradientLayer.colors = [
-            color.cgColor,
-            color.withAlphaComponent(0.7).cgColor
+            colors.0.cgColor,
+            colors.1.cgColor
         ]
         gradientLayer.locations = [0.0, 1.0]
         gradientLayer.startPoint = CGPoint(x: 0.0, y: 0.0)

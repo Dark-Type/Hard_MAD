@@ -198,37 +198,36 @@ final class JournalEntryCell: UITableViewCell {
         gradientLayer.colors = [UIColor.clear.cgColor, UIColor.clear.cgColor, UIColor.clear.cgColor, UIColor.clear.cgColor]
         CATransaction.commit()
     }
+
     // MARK: - Gradient Refresh
        
-       func refreshGradient(with record: JournalRecord) {
-           let emotionColor = record.emotion.color
-           lastEmotionColor = emotionColor
+    func refreshGradient(with record: JournalRecord) {
+        let emotionColor = record.emotion.color
+        lastEmotionColor = emotionColor
            
-           layoutIfNeeded()
+        layoutIfNeeded()
            
-           CATransaction.begin()
-           CATransaction.setDisableActions(true)
+        CATransaction.begin()
+        CATransaction.setDisableActions(true)
            
-
-           gradientLayer.frame = cardView.bounds
+        gradientLayer.frame = cardView.bounds
            
-           let colorWithHighAlpha = emotionColor.withAlphaComponent(0.4)
-           let colorWithMediumAlpha = emotionColor.withAlphaComponent(0.2)
-           let colorWithLowAlpha = emotionColor.withAlphaComponent(0.1)
-           let colorWithNoAlpha = emotionColor.withAlphaComponent(0.0)
+        let colorWithHighAlpha = emotionColor.withAlphaComponent(0.4)
+        let colorWithMediumAlpha = emotionColor.withAlphaComponent(0.2)
+        let colorWithLowAlpha = emotionColor.withAlphaComponent(0.1)
+        let colorWithNoAlpha = emotionColor.withAlphaComponent(0.0)
            
-           gradientLayer.colors = [
-               colorWithHighAlpha.cgColor,
-               colorWithMediumAlpha.cgColor,
-               colorWithLowAlpha.cgColor,
-               colorWithNoAlpha.cgColor
-           ]
+        gradientLayer.colors = [
+            colorWithHighAlpha.cgColor,
+            colorWithMediumAlpha.cgColor,
+            colorWithLowAlpha.cgColor,
+            colorWithNoAlpha.cgColor
+        ]
            
-           CATransaction.commit()
+        CATransaction.commit()
            
-
-           cardView.setNeedsDisplay()
-       }
+        cardView.setNeedsDisplay()
+    }
     
     // MARK: - Highlight and Selection
     

@@ -29,7 +29,7 @@ final class JournalViewController: UIViewController {
     private lazy var titleLabel: UILabel = {
         let label = UILabel()
         label.font = UIFont.appFont(AppFont.fancy, size: 36)
-        //need other font for this, a lighter one
+        // need other font for this, a lighter one
         label.text = L10n.Journal.title
         label.textColor = .white
         label.numberOfLines = 2
@@ -123,6 +123,11 @@ final class JournalViewController: UIViewController {
         
         updateTableViewHeight()
     }
+
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        tabBarController?.tabBar.isHidden = false
+    }
     
     // MARK: - Setup
     
@@ -176,7 +181,6 @@ final class JournalViewController: UIViewController {
             titleLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 20),
             titleLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -20),
            
-            
             emotionCircleView.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 24),
             emotionCircleView.centerXAnchor.constraint(equalTo: contentView.centerXAnchor),
             emotionCircleView.widthAnchor.constraint(equalTo: contentView.widthAnchor, multiplier: 0.9),

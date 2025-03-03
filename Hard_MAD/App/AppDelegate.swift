@@ -17,9 +17,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     ) -> Bool {
         Task {
             await container.register(AuthServiceProtocol.self, dependency: MockAuthService())
-            await container.register(JournalServiceProtocol.self, dependency: MockJournalService())
-            await container.register(QuestionServiceProtocol.self, dependency: MockQuestionService())
-            await container.register(AnalysisServiceProtocol.self, dependency: MockAnalysisService())
             await container.register(NotificationServiceProtocol.self, dependency: MockNotificationService())
         }
         return true

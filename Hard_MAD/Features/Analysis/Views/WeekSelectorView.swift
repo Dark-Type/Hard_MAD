@@ -88,7 +88,7 @@ final class WeekSelectorView: UIView {
         private let weekLabel: UILabel = {
             let label = UILabel()
             label.textAlignment = .center
-            label.font = UIFont.systemFont(ofSize: 16, weight: .medium)
+            label.font = UIFont.appFont(AppFont.regular, size: 16)
             return label
         }()
         
@@ -224,7 +224,7 @@ extension WeekSelectorView: UICollectionViewDelegateFlowLayout {
             displayText = "\(startDay) \(startMonthAbbr) - \(endDay) \(endMonthAbbr)"
         }
         
-        let font = UIFont.systemFont(ofSize: 16, weight: .medium)
+        let font = UIFont.appFont(AppFont.regular, size: 16)
         let attributes = [NSAttributedString.Key.font: font]
         let textWidth = (displayText as NSString).size(withAttributes: attributes).width
         

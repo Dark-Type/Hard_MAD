@@ -95,6 +95,7 @@ final class EmotionViewController: UIViewController {
         setupDisplayLink()
         setupGestures()
     }
+
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         tabBarController?.tabBar.isHidden = true
@@ -108,7 +109,6 @@ final class EmotionViewController: UIViewController {
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         displayLink?.isPaused = true
-        tabBarController?.tabBar.isHidden = false
     }
     
     override func viewDidLayoutSubviews() {

@@ -6,6 +6,7 @@
 //
 
 import UIKit
+
 @MainActor
 protocol NavigationDotsDelegate: AnyObject {
     func navigationDots(_ view: SectionNavigationDotsView, didSelectSectionAt index: Int)

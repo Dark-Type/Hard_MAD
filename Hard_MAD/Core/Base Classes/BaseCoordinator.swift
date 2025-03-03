@@ -11,11 +11,13 @@ import UIKit
 class BaseCoordinator: Coordinator {
     var childCoordinators: [Coordinator] = []
     let navigationController: UINavigationController
+    let factoryProvider: FactoryProvider
     let container: Container
     
     init(navigationController: UINavigationController, container: Container) {
         self.navigationController = navigationController
         self.container = container
+        self.factoryProvider = FactoryProvider(container: container)
     }
     
     func start() async {

@@ -9,15 +9,15 @@ import UIKit
 final class JournalViewModel: BaseViewModel {
     // MARK: - Properties
 
-    private let container: Container
+    private let journalService: JournalServiceProtocol
     @Published private(set) var records: [JournalRecord] = []
     @Published private(set) var statistics: JournalStatistics?
     @Published private(set) var todayEmotions: [Emotion] = []
     
     // MARK: - Initialization
 
-    init(container: Container) {
-        self.container = container
+    init(journalService: JournalServiceProtocol) {
+        self.journalService = journalService
         super.init()
     }
     
@@ -38,8 +38,7 @@ final class JournalViewModel: BaseViewModel {
     func addNewRecord(_ record: JournalRecord) async {
         do {
             try await withLoading { [self] in
-                let service: JournalServiceProtocol = await container.resolve()
-                await service.saveRecord(record)
+                await journalService.saveRecord(record)
                 
                 self.records.append(record)
                 try await self.loadStatistics()
@@ -54,21 +53,18 @@ final class JournalViewModel: BaseViewModel {
 
     private func loadRecords() async throws {
         try await withLoading { [self] in
-            let service: JournalServiceProtocol = await container.resolve()
-            self.records = await service.fetchRecords()
+            self.records = await journalService.fetchRecords()
         }
     }
     
     private func loadStatistics() async throws {
         try await withLoading { [self] in
-            let service: JournalServiceProtocol = await container.resolve()
-            self.statistics = await service.fetchStatistics()
+            self.statistics = await journalService.fetchStatistics()
         }
     }
     
     private func loadTodayEmotions() async throws {
-        let service: JournalServiceProtocol = await container.resolve()
-        todayEmotions = await service.fetchTodayEmotions()
+        todayEmotions = await journalService.fetchTodayEmotions()
     }
     
     func getFormattedDate(for record: JournalRecord) -> String {

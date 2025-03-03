@@ -132,11 +132,6 @@ final class MostFrequentEmotionsView: UIView {
             label.font = UIFont.appFont(AppFont.regular, size: 14)
             label.textColor = .black
             label.textAlignment = .left
-            
-            label.layer.shadowColor = UIColor.black.cgColor
-            label.layer.shadowOffset = CGSize(width: 0, height: 1)
-            label.layer.shadowOpacity = 0.5
-            label.layer.shadowRadius = 1
             return label
         }()
         
@@ -223,9 +218,10 @@ final class MostFrequentEmotionsView: UIView {
             barView.layer.sublayers?.forEach { if $0 is CAGradientLayer { $0.removeFromSuperlayer() } }
             
             let newGradientLayer = CAGradientLayer()
+            let colors = emotion.emotionType.gradientType
             newGradientLayer.colors = [
-                emotion.color.cgColor,
-                emotion.color.withAlphaComponent(0.7).cgColor
+                colors.1.cgColor,
+                colors.0.cgColor
             ]
             newGradientLayer.startPoint = CGPoint(x: 0, y: 0.5)
             newGradientLayer.endPoint = CGPoint(x: 1, y: 0.5)
