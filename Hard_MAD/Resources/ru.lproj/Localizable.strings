@@ -67,7 +67,7 @@
 "settings.notifications" = "Присылать напоминания";
 "settings.notificatoins.add" = "Добавить напоминание";
 "settings.login.touch" = "Вход по отпечатку пальца";
-
+"settings.notifications.title" = "Напоминание";
 
 
 /*

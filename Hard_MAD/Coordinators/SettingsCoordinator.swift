@@ -14,7 +14,7 @@ final class SettingsCoordinator: BaseCoordinator {
     }
 
     private func showSettingsScreen() {
-        let viewModel = SettingsViewModel()
+        let viewModel = SettingsViewModel(container: container)
         let viewController = SettingsViewController(viewModel: viewModel)
         navigationController.setViewControllers([viewController], animated: false)
     }

@@ -103,6 +103,7 @@ enum L10n {
         enum Notifications {
             static let send = "settings.notifications".localized
             static let add = "settings.notificatoins.add".localized
+            static let title = "settings.notifications.title".localized
         }
         
         enum Login {

@@ -11,4 +11,6 @@ protocol AuthServiceProtocol: Sendable {
     func login() async throws -> UserProfile
     func logout() async throws
     func getCurrentUser() async -> UserProfile?
+    func isTouchIDEnabled() async -> Bool
+    func setTouchIDEnabled(_ enabled: Bool) async
 }

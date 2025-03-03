@@ -69,7 +69,7 @@
 "settings.notifications" = "Send notifications";
 "settings.notificatoins.add" = "Add a notification";
 "settings.login.touch" = "Login with Touch ID";
-
+"settings.notifications.title" = "Notification";
 
 
 /*

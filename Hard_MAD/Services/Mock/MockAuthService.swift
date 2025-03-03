@@ -6,8 +6,10 @@
 //
 
 actor MockAuthService: AuthServiceProtocol {
-    private var isLoggedIn = false
+   
     
+    private var isLoggedIn = false
+    private var touchIDEnabled: Bool = false
     func isAuthenticated() async -> Bool {
         false
     }
@@ -26,5 +28,12 @@ actor MockAuthService: AuthServiceProtocol {
     func getCurrentUser() async -> UserProfile? {
         guard isLoggedIn else { return nil }
         return UserProfile.mock
+    }
+    func isTouchIDEnabled() async -> Bool {
+        return touchIDEnabled
+    }
+    
+    func setTouchIDEnabled(_ enabled: Bool) async {
+        touchIDEnabled = enabled
     }
 }
