@@ -54,10 +54,10 @@
 /*
   Analysis Screen
 */
-"analysis.title.categories" = "Эмоции по категориям";
-"analysis.title.week" = "Эмоции по дням недели";
-"analysis.title.frequent" = "Самые частые эмоции";
-"analysis.title.daily" = "Ваше настроение в течение дня";
+"analysis.title.categories" = "Эмоции \nпо категориям";
+"analysis.title.week" = "Эмоции \nпо дням недели";
+"analysis.title.frequent" = "Самые частые \nэмоции";
+"analysis.title.daily" = "Ваше настроение \nв течение дня";
 
 
 /*

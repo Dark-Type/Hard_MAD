@@ -14,7 +14,8 @@ final class AnalysisCoordinator: BaseCoordinator {
     }
 
     private func showAnalysisScreen() {
-        let viewModel = AnalysisViewModel()
+        let viewModel = AnalysisViewModel(container: container)
+
         let viewController = AnalysisViewController(viewModel: viewModel)
         navigationController.setViewControllers([viewController], animated: false)
     }

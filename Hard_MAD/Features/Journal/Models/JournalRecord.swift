@@ -85,3 +85,39 @@ enum Emotion: String, Sendable, CaseIterable {
         }
     }
 }
+
+extension Emotion {
+    enum EmotionType: String, CaseIterable {
+        case redEmotion = "Тревожность"
+        case blueEmotion = "Истощение"
+        case greenEmotion = "Спокойствие"
+        case yellowEmotion = "Позитив"
+        
+        var color: UIColor {
+            switch self {
+            case .redEmotion:
+                return UIColor(red: 1.0, green: 0.0, blue: 0.0, alpha: 1.0)
+            case .blueEmotion:
+                return UIColor(red: 0.0, green: 0.667, blue: 1.0, alpha: 1.0)
+            case .greenEmotion:
+                return UIColor(red: 0.0, green: 1.0, blue: 0.333, alpha: 1.0)
+            case .yellowEmotion:
+                return UIColor(red: 1.0, green: 0.667, blue: 0.0, alpha: 1.0)
+            }
+        }
+        
+    }
+    
+    var emotionType: EmotionType {
+        switch self {
+        case .anxious:
+            return .redEmotion
+        case .burnout, .tired:
+            return .blueEmotion
+        case .chill:
+            return .greenEmotion
+        case .happy, .productivity:
+            return .yellowEmotion
+        }
+    }
+}

@@ -5,7 +5,7 @@
 //  Created by dark type on 27.02.2025.
 //
 
-actor Container {
+actor Container: Sendable {
     private var dependencies: [String: Any] = [:]
 
     func register<T>(_ type: T.Type, dependency: Any) {
