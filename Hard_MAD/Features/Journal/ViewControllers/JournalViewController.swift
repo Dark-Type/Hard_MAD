@@ -76,6 +76,43 @@ final class JournalViewController: UIViewController {
         table.translatesAutoresizingMaskIntoConstraints = false
         return table
     }()
+
+    private lazy var emptyStateView: UIView = {
+        let view = UIView()
+        view.isHidden = true
+        view.translatesAutoresizingMaskIntoConstraints = false
+        
+        let imageView = UIImageView(image: UIImage(named: "emptyJournal"))
+        imageView.contentMode = .scaleAspectFit
+        imageView.translatesAutoresizingMaskIntoConstraints = false
+        
+        let label = UILabel()
+        label.text = "Пока ничего не добавлено"
+        label.textColor = .white
+        label.textAlignment = .center
+        label.numberOfLines = 0
+        label.font = UIFont.appFont(AppFont.regular, size: 16)
+        label.translatesAutoresizingMaskIntoConstraints = false
+        label.accessibilityIdentifier = "emptyStateLabel"
+        
+        view.addSubview(imageView)
+        view.addSubview(label)
+        
+        NSLayoutConstraint.activate([
+            imageView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            imageView.topAnchor.constraint(equalTo: view.topAnchor, constant: 20),
+            imageView.widthAnchor.constraint(equalToConstant: 120),
+            imageView.heightAnchor.constraint(equalToConstant: 120),
+            
+            label.topAnchor.constraint(equalTo: imageView.bottomAnchor, constant: 16),
+            label.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
+            label.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
+            label.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -20)
+        ])
+        
+        view.accessibilityIdentifier = "emptyStateView"
+        return view
+    }()
     
     private var tableViewHeightConstraint: NSLayoutConstraint?
     
@@ -152,6 +189,18 @@ final class JournalViewController: UIViewController {
         
         contentView.addSubview(tableView)
         
+        contentView.addSubview(emptyStateView)
+        titleLabel.accessibilityIdentifier = "journalTitleLabel"
+        scrollView.accessibilityIdentifier = "journalScrollView"
+        tableView.accessibilityIdentifier = "journalTableView"
+        loadingIndicator.accessibilityIdentifier = "journalLoadingIndicator"
+            
+        totalRecordsView.accessibilityIdentifier = "totalRecordsView"
+        todayRecordsView.accessibilityIdentifier = "todayRecordsView"
+        streakView.accessibilityIdentifier = "streakView"
+            
+        emotionCircleView.accessibilityIdentifier = "emotionCircleView"
+        
         emotionCircleView.onAddButtonTapped = { [weak self] in
             Task {
                 await self?.onNewEntryTapped?()
@@ -191,6 +240,11 @@ final class JournalViewController: UIViewController {
             tableView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor),
             tableHeightConstraint,
             
+            emptyStateView.topAnchor.constraint(equalTo: emotionCircleView.bottomAnchor, constant: 16),
+            emptyStateView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 20),
+            emptyStateView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -20),
+            emptyStateView.heightAnchor.constraint(greaterThanOrEqualToConstant: 200),
+            
             loadingIndicator.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             loadingIndicator.centerYAnchor.constraint(equalTo: view.centerYAnchor)
         ])
@@ -227,6 +281,9 @@ final class JournalViewController: UIViewController {
                 guard let self = self else { return }
                 self.preparedCells.removeAll()
                 self.tableView.reloadData()
+                
+                self.emptyStateView.isHidden = !records.isEmpty
+                self.tableView.isHidden = records.isEmpty
                 
                 self.updateTableViewHeight()
                 

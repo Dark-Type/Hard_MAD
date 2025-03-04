@@ -115,6 +115,11 @@ final class JournalEntryCell: UITableViewCell {
         cardView.addSubview(textStack)
         cardView.addSubview(emotionImageView)
         
+        textStack.accessibilityIdentifier = "journalRecordCell"
+        emotionImageView.accessibilityIdentifier = "emotionImageView"
+        dateLabel.accessibilityIdentifier = "dateLabel"
+        cardView.accessibilityIdentifier = "journalCellContentView"
+        
         NSLayoutConstraint.activate([
             cardView.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 8),
             cardView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),

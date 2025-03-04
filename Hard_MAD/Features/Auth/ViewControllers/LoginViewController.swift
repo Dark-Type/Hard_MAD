@@ -114,7 +114,7 @@ final class LoginViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        //FontUtils.printAvailableFonts()
+        // FontUtils.printAvailableFonts()
         setupGradientBackground()
         setupUI()
         bindViewModel()
@@ -151,6 +151,20 @@ final class LoginViewController: UIViewController {
         view.addSubview(welcomeLabel)
         view.addSubview(loginButton)
         view.addSubview(loadingView)
+        
+        welcomeLabel.accessibilityIdentifier = "welcome_label"
+        loginButton.accessibilityIdentifier = "login_button"
+           
+      
+        if let imageView = loginButton.subviews.first?.subviews.first as? UIImageView {
+            imageView.accessibilityIdentifier = "login_apple_image"
+        }
+           
+        if let titleLabel = loginButton.subviews.first?.subviews.compactMap({ $0 as? UILabel }).first {
+            titleLabel.accessibilityIdentifier = "login_button_label"
+        }
+           
+        loadingView.accessibilityIdentifier = "loading_view"
         
         NSLayoutConstraint.activate([
             welcomeLabel.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 24),

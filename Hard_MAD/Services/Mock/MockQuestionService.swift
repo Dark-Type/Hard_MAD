@@ -5,6 +5,8 @@
 //  Created by dark type on 03.03.2025.
 //
 
+import Foundation
+
 actor MockQuestionService: QuestionServiceProtocol {
     private actor DefaultDataStore {
         private var defaultAnswers: [Int: Set<String>]
@@ -70,5 +72,52 @@ actor MockQuestionService: QuestionServiceProtocol {
     
     nonisolated func getQuestionCount() -> Int {
         return defaultQuestions.count
+    }
+}
+
+extension MockQuestionService {
+    func configureForUITesting() async {
+        if CommandLine.arguments.contains("--UITesting") {
+            initialized = false
+            await ensureInitializedForUITesting()
+        }
+    }
+    
+    private func ensureInitializedForUITesting() async {
+        if !initialized {
+            customAnswers = [:]
+            
+            let emptyRecord = ProcessInfo.processInfo.environment["UI_TEST_RECORD_EMPTY"] == "true"
+            
+            if emptyRecord {
+                customAnswers[0] = []
+                customAnswers[1] = []
+                customAnswers[2] = []
+            } else {
+                customAnswers = [
+                    0: ["Прием пищи", "Встреча с друзьями", "Тренировка", "Хобби", "Отдых", "Поездка"],
+                    1: ["Один", "Друзья", "Семья", "Коллеги", "Партнер", "Питомцы"],
+                    2: ["Дом", "Работа", "Школа", "Транспорт", "Улица"]
+                ]
+            }
+            
+            initialized = true
+        }
+    }
+
+    func getQuestionForUITesting(forIndex index: Int) -> String {
+        switch index {
+        case 0: return L10n.Record.Questions.question1
+        case 1: return L10n.Record.Questions.question2
+        case 2: return L10n.Record.Questions.question3
+        default: return "Question \(index + 1)"
+        }
+    }
+    
+    func getAnswersForUITesting(forQuestion index: Int) async -> [String] {
+        if CommandLine.arguments.contains("--UITesting") {
+            await ensureInitializedForUITesting()
+        }
+        return Array(customAnswers[index, default: []]).sorted()
     }
 }

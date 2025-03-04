@@ -134,3 +134,49 @@ actor MockAnalysisService: AnalysisServiceProtocol {
         journalRecords = records
     }
 }
+
+extension MockAnalysisService {
+    private func generateMockRecordsForUITesting() async {
+        var records: [JournalRecord] = []
+        let calendar = Calendar.current
+        let now = Date()
+        
+        for weekOffset in 0..<3 {
+            for dayOffset in 0..<7 {
+                let totalDaysAgo = (weekOffset * 7) + dayOffset
+                let day = calendar.date(byAdding: .day, value: -totalDaysAgo, to: now)!
+                
+                let recordsCount = (totalDaysAgo % 3) + 1
+                for recordIndex in 0..<recordsCount {
+                    let hour = 8 + (recordIndex * 4)
+                    let components = calendar.dateComponents([.year, .month, .day], from: day)
+                    var recordComponents = components
+                    recordComponents.hour = hour
+                    recordComponents.minute = 0
+                    let recordDate = calendar.date(from: recordComponents)!
+                    
+                    let emotionIndex = (totalDaysAgo + recordIndex) % Emotion.allCases.count
+                    let emotion = Emotion.allCases[emotionIndex]
+                    
+                    let record = JournalRecord(
+                        emotion: emotion,
+                        note: "Record from \(dayOffset) days ago",
+                        createdAt: recordDate
+                    )
+                    
+                    records.append(record)
+                }
+            }
+        }
+        
+        journalRecords = records
+    }
+
+    func configureForUITesting(empty: Bool = false) async {
+        if empty {
+            journalRecords = []
+        } else {
+            await generateMockRecordsForUITesting()
+        }
+    }
+}

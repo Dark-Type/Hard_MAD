@@ -177,6 +177,25 @@ final class SettingsViewController: UIViewController {
       
     // MARK: - UI Setup
     
+    private func setupAccessibilityIdentifiers() {
+        titleLabel.accessibilityIdentifier = "settingsTitleLabel"
+        profileImageView.accessibilityIdentifier = "profileImageView"
+        fullNameLabel.accessibilityIdentifier = "fullNameLabel"
+        
+        notificationContainer.accessibilityIdentifier = "notificationContainer"
+        notificationImageView.accessibilityIdentifier = "notificationImageView"
+        notificationLabel.accessibilityIdentifier = "notificationLabel"
+        notificationToggle.accessibilityIdentifier = "notificationToggle"
+        
+        notificationsStackView.accessibilityIdentifier = "notificationsStackView"
+        addNotificationButton.accessibilityIdentifier = "addNotificationButton"
+        
+        touchIDContainer.accessibilityIdentifier = "touchIDContainer"
+        touchIDImageView.accessibilityIdentifier = "touchIDImageView"
+        touchIDLabel.accessibilityIdentifier = "touchIDLabel"
+        touchIDToggle.accessibilityIdentifier = "touchIDToggle"
+    }
+    
     private func setupUI() {
         view.backgroundColor = .black
         
@@ -203,6 +222,7 @@ final class SettingsViewController: UIViewController {
         touchIDContainer.addSubview(touchIDToggle)
         
         setupConstraints()
+        setupAccessibilityIdentifiers()
     }
     
     private func setupConstraints() {

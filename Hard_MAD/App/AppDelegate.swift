@@ -15,9 +15,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         _ application: UIApplication,
         didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?
     ) -> Bool {
-        Task {
-            await container.register(AuthServiceProtocol.self, dependency: MockAuthService())
-            await container.register(NotificationServiceProtocol.self, dependency: MockNotificationService())
+        if !CommandLine.arguments.contains("--UITesting") {
+            Task {
+                await configureForNormalUse()
+            }
         }
         return true
     }
@@ -35,5 +36,13 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         )
         configuration.delegateClass = SceneDelegate.self
         return configuration
+    }
+
+    private func configureForNormalUse() async {
+        await container.register(AuthServiceProtocol.self, dependency: MockAuthService())
+        await container.register(NotificationServiceProtocol.self, dependency: MockNotificationService())
+
+        let factoryProvider = FactoryProvider(container: container)
+        await container.register(FactoryProvider.self, dependency: factoryProvider)
     }
 }

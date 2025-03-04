@@ -74,6 +74,7 @@ final class EmotionViewController: UIViewController {
     private var bottomViewDescription = ""
     private var bottomViewTitleColor = UIColor.white
     private var bottomViewIsActive = false
+    private var bottomViewAccessibilityLabel = "emotionBottomViewTitle"
     
     // MARK: - Initialization
     
@@ -144,6 +145,10 @@ final class EmotionViewController: UIViewController {
         
         view.addSubview(backButton)
         
+        backButton.accessibilityIdentifier = "emotionBackButton"
+        gridContainerView.accessibilityIdentifier = "emotionGridContainer"
+        emotionsCollectionView.accessibilityIdentifier = "emotionsCollectionView"
+        
         backButton.addTarget(self, action: #selector(backButtonTapped), for: .touchUpInside)
         
         view.addSubview(gridContainerView)
@@ -167,6 +172,8 @@ final class EmotionViewController: UIViewController {
         ])
         
         view.addSubview(bottomViewContainer)
+        
+        bottomViewContainer.accessibilityIdentifier = "emotionBottomView"
         view.bringSubviewToFront(backButton)
     }
     
@@ -280,6 +287,7 @@ final class EmotionViewController: UIViewController {
             bottomViewTitle = emotion.rawValue
             bottomViewDescription = emotion.description
             bottomViewTitleColor = emotion.color
+            
             bottomViewIsActive = true
             bottomViewContainer.isUserInteractionEnabled = true
         } else {
@@ -301,6 +309,7 @@ final class EmotionViewController: UIViewController {
         titleLayer.fontSize = 12
         titleLayer.truncationMode = .none
         titleLayer.foregroundColor = bottomViewTitleColor.cgColor
+        titleLayer.accessibilityLabel = "emotionBottomTitle"
         titleLayer.frame = CGRect(x: 25, y: 20, width: bottomViewContainer.bounds.width - 80, height: 40)
         titleLayer.alignmentMode = .left
         titleLayer.contentsScale = UIScreen.main.scale
@@ -316,6 +325,10 @@ final class EmotionViewController: UIViewController {
             descriptionLayer.alignmentMode = .left
             descriptionLayer.contentsScale = UIScreen.main.scale
             descriptionLayer.isWrapped = true
+            descriptionLayer.accessibilityLabel = "emotionBottomDescription"
+            
+            bottomViewContainer.accessibilityIdentifier = "emotionBottomView"
+            bottomViewContainer.accessibilityValue = bottomViewIsActive ? "active" : "inactive"
             bottomContentLayer.addSublayer(descriptionLayer)
         }
         

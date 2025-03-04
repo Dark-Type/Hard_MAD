@@ -40,6 +40,11 @@ final class WeekSelectorView: UIView {
         setupUI()
     }
     
+    func setupAccessibilityIdentifiers() {
+        accessibilityIdentifier = "weekSelectorView"
+        collectionView.accessibilityIdentifier = "weekSelectorCollectionView"
+    }
+    
     private func setupUI() {
         backgroundColor = .black
         
@@ -63,6 +68,7 @@ final class WeekSelectorView: UIView {
             separatorLine.bottomAnchor.constraint(equalTo: bottomAnchor),
             separatorLine.heightAnchor.constraint(equalToConstant: 1)
         ])
+        setupAccessibilityIdentifiers()
     }
     
     func configure(with weeks: [DateInterval], selectedIndex: Int) {
@@ -89,6 +95,7 @@ final class WeekSelectorView: UIView {
             let label = UILabel()
             label.textAlignment = .center
             label.font = UIFont.appFont(AppFont.regular, size: 16)
+            label.textColor = .white
             return label
         }()
         
@@ -136,7 +143,12 @@ final class WeekSelectorView: UIView {
             
             updateAppearance()
         }
-        
+
+        func configure(with weekRange: DateInterval, atIndex index: Int) {
+            configure(with: weekRange)
+            accessibilityIdentifier = "weekCell_\(index)"
+        }
+
         func configure(with weekRange: DateInterval) {
             let calendar = Calendar.current
             let startDate = weekRange.start
@@ -251,7 +263,7 @@ extension WeekSelectorView: UICollectionViewDataSource {
         }
         
         let weekRange = weeks[indexPath.item]
-        cell.configure(with: weekRange)
+        cell.configure(with: weekRange, atIndex: indexPath.item)
         cell.isSelected = indexPath.item == selectedIndex
         
         return cell

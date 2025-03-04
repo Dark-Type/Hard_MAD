@@ -22,12 +22,22 @@ final class SectionNavigationDotsView: UIView {
         super.init(coder: coder)
         setupUI()
     }
-    
+
+    func setupAccessibilityIdentifiers() {
+        accessibilityIdentifier = "navigationDotsView"
+            
+        for (index, dot) in dotViews.enumerated() {
+            dot.accessibilityIdentifier = "navigationDot_\(index)"
+        }
+    }
+
     private func setupUI() {
         for i in 0 ..< 4 {
             let dot = createDot()
             addSubview(dot)
+            dot.accessibilityIdentifier = "navigationDot_\(i)"
             dotViews.append(dot)
+            
             
             let tapGesture = UITapGestureRecognizer(target: self, action: #selector(dotTapped(_:)))
             dot.addGestureRecognizer(tapGesture)
@@ -36,6 +46,7 @@ final class SectionNavigationDotsView: UIView {
         }
         
         updateSelectedDot()
+        setupAccessibilityIdentifiers()
     }
     
     private func createDot() -> UIView {

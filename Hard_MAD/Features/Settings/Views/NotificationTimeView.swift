@@ -55,6 +55,10 @@ final class NotificationTimeView: UIView {
         addSubview(timeLabel)
         addSubview(deleteButton)
         
+        accessibilityIdentifier = "notificationView_\(notification.id.uuidString)"
+        timeLabel.accessibilityIdentifier = "notificationTimeLabel_\(notification.id.uuidString)"
+        deleteButton.accessibilityIdentifier = "notificationDeleteButton_\(notification.id.uuidString)"
+        
         NSLayoutConstraint.activate([
             heightAnchor.constraint(equalToConstant: 64),
             

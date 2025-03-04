@@ -143,6 +143,16 @@ final class QuestionView: UIView {
     private var textEntryWidthConstraint: NSLayoutConstraint?
     private var collectionViewHeightConstraint: NSLayoutConstraint?
     
+    func setupAccessibilityIdentifiers() {
+        accessibilityIdentifier = "questionView_\(tag)"
+        
+        questionLabel.accessibilityIdentifier = "questionLabel_\(tag)"
+        
+        textEntryView.accessibilityIdentifier = "textEntryView_\(tag)"
+        textField.accessibilityIdentifier = "answerTextField_\(tag)"
+        
+        collectionView.accessibilityIdentifier = "answerCollectionView_\(tag)"
+    }
     // MARK: - Initialization
     
     init(question: String, onAnswerSelected: @escaping (String) -> Void) {
@@ -151,6 +161,7 @@ final class QuestionView: UIView {
         
         setupUI()
         questionLabel.text = question
+        setupAccessibilityIdentifiers()
     }
     
     @available(*, unavailable)
@@ -163,6 +174,7 @@ final class QuestionView: UIView {
     private func setupUI() {
         addSubview(questionLabel)
         addSubview(collectionView)
+        questionLabel.accessibilityIdentifier = "questionLabel_\(tag)"
         setupTextEntryView()
         
         collectionViewHeightConstraint = collectionView.heightAnchor.constraint(equalToConstant: Constants.itemHeight)
@@ -369,9 +381,15 @@ extension QuestionView: UICollectionViewDelegate, UICollectionViewDataSource {
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "AnswerCell", for: indexPath) as! AnswerCell
             let answer = answers[indexPath.item]
             cell.configure(with: answer, isSelected: selectedAnswers.contains(answer))
+            
+            cell.accessibilityIdentifier = "answerCell_\(tag)_\(indexPath.item)"
+            cell.label.accessibilityIdentifier = "answerCellLabel_\(tag)_\(indexPath.item)"
+            
             return cell
         } else {
-            return collectionView.dequeueReusableCell(withReuseIdentifier: "PlusCell", for: indexPath)
+            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "PlusCell", for: indexPath)
+            cell.accessibilityIdentifier = "plusCell_\(tag)"
+            return cell
         }
     }
     

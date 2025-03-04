@@ -104,7 +104,7 @@ final class EmotionCell: UICollectionViewCell {
     
     func configure(with emotion: Emotion) {
         titleLabel.text = emotion.rawValue
-        
+        accessibilityIdentifier = "emotionCell_\(emotion.rawValue)"
         circleView.backgroundColor = emotion.color
         
         setNeedsLayout()

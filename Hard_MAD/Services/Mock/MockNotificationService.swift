@@ -42,3 +42,23 @@ actor MockNotificationService: NotificationServiceProtocol {
         notificationsEnabled = enabled
     }
 }
+
+extension MockNotificationService {
+    func configureForUITesting() async {
+        notifications = [
+            NotificationTime(time: "09:00"),
+            NotificationTime(time: "12:30"),
+            NotificationTime(time: "18:45")
+        ]
+
+        notificationsEnabled = true
+
+        if ProcessInfo.processInfo.environment["UI_TEST_NOTIFICATIONS_ENABLED"] == "false" {
+            notificationsEnabled = false
+        }
+
+        if ProcessInfo.processInfo.environment["UI_TEST_EMPTY_NOTIFICATIONS"] == "true" {
+            notifications = []
+        }
+    }
+}

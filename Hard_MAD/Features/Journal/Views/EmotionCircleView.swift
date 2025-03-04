@@ -86,6 +86,8 @@ final class EmotionCircleView: UIView {
         
         addSubview(addButton)
         addSubview(addLabel)
+        addButton.accessibilityIdentifier = "newEntryButton"
+
         
         NSLayoutConstraint.activate([
             rotationContainerView.centerXAnchor.constraint(equalTo: centerXAnchor),

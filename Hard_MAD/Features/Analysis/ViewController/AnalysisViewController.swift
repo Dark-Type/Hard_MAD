@@ -38,6 +38,13 @@ final class AnalysisViewController: UIViewController {
         dotsView.delegate = self
         return dotsView
     }()
+
+    private lazy var emptyStateView: EmptyStateView = {
+        let view = EmptyStateView()
+        view.isHidden = true
+        view.translatesAutoresizingMaskIntoConstraints = false
+        return view
+    }()
     
     private let dailyEmotionsView = DailyEmotionsView()
     private let weeklyEmotionsView = WeeklyEmotionsView()
@@ -73,7 +80,21 @@ final class AnalysisViewController: UIViewController {
         setupBindings()
         loadData()
     }
-    
+
+    func setupAccessibilityIdentifiers() {
+        weekSelector.accessibilityIdentifier = "weekSelectorView"
+        scrollView.accessibilityIdentifier = "analysisScrollView"
+        contentStackView.accessibilityIdentifier = "contentStackView"
+        navigationDotsView.accessibilityIdentifier = "navigationDotsView"
+        activityIndicator.accessibilityIdentifier = "analysisActivityIndicator"
+        emptyStateView.accessibilityIdentifier = "emptyStateView"
+               
+        dailyEmotionsView.accessibilityIdentifier = "dailyEmotionsView"
+        weeklyEmotionsView.accessibilityIdentifier = "weeklyEmotionsView"
+        frequentEmotionsView.accessibilityIdentifier = "frequentEmotionsView"
+        timeOfDayMoodView.accessibilityIdentifier = "timeOfDayMoodView"
+    }
+
     private func setupUI() {
         view.backgroundColor = .black
         
@@ -91,6 +112,9 @@ final class AnalysisViewController: UIViewController {
         
         view.addSubview(activityIndicator)
         activityIndicator.translatesAutoresizingMaskIntoConstraints = false
+        
+        view.addSubview(emptyStateView)
+        emptyStateView.translatesAutoresizingMaskIntoConstraints = false
         
         for sectionView in sectionViews {
             contentStackView.addArrangedSubview(sectionView)
@@ -120,10 +144,16 @@ final class AnalysisViewController: UIViewController {
             navigationDotsView.centerYAnchor.constraint(equalTo: view.centerYAnchor),
             navigationDotsView.widthAnchor.constraint(equalToConstant: 50),
             navigationDotsView.heightAnchor.constraint(equalToConstant: 150),
+            
+            emptyStateView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            emptyStateView.centerYAnchor.constraint(equalTo: view.centerYAnchor),
+            emptyStateView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
+            emptyStateView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
                                      
             activityIndicator.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             activityIndicator.centerYAnchor.constraint(equalTo: view.centerYAnchor)
         ])
+        setupAccessibilityIdentifiers()
     }
 
     private func setupBindings() {
@@ -139,6 +169,17 @@ final class AnalysisViewController: UIViewController {
             .store(in: &cancellables)
         
         viewModel.$weeks
+            .receive(on: RunLoop.main)
+            .sink { [weak self] weeks in
+                guard let self = self else { return }
+                let isEmpty = weeks.isEmpty
+                self.emptyStateView.isHidden = !isEmpty
+                self.scrollView.isHidden = isEmpty
+                self.navigationDotsView.isHidden = isEmpty
+            }
+            .store(in: &cancellables)
+
+        viewModel.$weeks
             .combineLatest(viewModel.$currentWeekIndex)
             .receive(on: RunLoop.main)
             .sink { [weak self] weeks, selectedIndex in
@@ -146,7 +187,6 @@ final class AnalysisViewController: UIViewController {
                 self.weekSelector.configure(with: weeks, selectedIndex: selectedIndex)
             }
             .store(in: &cancellables)
-        
         viewModel.$currentWeekData
             .receive(on: RunLoop.main)
             .sink { [weak self] weekData in

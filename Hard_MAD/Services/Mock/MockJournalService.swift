@@ -90,3 +90,48 @@ extension JournalRecord {
         self.createdAt = createdAt
     }
 }
+
+extension MockJournalService {
+    func configureForUITesting() async {
+        await setupMockDataForUITesting()
+    }
+    
+    private func setupMockDataForUITesting() async {
+        if ProcessInfo.processInfo.environment["UI_TEST_JOURNAL_EMPTY"] == "true" {
+            records = []
+        } else {
+            records = [
+                JournalRecord(
+                    emotion: .happy,
+                    answer0: "Work",
+                    answer1: "Friends",
+                    answer2: "Office"
+                ),
+                JournalRecord(
+                    emotion: .productivity,
+                    answer0: "Project completion",
+                    answer1: "Colleagues",
+                    answer2: "Office"
+                ),
+                JournalRecord(
+                    emotion: .anxious,
+                    answer0: "Meeting",
+                    answer1: "Boss",
+                    answer2: "Conference room"
+                ),
+                JournalRecord(
+                    emotion: .chill,
+                    answer0: "Relaxation",
+                    answer1: "Family",
+                    answer2: "Home"
+                ),
+                JournalRecord(
+                    emotion: .burnout,
+                    answer0: "Overwork",
+                    answer1: "Alone",
+                    answer2: "Office"
+                )
+            ]
+        }
+    }
+}

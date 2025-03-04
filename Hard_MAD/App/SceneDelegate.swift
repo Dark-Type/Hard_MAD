@@ -10,6 +10,7 @@ import UIKit
 final class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     var window: UIWindow?
     private var appCoordinator: AppCoordinator?
+    private var uiTestingCoordinator: UITestingCoordinator?
 
     func scene(
         _ scene: UIScene,
@@ -21,16 +22,29 @@ final class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         else {
             return
         }
+
         let window = UIWindow(windowScene: windowScene)
         self.window = window
-        Task { @MainActor in
+        if CommandLine.arguments.contains("--UITesting") {
+            print("🧪 Starting in UI Testing mode")
 
-            let appCoordinator = AppCoordinator(
-                window: window,
-                container: appDelegate.container
-            )
-            self.appCoordinator = appCoordinator
-            await appCoordinator.start()
+            Task {
+                let uiTestingCoordinator = UITestingCoordinator(
+                    window: window,
+                    container: appDelegate.container
+                )
+                self.uiTestingCoordinator = uiTestingCoordinator
+                await uiTestingCoordinator.start()
+            }
+        } else {
+            Task { @MainActor in
+                let appCoordinator = AppCoordinator(
+                    window: window,
+                    container: appDelegate.container
+                )
+                self.appCoordinator = appCoordinator
+                await appCoordinator.start()
+            }
         }
     }
 }

@@ -59,6 +59,7 @@ class TimePickerViewController: UIViewController {
         super.viewDidLoad()
         setupUI()
         setupActions()
+        setupAccessibilityIdentifiers()
     }
     
     // MARK: - UI Setup
@@ -90,6 +91,15 @@ class TimePickerViewController: UIViewController {
             saveButton.widthAnchor.constraint(equalTo: containerView.widthAnchor, multiplier: 0.9),
             saveButton.heightAnchor.constraint(equalToConstant: 56)
         ])
+    }
+    
+    private func setupAccessibilityIdentifiers() {
+        view.accessibilityIdentifier = "timePickerRootView"
+        containerView.accessibilityIdentifier = "timePickerContainerView"
+        
+        titleLabel.accessibilityIdentifier = "timePickerTitleLabel"
+        datePicker.accessibilityIdentifier = "timePickerDatePicker"
+        saveButton.accessibilityIdentifier = "timePickerSaveButton"
     }
 
     private func setupActions() {

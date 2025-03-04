@@ -183,6 +183,13 @@ final class RecordViewController: UIViewController {
         view.addSubview(saveButton)
         view.addSubview(loadingIndicator)
         
+        backButton.accessibilityIdentifier = "backButton"
+        titleLabel.accessibilityIdentifier = "recordTitleLabel"
+        journalEntryCell.accessibilityIdentifier = "journalEntryCell"
+        saveButton.accessibilityIdentifier = "saveButton"
+        loadingIndicator.accessibilityIdentifier = "loadingIndicator"
+        mainStackView.accessibilityIdentifier = "questionsStackView"
+        
         mainStackView.axis = .vertical
         mainStackView.spacing = 24
         mainStackView.distribution = .fill
@@ -235,6 +242,8 @@ final class RecordViewController: UIViewController {
             let questionView = QuestionView(question: question) { [weak self] answer in
                 self?.viewModel.setAnswer(answer, forQuestion: index)
             }
+            
+            questionView.tag = index
             
             questionView.translatesAutoresizingMaskIntoConstraints = false
             

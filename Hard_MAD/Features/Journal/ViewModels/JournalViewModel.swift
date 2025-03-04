@@ -40,7 +40,7 @@ final class JournalViewModel: BaseViewModel {
             try await withLoading { [self] in
                 await journalService.saveRecord(record)
                 
-                self.records.append(record)
+                self.records = [record] + self.records
                 try await self.loadStatistics()
                 try await self.loadTodayEmotions()
             }
