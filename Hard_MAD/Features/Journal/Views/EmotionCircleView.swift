@@ -88,7 +88,6 @@ final class EmotionCircleView: UIView {
         addSubview(addLabel)
         addButton.accessibilityIdentifier = "newEntryButton"
 
-        
         NSLayoutConstraint.activate([
             rotationContainerView.centerXAnchor.constraint(equalTo: centerXAnchor),
             rotationContainerView.topAnchor.constraint(equalTo: topAnchor),
@@ -104,7 +103,7 @@ final class EmotionCircleView: UIView {
             addLabel.topAnchor.constraint(equalTo: addButton.bottomAnchor, constant: 8),
             addLabel.bottomAnchor.constraint(lessThanOrEqualTo: rotationContainerView.bottomAnchor, constant: -20),
             
-            rotationContainerView.bottomAnchor.constraint(equalTo: bottomAnchor)
+            rotationContainerView.bottomAnchor.constraint(equalTo: bottomAnchor),
         ])
         
         addButton.addTarget(self, action: #selector(addButtonTapped), for: .touchUpInside)
@@ -167,8 +166,7 @@ final class EmotionCircleView: UIView {
         defaultGradientLayer.frame = rotationContainerView.bounds
         
         defaultGradientLayer.colors = [
-            UIColor(red: 102 / 255, green: 102 / 255, blue: 102 / 255, alpha: 1.0).cgColor,
-            UIColor(red: 26 / 255, green: 26 / 255, blue: 26 / 255, alpha: 1.0).cgColor
+            UIColor(red: 26 / 255, green: 26 / 255, blue: 26 / 255, alpha: 0).cgColor, UIColor(red: 102 / 255, green: 102 / 255, blue: 102 / 255, alpha: 1.0).cgColor
         ]
         defaultGradientLayer.startPoint = CGPoint(x: 0, y: 0)
         defaultGradientLayer.endPoint = CGPoint(x: 1, y: 1)
@@ -276,7 +274,7 @@ final class EmotionCircleView: UIView {
         let rotationAnimation = CABasicAnimation(keyPath: "transform.rotation")
         rotationAnimation.fromValue = 0
         rotationAnimation.toValue = 2 * Double.pi
-        rotationAnimation.duration = 10
+        rotationAnimation.duration = 5
         rotationAnimation.repeatCount = .infinity
         rotationAnimation.timingFunction = CAMediaTimingFunction(name: .linear)
         

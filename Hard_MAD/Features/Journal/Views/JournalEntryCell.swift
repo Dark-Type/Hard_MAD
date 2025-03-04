@@ -150,7 +150,7 @@ final class JournalEntryCell: UITableViewCell {
         
         lastEmotionColor = emotionColor
         
-        emotionLabel.text = record.emotion.rawValue
+        emotionLabel.text = record.emotion.rawValue.lowercased()
         emotionLabel.textColor = emotionColor
         dateLabel.text = formatDate(record.createdAt)
         
@@ -184,10 +184,49 @@ final class JournalEntryCell: UITableViewCell {
     }
     
     private func formatDate(_ date: Date) -> String {
-        let formatter = DateFormatter()
-        formatter.dateStyle = .medium
-        formatter.timeStyle = .short
-        return formatter.string(from: date)
+        let now = Date()
+        let calendar = Calendar.current
+        
+        if calendar.isDateInToday(date) {
+            let timeFormatter = DateFormatter()
+            timeFormatter.dateFormat = "HH:mm"
+            return "сегодня, \(timeFormatter.string(from: date))"
+        }
+        
+        if calendar.isDateInYesterday(date) {
+            let timeFormatter = DateFormatter()
+            timeFormatter.dateFormat = "HH:mm"
+            return "вчера, \(timeFormatter.string(from: date))"
+        }
+        
+        let currentWeekComponents = calendar.dateComponents([.yearForWeekOfYear, .weekOfYear], from: now)
+        let dateWeekComponents = calendar.dateComponents([.yearForWeekOfYear, .weekOfYear], from: date)
+        
+        if currentWeekComponents.yearForWeekOfYear == dateWeekComponents.yearForWeekOfYear &&
+            currentWeekComponents.weekOfYear == dateWeekComponents.weekOfYear
+        {
+        
+            let dateFormatter = DateFormatter()
+            dateFormatter.dateFormat = "EEEE, HH:mm"
+            dateFormatter.locale = Locale(identifier: "ru_RU")
+            return dateFormatter.string(from: date)
+        }
+        
+        let nowComponents = calendar.dateComponents([.year], from: now)
+        let dateComponents = calendar.dateComponents([.year], from: date)
+        
+        if nowComponents.year == dateComponents.year {
+    
+            let dateFormatter = DateFormatter()
+            dateFormatter.dateFormat = "d MMMM, HH:mm"
+            dateFormatter.locale = Locale(identifier: "ru_RU")
+            return dateFormatter.string(from: date)
+        }
+        
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "d MMMM yyyy, HH:mm"
+        dateFormatter.locale = Locale(identifier: "ru_RU")
+        return dateFormatter.string(from: date)
     }
     
     override func prepareForReuse() {

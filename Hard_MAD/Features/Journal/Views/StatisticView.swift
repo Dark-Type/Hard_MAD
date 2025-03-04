@@ -125,7 +125,7 @@ final class StatisticView: UIView {
     
     override var intrinsicContentSize: CGSize {
         guard let attributedText = label.attributedText else {
-            return CGSize(width: 100, height: 40)
+            return CGSize(width: 100, height: 30)
         }
         
         let textSize = attributedText.size()
@@ -133,7 +133,7 @@ final class StatisticView: UIView {
         let width = textSize.width + 40
         let height = textSize.height + 12
         
-        return CGSize(width: max(width, 100), height: max(height, 40))
+        return CGSize(width: max(width, 100), height: max(height, 30))
     }
     
     override func layoutSubviews() {

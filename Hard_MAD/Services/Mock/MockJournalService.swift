@@ -70,8 +70,8 @@ actor MockJournalService: JournalServiceProtocol {
         let twoDaysAgo = calendar.date(byAdding: .day, value: -2, to: today)!
         
         records = [
-            JournalRecord(emotion: .happy, note: "", createdAt: today),
-            JournalRecord(emotion: .productivity, note: "", createdAt: today),
+            JournalRecord(emotion: .happy, note: "", createdAt: yesterday),
+            JournalRecord(emotion: .productivity, note: "", createdAt: yesterday),
             JournalRecord(emotion: .anxious, note: "", createdAt: yesterday),
             JournalRecord(emotion: .chill, note: "", createdAt: yesterday),
             JournalRecord(emotion: .burnout, note: "", createdAt: twoDaysAgo),
