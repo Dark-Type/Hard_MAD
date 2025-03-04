@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import UIKit
 
 actor MockAuthService: AuthServiceProtocol {
     private var isLoggedIn = false
@@ -60,6 +61,11 @@ actor MockAuthService: AuthServiceProtocol {
     
     func getCurrentUser() async -> UserProfile? {
         guard isLoggedIn else { return nil }
+        
+        if let testName = UserDefaults.standard.string(forKey: "testUserFullName") {
+            return UserProfile(fullName: testName, image: UIImage(named: "defaultProfileImage"))
+        }
+        
         return UserProfile.mock
     }
 

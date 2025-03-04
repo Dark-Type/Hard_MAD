@@ -48,6 +48,7 @@ final class SettingsViewController: UIViewController {
         label.font = .appFont(AppFont.bold, size: 24)
         label.textAlignment = .center
         label.textColor = .white
+        label.numberOfLines = 0
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()

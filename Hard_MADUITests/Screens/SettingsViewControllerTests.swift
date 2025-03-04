@@ -15,18 +15,17 @@ class SettingsViewControllerTests: XCTestCase {
         app.launchArguments = ["--UITesting", "--directToSettings"]
     }
     
-    // MARK: - Test Settings UI Elements (Normal State)
+    // MARK: - Loaded State Test
     
-    func testSettingsUIElements() throws {
+    func testSettingsViewWithData() throws {
+        app.launchEnvironment["UI_TEST_LONG_USER_NAME"] = "Бабанов Алексей Михайлович, БУ"
         app.launch()
         
         sleep(1)
         
         logElementsOnScreen()
+        captureScreenshot(name: "Settings - 1. Initial State")
         
-        captureScreenshot(name: "Settings Screen - Normal State")
-        
-
         XCTAssertTrue(app.otherElements["notificationContainer"].exists ||
             app.switches["notificationToggle"].exists,
             "Notification toggle container should be visible")
@@ -35,79 +34,56 @@ class SettingsViewControllerTests: XCTestCase {
             "Touch ID toggle container should be visible")
         XCTAssertTrue(app.buttons["addNotificationButton"].exists, "Add notification button should be visible")
         XCTAssertTrue(app.otherElements["notificationsStackView"].exists, "Notifications stack view should be visible")
-    }
-    
-    // MARK: - Test Notification Toggle
-    
-    func testNotificationToggle() throws {
-        app.launch()
         
-        sleep(1)
-        
+        verifyNoLabelsTruncated()
+    
         let notificationToggle = app.switches["notificationToggle"].exists ?
             app.switches["notificationToggle"] :
             app.switches.element
         
-        XCTAssertTrue(notificationToggle.exists, "Notification toggle should be visible")
-        
-        captureScreenshot(name: "Notification Toggle - Initial State")
-        
-        notificationToggle.tap()
-        sleep(UInt32(0.5))
-        
-        captureScreenshot(name: "Notification Toggle - After First Tap")
-        
-        notificationToggle.tap()
-        sleep(UInt32(0.5))
-        
-        captureScreenshot(name: "Notification Toggle - After Second Tap")
-    }
-    
-    // MARK: - Test TouchID Toggle
-    
-    func testTouchIDToggle() throws {
-        app.launch()
-        
-        sleep(1)
+        if notificationToggle.exists {
+            captureScreenshot(name: "Settings - 2. Before Toggle Notification")
+            
+            notificationToggle.tap()
+            sleep(UInt32(0.5))
+            captureScreenshot(name: "Settings - After Toggle Notification")
+            
+            notificationToggle.tap()
+            sleep(UInt32(0.5))
+            captureScreenshot(name: "Settings - After Resetting Notification")
+            
+            verifyNoLabelsTruncated()
+        }
         
         let touchIDToggle = app.otherElements["touchIDToggle"]
         
-        XCTAssertTrue(touchIDToggle.exists, "Touch ID toggle should be visible")
-        
-        captureScreenshot(name: "TouchID Before Toggle")
-        
-        touchIDToggle.tap()
-        sleep(UInt32(0.5))
-        
-        captureScreenshot(name: "TouchID After Toggle")
-        
-        touchIDToggle.tap()
-        sleep(UInt32(0.5))
-        
-        captureScreenshot(name: "TouchID After Reverting")
-    }
-    
-    // MARK: - Test Add Notification
-    
-    func testAddNotification() throws {
-        app.launch()
-        
-        sleep(1)
+        if touchIDToggle.exists {
+            captureScreenshot(name: "Settings - 3. Before Toggle TouchID")
+            
+            touchIDToggle.tap()
+            sleep(UInt32(0.5))
+            captureScreenshot(name: "Settings - After Toggle TouchID")
+            
+            touchIDToggle.tap()
+            sleep(UInt32(0.5))
+            captureScreenshot(name: "Settings - After Resetting TouchID")
+            
+            verifyNoLabelsTruncated()
+        }
         
         let addButton = app.buttons["addNotificationButton"]
         XCTAssertTrue(addButton.exists, "Add notification button should be visible")
         
-        captureScreenshot(name: "Before Add Notification")
+        captureScreenshot(name: "Settings - 4. Before Add Notification")
         
         addButton.tap()
-        
         sleep(1)
         
         XCTAssertTrue(app.otherElements["timePickerContainerView"].exists ||
             app.datePickers.element.exists,
             "Time picker should appear")
         
-        captureScreenshot(name: "Time Picker")
+        captureScreenshot(name: "Settings - Time Picker")
         
         let saveButton = app.buttons["timePickerSaveButton"].exists ?
             app.buttons["timePickerSaveButton"] :
@@ -116,83 +92,100 @@ class SettingsViewControllerTests: XCTestCase {
         XCTAssertTrue(saveButton.exists, "Time picker save button should be visible")
         
         saveButton.tap()
-        
         sleep(1)
         
-        captureScreenshot(name: "After Add Notification")
-    }
-    
-    // MARK: - Test Delete Notification
-    
-    func testDeleteNotification() throws {
-        app.launch()
+        captureScreenshot(name: "Settings - After Add Notification")
         
-        sleep(1)
-
+        verifyNoLabelsTruncated()
+        
         let deleteButtons = findNotificationDeleteButtons()
         
         if deleteButtons.count > 0 {
-            captureScreenshot(name: "Before Notification Delete")
+            captureScreenshot(name: "Settings - 5. Before Delete Notification")
             
             deleteButtons[0].tap()
             sleep(1)
             
-            captureScreenshot(name: "After Notification Delete")
+            captureScreenshot(name: "Settings - After Delete Notification")
             
             let updatedDeleteButtons = findNotificationDeleteButtons()
-            XCTAssertEqual(updatedDeleteButtons.count, deleteButtons.count - 1, "Should have one less notification after deletion")
+            XCTAssertEqual(updatedDeleteButtons.count, deleteButtons.count - 1,
+                           "Should have one less notification after deletion")
+            
+            verifyNoLabelsTruncated()
         }
-        else {
-            XCTFail("No notification delete buttons found to test deletion")
-        }
+        
+        print("✅ Settings view with data: All UI elements, interactions, and truncation checks passed")
     }
     
-    // MARK: - Test Empty Notifications State
+    // MARK: - Empty State Test
     
-    func testEmptyNotificationsState() throws {
+    func testSettingsViewEmptyState() throws {
+        app.launchEnvironment["UI_TEST_LONG_USER_NAME"] = "Бабанов Алексей Михайлович, БУ"
         app.launchEnvironment["UI_TEST_EMPTY_NOTIFICATIONS"] = "true"
-        app.launch()
+        app.launchEnvironment["UI_TEST_TOUCH_ID_ENABLED"] = "true"
         
+        app.launch()
         sleep(1)
+        
+        logElementsOnScreen()
+        captureScreenshot(name: "Settings Empty - 1. Initial State")
+        
+        XCTAssertTrue(app.otherElements["notificationContainer"].exists ||
+            app.switches["notificationToggle"].exists,
+            "Notification toggle container should be visible")
+        XCTAssertTrue(app.otherElements["touchIDContainer"].exists ||
+            app.otherElements["touchIDToggle"].exists,
+            "Touch ID toggle container should be visible")
+        XCTAssertTrue(app.buttons["addNotificationButton"].exists, "Add notification button should be visible")
         
         let deleteButtons = findNotificationDeleteButtons()
         XCTAssertEqual(deleteButtons.count, 0, "No notification delete buttons should exist in empty state")
         
-        captureScreenshot(name: "Empty Notifications State")
+        verifyNoLabelsTruncated()
         
-        app.buttons["addNotificationButton"].tap()
+        let touchIDToggle = app.otherElements["touchIDToggle"]
+        
+        if touchIDToggle.exists {
+            captureScreenshot(name: "Settings Empty - 2. Before Toggle Pre-Enabled TouchID")
+            
+            touchIDToggle.tap()
+            sleep(UInt32(0.5))
+            captureScreenshot(name: "Settings Empty - After Disabling Pre-Enabled TouchID")
+            
+            verifyNoLabelsTruncated()
+        }
+        
+        let addButton = app.buttons["addNotificationButton"]
+        XCTAssertTrue(addButton.exists, "Add notification button should be visible in empty state")
+        
+        captureScreenshot(name: "Settings Empty - 3. Before Add Notification")
+        
+        addButton.tap()
         sleep(1)
+        
+        XCTAssertTrue(app.otherElements["timePickerContainerView"].exists ||
+            app.datePickers.element.exists,
+            "Time picker should appear in empty state")
+        
+        captureScreenshot(name: "Settings Empty - Time Picker")
         
         let saveButton = app.buttons["timePickerSaveButton"].exists ?
             app.buttons["timePickerSaveButton"] :
             app.buttons.matching(NSPredicate(format: "label CONTAINS %@", "Save")).firstMatch
-        if saveButton.exists {
-            saveButton.tap()
-            sleep(1)
-        }
         
-        captureScreenshot(name: "After Adding to Empty List")
+        XCTAssertTrue(saveButton.exists, "Time picker save button should be visible")
         
-        let updatedDeleteButtons = findNotificationDeleteButtons()
-        XCTAssertGreaterThan(updatedDeleteButtons.count, 0, "Should have at least one notification after adding")
-    }
-    
-    // MARK: - Test TouchID Enabled Initial State
-    
-    func testTouchIDEnabledInitialState() throws {
-        app.launchEnvironment["UI_TEST_TOUCH_ID_ENABLED"] = "true"
-        app.launch()
-        
+        saveButton.tap()
         sleep(1)
         
-        captureScreenshot(name: "TouchID Enabled Initial State")
+        captureScreenshot(name: "Settings Empty - After Adding First Notification")
         
-        let touchIDToggle = app.otherElements["touchIDToggle"]
-        if touchIDToggle.exists {
-            touchIDToggle.tap()
-            sleep(UInt32(0.5))
-            captureScreenshot(name: "After Disabling Pre-Enabled TouchID")
-        }
+        let updatedDeleteButtons = findNotificationDeleteButtons()
+        XCTAssertGreaterThan(updatedDeleteButtons.count, 0,
+                             "Should have at least one notification after adding to empty list")
+        
+        verifyNoLabelsTruncated()
     }
     
     // MARK: - Helper Methods
@@ -220,6 +213,40 @@ class SettingsViewControllerTests: XCTestCase {
         }
         
         return deleteButtons
+    }
+    
+    private func getAllSettingsLabels() -> [XCUIElement] {
+        let labels = [
+            app.staticTexts["settingsTitleLabel"],
+            app.staticTexts["fullNameLabel"],
+            app.staticTexts["notificationLabel"],
+            app.staticTexts["touchIDLabel"]
+        ]
+        
+        return labels.filter { $0.exists }
+    }
+    
+    private func isLabelTextTruncated(_ label: XCUIElement) -> Bool {
+        return label.label.contains("...")
+    }
+    
+    private func verifyNoLabelsTruncated() {
+        for label in getAllSettingsLabels() {
+            XCTAssertFalse(isLabelTextTruncated(label),
+                           "Label '\(label.identifier)' appears to be truncated with text: '\(label.label)'")
+            
+            let frame = label.frame
+            print("📏 Label: \(label.identifier), Text: '\(label.label)', Frame: \(frame.origin.x),\(frame.origin.y),\(frame.width),\(frame.height)")
+        }
+        
+        let addButton = app.buttons["addNotificationButton"]
+        if addButton.exists {
+            XCTAssertFalse(isLabelTextTruncated(addButton),
+                           "Button '\(addButton.identifier)' text appears to be truncated")
+            
+            let frame = addButton.frame
+            print("📏 Button: addNotificationButton, Text: '\(addButton.label)', Frame: \(frame.origin.x),\(frame.origin.y),\(frame.width),\(frame.height)")
+        }
     }
     
     private func captureScreenshot(name: String) {

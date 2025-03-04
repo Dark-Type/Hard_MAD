@@ -92,6 +92,9 @@ final class UITestingCoordinator: BaseCoordinator {
         let mockAnalysisService = MockAnalysisService()
         let mockNotificationService = MockNotificationService()
         
+        if let longUserName = ProcessInfo.processInfo.environment["UI_TEST_LONG_USER_NAME"] {
+            UserDefaults.standard.set(longUserName, forKey: "testUserFullName")
+        }
         let successString = ProcessInfo.processInfo.environment["UI_TEST_LOGIN_SUCCESS"]
         let errorString = ProcessInfo.processInfo.environment["UI_TEST_LOGIN_ERROR"]
         let shouldSucceed = successString == "true"
@@ -391,7 +394,6 @@ final class UITestingCoordinator: BaseCoordinator {
         }
         
         if let mockNotificationService = notificationService as? MockNotificationService {
-            
             await mockNotificationService.configureForUITesting()
         }
         
