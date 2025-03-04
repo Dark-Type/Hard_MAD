@@ -46,7 +46,7 @@ final class AnalysisViewController: UIViewController {
         return view
     }()
     
-    private let dailyEmotionsView = DailyEmotionsView()
+    private let dailyEmotionsView = WeeklyCategoriesView()
     private let weeklyEmotionsView = WeeklyEmotionsView()
     private let frequentEmotionsView = MostFrequentEmotionsView()
     private let timeOfDayMoodView = MoodTimeOfDayView()
@@ -116,12 +116,25 @@ final class AnalysisViewController: UIViewController {
         view.addSubview(emptyStateView)
         emptyStateView.translatesAutoresizingMaskIntoConstraints = false
         
+        if let frequentIndex = sectionViews.firstIndex(where: { $0 === frequentEmotionsView }),
+           frequentIndex < sectionViews.count - 1
+        {
+            contentStackView.setCustomSpacing(80, after: frequentEmotionsView)
+        }
         for sectionView in sectionViews {
             contentStackView.addArrangedSubview(sectionView)
             
-            sectionView.heightAnchor.constraint(equalTo: scrollView.frameLayoutGuide.heightAnchor, multiplier: 0.8).isActive = true
+            switch sectionView {
+                case is WeeklyEmotionsView:
+                    sectionView.heightAnchor.constraint(greaterThanOrEqualTo: scrollView.frameLayoutGuide.heightAnchor, multiplier: 0.5).isActive = true
+                case is MoodTimeOfDayView:
+                    sectionView.heightAnchor.constraint(greaterThanOrEqualTo: scrollView.frameLayoutGuide.heightAnchor).isActive = true
+            case is MoodTimeOfDayView:
+                sectionView.heightAnchor.constraint(greaterThanOrEqualTo: scrollView.frameLayoutGuide.heightAnchor).isActive = true
+                default:
+                    sectionView.heightAnchor.constraint(equalTo: scrollView.frameLayoutGuide.heightAnchor, multiplier: 0.8).isActive = true
+            }
         }
-        
         NSLayoutConstraint.activate([
             view.safeAreaLayoutGuide.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             weekSelector.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
@@ -212,27 +225,17 @@ final class AnalysisViewController: UIViewController {
     }
     
     private func updateUI(with weekData: AnalysisWeekData) {
-        let today = Calendar.current.startOfDay(for: Date())
-
-        var todaysRecords: [JournalRecord] = []
-        var todayDate = today
-        
-        if let records = weekData.dailyEmotions[today], !records.isEmpty {
-            todaysRecords = records
-        } else {
-            let sortedDates = weekData.dailyEmotions.keys.sorted(by: >)
-            if let mostRecentDate = sortedDates.first,
-               let records = weekData.dailyEmotions[mostRecentDate],
-               !records.isEmpty
-            {
-                todaysRecords = records
-                todayDate = mostRecentDate
-            }
+        var allWeekRecords: [JournalRecord] = []
+           
+        for (_, records) in weekData.dailyEmotions {
+            allWeekRecords.append(contentsOf: records)
         }
         
-        dailyEmotionsView.configure(with: todaysRecords, forDate: todayDate)
+        dailyEmotionsView.configure(with: allWeekRecords, forDate: Date())
         
         weeklyEmotionsView.configure(with: weekData.dailyEmotions)
+         
+        weeklyEmotionsView.adjustHeightBasedOnContent()
         
         frequentEmotionsView.configure(with: weekData.mostFrequentEmotions)
         

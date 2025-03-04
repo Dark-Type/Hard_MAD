@@ -61,8 +61,9 @@ final class MostFrequentEmotionsView: UIView {
             titleLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 16),
             
             tableView.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 4),
-            tableView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 16),
-            tableView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -16)
+            tableView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 8),
+            tableView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -8),
+            tableView.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -40)
         ])
         layer.cornerRadius = 16
         clipsToBounds = true
@@ -101,6 +102,7 @@ final class MostFrequentEmotionsView: UIView {
         static var reuseIdentifier: String { return String(describing: EmotionFrequencyCell.self) }
         
         private var gradientLayer: CAGradientLayer?
+        private var fixedBarStartPosition: CGFloat = 180
         
         private let emotionImageView: UIImageView = {
             let imageView = UIImageView()
@@ -112,6 +114,8 @@ final class MostFrequentEmotionsView: UIView {
             let label = UILabel()
             label.font = UIFont.appFont(AppFont.regular, size: 16)
             label.textColor = .white
+            label.lineBreakMode = .byTruncatingTail
+            label.setContentCompressionResistancePriority(.defaultHigh, for: .horizontal)
             return label
         }()
         
@@ -149,48 +153,61 @@ final class MostFrequentEmotionsView: UIView {
         
         override func layoutSubviews() {
             super.layoutSubviews()
+                
+            let maxNameLabelWidth = fixedBarStartPosition - 8 - 30 - 6 - 8
+                
+            if let existingConstraint = nameLabel.constraints.first(where: { $0.firstAttribute == .width }) {
+                existingConstraint.constant = maxNameLabelWidth
+            } else {
+                nameLabel.widthAnchor.constraint(lessThanOrEqualToConstant: maxNameLabelWidth).isActive = true
+            }
+                
             gradientLayer?.frame = barView.bounds
         }
 
         private func setupUI() {
             backgroundColor = .clear
             selectionStyle = .none
-            
+               
             contentView.addSubview(emotionImageView)
             contentView.addSubview(nameLabel)
             contentView.addSubview(barContainer)
             barContainer.addSubview(barView)
             barView.addSubview(countLabel)
-            
+               
             emotionImageView.translatesAutoresizingMaskIntoConstraints = false
             nameLabel.translatesAutoresizingMaskIntoConstraints = false
             barContainer.translatesAutoresizingMaskIntoConstraints = false
             barView.translatesAutoresizingMaskIntoConstraints = false
             countLabel.translatesAutoresizingMaskIntoConstraints = false
-            
+               
             NSLayoutConstraint.activate([
-                emotionImageView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
+                emotionImageView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 8),
                 emotionImageView.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
                 emotionImageView.widthAnchor.constraint(equalToConstant: 30),
                 emotionImageView.heightAnchor.constraint(equalToConstant: 30),
-                
-                nameLabel.leadingAnchor.constraint(equalTo: emotionImageView.trailingAnchor, constant: 12),
+                   
+                nameLabel.leadingAnchor.constraint(equalTo: emotionImageView.trailingAnchor, constant: 6),
                 nameLabel.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
-                nameLabel.widthAnchor.constraint(equalToConstant: 120),
-                
-                barContainer.leadingAnchor.constraint(equalTo: nameLabel.trailingAnchor, constant: 16),
-                barContainer.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
+
+                barContainer.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: fixedBarStartPosition),
+                barContainer.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -4),
                 barContainer.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
                 barContainer.heightAnchor.constraint(equalToConstant: 40),
-                
+                   
                 barView.leadingAnchor.constraint(equalTo: barContainer.leadingAnchor),
                 barView.topAnchor.constraint(equalTo: barContainer.topAnchor),
                 barView.bottomAnchor.constraint(equalTo: barContainer.bottomAnchor),
-                
-                countLabel.leadingAnchor.constraint(equalTo: barView.leadingAnchor, constant: 15),
+                   
+                countLabel.leadingAnchor.constraint(equalTo: barView.leadingAnchor, constant: 10),
                 countLabel.centerYAnchor.constraint(equalTo: barView.centerYAnchor)
             ])
-            
+               
+            nameLabel.numberOfLines = 1
+            nameLabel.lineBreakMode = .byClipping
+            nameLabel.setContentCompressionResistancePriority(.required, for: .horizontal)
+            nameLabel.setContentHuggingPriority(.defaultHigh, for: .horizontal)
+               
             barWidthConstraint = barView.widthAnchor.constraint(equalToConstant: 0)
             barWidthConstraint?.isActive = true
         }
@@ -202,11 +219,16 @@ final class MostFrequentEmotionsView: UIView {
             nameLabel.text = emotion.rawValue
             countLabel.text = "\(count)"
             
-            let availableWidth = barContainer.bounds.width > 0 ? barContainer.bounds.width : totalWidth - 190
+            layoutIfNeeded()
             
+            let nameLabelWidth = nameLabel.intrinsicContentSize.width
+            let availableWidth = barContainer.bounds.width > 0 ?
+                barContainer.bounds.width :
+                totalWidth - (16 + 30 + 12 + nameLabelWidth + 16 + 16)
+                
             let minBarWidth: CGFloat = 60
-            let maxBarWidth: CGFloat = min(200, availableWidth - 10)
-            
+            let maxBarWidth: CGFloat = min(200, max(minBarWidth, availableWidth - 10))
+           
             if count == 1 && maxCount > 1 {
                 barWidthConstraint?.constant = minBarWidth
             } else {

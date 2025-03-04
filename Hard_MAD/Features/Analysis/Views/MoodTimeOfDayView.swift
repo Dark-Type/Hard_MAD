@@ -43,11 +43,11 @@ final class MoodTimeOfDayView: UIView {
         chartView.translatesAutoresizingMaskIntoConstraints = false
         
         NSLayoutConstraint.activate([
-            titleLabel.topAnchor.constraint(equalTo: topAnchor, constant: -25),
+            titleLabel.topAnchor.constraint(equalTo: topAnchor, constant: 16),
             titleLabel.leadingAnchor.constraint(equalTo: leadingAnchor),
             titleLabel.trailingAnchor.constraint(lessThanOrEqualTo: trailingAnchor, constant: -16),
                   
-            chartView.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 24),
+            chartView.topAnchor.constraint(equalTo: titleLabel.bottomAnchor),
             chartView.leadingAnchor.constraint(equalTo: leadingAnchor),
             chartView.trailingAnchor.constraint(equalTo: trailingAnchor),
             chartView.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -16)
@@ -96,7 +96,7 @@ final class MoodTimeOfDayView: UIView {
         
         let times = TimeOfDay.allCases
         let columnWidth = chartView.bounds.width / CGFloat(times.count)
-        let maxColumnHeight: CGFloat = 450
+        let maxColumnHeight: CGFloat = min(450, bounds.height * 0.65)
         let columnSpacing: CGFloat = 6
         
         for (index, time) in times.enumerated() {

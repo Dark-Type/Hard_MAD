@@ -85,6 +85,38 @@ final class WeeklyEmotionsView: UIView {
         
         dailyEmotions = sortedDays
         tableView.reloadData()
+        
+        adjustHeightIfNeeded()
+    }
+    
+    private func adjustHeightIfNeeded() {
+        tableView.layoutIfNeeded()
+        
+        var totalHeight: CGFloat = 0
+        for i in 0 ..< dailyEmotions.count {
+            let uniqueEmotionsCount = getUniqueEmotionsCount(for: dailyEmotions[i].records)
+            let rows = ceil(Double(uniqueEmotionsCount) / 3.0)
+            
+            let cellHeight: CGFloat = rows > 1 ? 80 * CGFloat(rows) : 80
+            totalHeight += cellHeight
+        }
+        
+        if let heightConstraint = tableView.constraints.first(where: { $0.firstAttribute == .height }) {
+            heightConstraint.constant = totalHeight
+        } else {
+            tableView.heightAnchor.constraint(equalToConstant: totalHeight).isActive = true
+        }
+        
+        setNeedsLayout()
+        layoutIfNeeded()
+    }
+    
+    private func getUniqueEmotionsCount(for records: [JournalRecord]) -> Int {
+        var uniqueEmotions: Set<Emotion> = []
+        for record in records {
+            uniqueEmotions.insert(record.emotion)
+        }
+        return uniqueEmotions.count
     }
 
     // MARK: - Day Emotions Cell
@@ -104,6 +136,7 @@ final class WeeklyEmotionsView: UIView {
             let label = UILabel()
             label.font = UIFont.appFont(AppFont.regular, size: 12)
             label.textColor = .white
+            label.textAlignment = .left
             return label
         }()
         
@@ -111,6 +144,7 @@ final class WeeklyEmotionsView: UIView {
             let label = UILabel()
             label.font = UIFont.appFont(AppFont.regular, size: 12)
             label.textColor = .white
+            label.textAlignment = .left
             return label
         }()
         
@@ -119,6 +153,7 @@ final class WeeklyEmotionsView: UIView {
             stackView.axis = .vertical
             stackView.spacing = 4
             stackView.distribution = .fillEqually
+            stackView.alignment = .center
             return stackView
         }()
         
@@ -126,6 +161,8 @@ final class WeeklyEmotionsView: UIView {
             let view = UIView()
             return view
         }()
+        
+        private var cellHeight: CGFloat = 80
         
         override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
             super.init(style: style, reuseIdentifier: reuseIdentifier)
@@ -156,20 +193,25 @@ final class WeeklyEmotionsView: UIView {
                 dateContainer.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
                 dateContainer.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 12),
                 dateContainer.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -12),
-                dateContainer.widthAnchor.constraint(equalToConstant: 90),
+                dateContainer.widthAnchor.constraint(equalToConstant: 70),
                 
-                emotionsStackView.leadingAnchor.constraint(equalTo: dateContainer.trailingAnchor, constant: 8),
+                emotionsStackView.centerXAnchor.constraint(equalTo: contentView.centerXAnchor),
                 emotionsStackView.topAnchor.constraint(greaterThanOrEqualTo: contentView.topAnchor, constant: 8),
                 emotionsStackView.bottomAnchor.constraint(lessThanOrEqualTo: contentView.bottomAnchor, constant: -8),
                 emotionsStackView.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
-                emotionsStackView.widthAnchor.constraint(greaterThanOrEqualToConstant: 80),
+                emotionsStackView.widthAnchor.constraint(greaterThanOrEqualToConstant: 70),
                 
-                emotionImagesView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16),
+                emotionImagesView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -12),
                 emotionImagesView.widthAnchor.constraint(equalToConstant: 108),
                 emotionImagesView.heightAnchor.constraint(equalToConstant: 70),
-                emotionImagesView.leadingAnchor.constraint(greaterThanOrEqualTo: emotionsStackView.trailingAnchor, constant: 8),
-                emotionImagesView.centerYAnchor.constraint(equalTo: emotionsStackView.centerYAnchor)
+                emotionImagesView.leadingAnchor.constraint(greaterThanOrEqualTo: emotionsStackView.trailingAnchor, constant: 4),
+                emotionImagesView.centerYAnchor.constraint(equalTo: contentView.centerYAnchor)
             ])
+            
+            dayOfWeekLabel.adjustsFontSizeToFitWidth = true
+            dayOfWeekLabel.minimumScaleFactor = 0.7
+            dateLabel.adjustsFontSizeToFitWidth = true
+            dateLabel.minimumScaleFactor = 0.7
         }
         
         func configure(with date: Date, records: [JournalRecord]) {
@@ -226,38 +268,47 @@ final class WeeklyEmotionsView: UIView {
                     emotionsStackView.addArrangedSubview(nameLabel)
                 }
                 
-                let gridSize = min(4, uniqueEmotions.count)
-                let columns = min(3, gridSize)
-                let rows = (uniqueEmotions.count + columns - 1) / columns
-                let imageSize: CGFloat = 30
-                let spacing: CGFloat = 6
-                
-                let totalGridHeight = CGFloat(rows) * imageSize + CGFloat(rows - 1) * spacing
-                
-                for i in 0 ..< uniqueEmotions.count {
-                    let row = i / columns
-                    let col = i % columns
-                    
-                    let emotion = uniqueEmotions[i]
-                    
-                    let imageView = UIImageView(image: emotion.image)
-                    imageView.contentMode = .scaleAspectFit
-                    imageView.layer.cornerRadius = imageSize / 2
-                    imageView.clipsToBounds = true
-                    emotionImagesView.addSubview(imageView)
-                    
-                    imageView.translatesAutoresizingMaskIntoConstraints = false
-                    NSLayoutConstraint.activate([
-                        imageView.widthAnchor.constraint(equalToConstant: imageSize),
-                        imageView.heightAnchor.constraint(equalToConstant: imageSize),
-
-                        imageView.trailingAnchor.constraint(equalTo: emotionImagesView.trailingAnchor,
-                                                            constant: -CGFloat(col) * (imageSize + spacing)),
-                        imageView.topAnchor.constraint(equalTo: emotionImagesView.centerYAnchor,
-                                                       constant: -totalGridHeight / 2 + CGFloat(row) * (imageSize + spacing))
-                    ])
-                }
+                layoutEmotionImages(uniqueEmotions)
             }
+        }
+        
+        private func layoutEmotionImages(_ emotions: [Emotion]) {
+            let columns = min(3, emotions.count)
+            let rows = Int(ceil(Double(emotions.count) / Double(columns)))
+            let imageSize: CGFloat = 30
+            let spacing: CGFloat = 6
+            
+            let totalGridHeight = CGFloat(rows) * imageSize + CGFloat(max(0, rows - 1)) * spacing
+            
+            cellHeight = rows > 1 ? 80 * CGFloat(rows) : 80
+            
+            for i in 0 ..< emotions.count {
+                let row = i / columns
+                let col = i % columns
+                
+                let emotion = emotions[i]
+                
+                let imageView = UIImageView(image: emotion.image)
+                imageView.contentMode = .scaleAspectFit
+                imageView.layer.cornerRadius = imageSize / 2
+                imageView.clipsToBounds = true
+                emotionImagesView.addSubview(imageView)
+                
+                imageView.translatesAutoresizingMaskIntoConstraints = false
+                NSLayoutConstraint.activate([
+                    imageView.widthAnchor.constraint(equalToConstant: imageSize),
+                    imageView.heightAnchor.constraint(equalToConstant: imageSize),
+
+                    imageView.trailingAnchor.constraint(equalTo: emotionImagesView.trailingAnchor,
+                                                        constant: -CGFloat(col) * (imageSize + spacing)),
+                    imageView.topAnchor.constraint(equalTo: emotionImagesView.centerYAnchor,
+                                                   constant: -totalGridHeight / 2 + CGFloat(row) * (imageSize + spacing))
+                ])
+            }
+        }
+        
+        func getCalculatedHeight() -> CGFloat {
+            return cellHeight
         }
     }
 }
@@ -276,5 +327,27 @@ extension WeeklyEmotionsView: UITableViewDataSource, UITableViewDelegate {
         cell.configure(with: dayData.date, records: dayData.records)
         
         return cell
+    }
+}
+
+extension WeeklyEmotionsView {
+    func adjustHeightBasedOnContent() {
+        tableView.layoutIfNeeded()
+        
+        let numberOfRows = tableView.numberOfRows(inSection: 0)
+        var totalHeight: CGFloat = 0
+        
+        for i in 0 ..< numberOfRows {
+            let indexPath = IndexPath(row: i, section: 0)
+            totalHeight += tableView.rectForRow(at: indexPath).height
+        }
+        
+        totalHeight += 30
+        
+        if let heightConstraint = tableView.constraints.first(where: { $0.firstAttribute == .height }) {
+            heightConstraint.constant = totalHeight
+        } else {
+            tableView.heightAnchor.constraint(equalToConstant: totalHeight).isActive = true
+        }
     }
 }

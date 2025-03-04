@@ -83,22 +83,22 @@ actor MockAnalysisService: AnalysisServiceProtocol {
         else {
             return []
         }
-              
+        
         let calendar = Calendar.current
-            
+        
         var currentDate = Date()
         var intervals: [DateInterval] = []
-            
+        
         while currentDate >= earliest {
             if let weekInterval = calendar.dateInterval(of: .weekOfYear, for: currentDate) {
                 intervals.append(weekInterval)
-       
+                
                 currentDate = calendar.date(byAdding: .weekOfYear, value: -1, to: currentDate)!
             } else {
                 break
             }
         }
-            
+        
         return intervals
     }
     
@@ -107,7 +107,7 @@ actor MockAnalysisService: AnalysisServiceProtocol {
         let calendar = Calendar.current
         let now = Date()
         
-        for dayOffset in 0..<28 {
+        for dayOffset in 0..<7 {
             let day = calendar.date(byAdding: .day, value: -dayOffset, to: now)!
             
             let recordsCount = Int.random(in: 1...3)
@@ -119,7 +119,8 @@ actor MockAnalysisService: AnalysisServiceProtocol {
                 components.minute = minute
                 let recordDate = calendar.date(from: components)!
                 
-                let emotion = Emotion.allCases.randomElement()!
+                let yellowEmotions = [Emotion.happy, Emotion.productivity]
+                let emotion = yellowEmotions.randomElement()!
                 
                 let record = JournalRecord(
                     emotion: emotion,
@@ -130,53 +131,88 @@ actor MockAnalysisService: AnalysisServiceProtocol {
                 records.append(record)
             }
         }
+        func createRecord(for day: Date, recordIndex: Int, dayOffset: Int, emotionOptions: [Emotion]) -> JournalRecord {
+            var components = calendar.dateComponents([.year, .month, .day], from: day)
+                    
+            let hour = Int.random(in: 5...23)
+            let minute = Int.random(in: 0...59)
+            components.hour = hour
+            components.minute = minute
+            
+            let recordDate = calendar.date(from: components)!
+                    
+            let emotion: Emotion
+           
+            emotion = emotionOptions.randomElement()!
+            
+            return JournalRecord(
+                emotion: emotion,
+                note: "Record from \(dayOffset) days ago",
+                createdAt: recordDate
+            )
+        }
+        let currentWeekday = calendar.component(.weekday, from: now)
+
+        let startOfWeekOffset = calendar.firstWeekday - currentWeekday
+        let startOfCurrentWeek = calendar.date(byAdding: .day, value: startOfWeekOffset, to: now)!
+        
+        let weekIntervals: [(start: Date, end: Date, emotions: [Emotion])] = [
+            (
+                calendar.date(byAdding: .day, value: 0, to: startOfCurrentWeek)!,
+                calendar.date(byAdding: .day, value: 6, to: startOfCurrentWeek)!,
+                [.happy, .productivity]
+            ),
+
+            (
+                calendar.date(byAdding: .day, value: -7, to: startOfCurrentWeek)!,
+                calendar.date(byAdding: .day, value: -1, to: startOfCurrentWeek)!,
+                [.happy, .productivity, .chill]
+            ),
+            (
+                calendar.date(byAdding: .day, value: -14, to: startOfCurrentWeek)!,
+                calendar.date(byAdding: .day, value: -8, to: startOfCurrentWeek)!,
+                [.happy, .chill, .tired]
+            ),
+
+            (
+                calendar.date(byAdding: .day, value: -21, to: startOfCurrentWeek)!,
+                calendar.date(byAdding: .day, value: -15, to: startOfCurrentWeek)!,
+                [.happy, .chill, .tired, .anxious]
+            )
+        ]
+        for (weekStart, weekEnd, emotionOptions) in weekIntervals {
+            var currentDay = weekStart
+            while currentDay <= weekEnd {
+                let dayOffset = calendar.dateComponents([.day], from: currentDay, to: now).day ?? 0
+                
+                let recordsCount: Int
+               
+                recordsCount = Int.random(in: 1...3)
+                
+                for recordIndex in 0..<recordsCount {
+                    let record = createRecord(
+                        for: currentDay,
+                        recordIndex: recordIndex,
+                        dayOffset: dayOffset,
+                        emotionOptions: emotionOptions
+                    )
+                    records.append(record)
+                }
+                
+                currentDay = calendar.date(byAdding: .day, value: 1, to: currentDay)!
+            }
+        }
         
         journalRecords = records
     }
 }
 
 extension MockAnalysisService {
-    private func generateMockRecordsForUITesting() async {
-        var records: [JournalRecord] = []
-        let calendar = Calendar.current
-        let now = Date()
-        
-        for weekOffset in 0..<3 {
-            for dayOffset in 0..<7 {
-                let totalDaysAgo = (weekOffset * 7) + dayOffset
-                let day = calendar.date(byAdding: .day, value: -totalDaysAgo, to: now)!
-                
-                let recordsCount = (totalDaysAgo % 3) + 1
-                for recordIndex in 0..<recordsCount {
-                    let hour = 8 + (recordIndex * 4)
-                    let components = calendar.dateComponents([.year, .month, .day], from: day)
-                    var recordComponents = components
-                    recordComponents.hour = hour
-                    recordComponents.minute = 0
-                    let recordDate = calendar.date(from: recordComponents)!
-                    
-                    let emotionIndex = (totalDaysAgo + recordIndex) % Emotion.allCases.count
-                    let emotion = Emotion.allCases[emotionIndex]
-                    
-                    let record = JournalRecord(
-                        emotion: emotion,
-                        note: "Record from \(dayOffset) days ago",
-                        createdAt: recordDate
-                    )
-                    
-                    records.append(record)
-                }
-            }
-        }
-        
-        journalRecords = records
-    }
-
     func configureForUITesting(empty: Bool = false) async {
         if empty {
             journalRecords = []
         } else {
-            await generateMockRecordsForUITesting()
+            generateMockRecords()
         }
     }
 }
