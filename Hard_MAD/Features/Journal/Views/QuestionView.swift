@@ -28,28 +28,30 @@ final class QuestionView: UIView {
             
             minimumInteritemSpacing = Constants.spacing
             minimumLineSpacing = Constants.spacing
+            sectionInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
             
             var layoutAttributes = [UICollectionViewLayoutAttributes]()
-            let maxWidth = collectionView.bounds.width - sectionInset.left - sectionInset.right
+            let maxWidth = collectionView.bounds.width
             var x: CGFloat = sectionInset.left
             var y: CGFloat = sectionInset.top
+            var rowMaxY: CGFloat = 0
             
             for section in 0..<collectionView.numberOfSections {
                 for item in 0..<collectionView.numberOfItems(inSection: section) {
                     let indexPath = IndexPath(item: item, section: section)
-                    
                     let size = self.collectionView(collectionView, sizeForItemAt: indexPath)
                     
-                    if x + size.width > maxWidth && x > sectionInset.left {
+                    if x + size.width > maxWidth - sectionInset.right && x > sectionInset.left {
                         x = sectionInset.left
-                        y += Constants.itemHeight + minimumLineSpacing
+                        y = rowMaxY + minimumLineSpacing
                     }
                     
                     let attributes = UICollectionViewLayoutAttributes(forCellWith: indexPath)
-                    attributes.frame = CGRect(x: x, y: y, width: size.width, height: Constants.itemHeight)
+                    attributes.frame = CGRect(x: x, y: y, width: size.width, height: size.height)
                     layoutAttributes.append(attributes)
                     
                     x += size.width + minimumInteritemSpacing
+                    rowMaxY = max(rowMaxY, y + size.height)
                 }
             }
             
@@ -153,6 +155,7 @@ final class QuestionView: UIView {
         
         collectionView.accessibilityIdentifier = "answerCollectionView_\(tag)"
     }
+
     // MARK: - Initialization
     
     init(question: String, onAnswerSelected: @escaping (String) -> Void) {
@@ -306,6 +309,8 @@ final class QuestionView: UIView {
             label.textColor = .white
             label.translatesAutoresizingMaskIntoConstraints = false
             label.numberOfLines = 1
+            label.lineBreakMode = .byTruncatingTail
+            label.textAlignment = .center
             return label
         }()
         
@@ -415,14 +420,18 @@ extension QuestionView: UICollectionViewDelegateFlowLayout {
         if indexPath.item < answers.count {
             let answer = answers[indexPath.item]
             
-            let attributes = [NSAttributedString.Key.font: UIFont.appFont(AppFont.regular, size: 14)]
-            let textWidth = (answer as NSString).size(withAttributes: attributes).width
+            let attributes = [NSAttributedString.Key.font: UIFont.appFont(AppFont.regular, size: 17)]
+            let textSize = (answer as NSString).size(withAttributes: attributes)
             
-            let cellWidth = max(textWidth + (Constants.horizontalPadding * 2), Constants.minWidth)
+            var cellWidth = max(textSize.width + (Constants.horizontalPadding * 2), Constants.minWidth)
             
-            let finalWidth = min(cellWidth, availableWidth)
+            cellWidth = min(cellWidth, availableWidth)
             
-            return CGSize(width: finalWidth, height: Constants.itemHeight)
+            if textSize.width > availableWidth - (Constants.horizontalPadding * 2) {
+                cellWidth = availableWidth
+            }
+            
+            return CGSize(width: cellWidth, height: Constants.itemHeight)
         } else {
             return CGSize(width: Constants.plusButtonSize, height: Constants.plusButtonSize)
         }
