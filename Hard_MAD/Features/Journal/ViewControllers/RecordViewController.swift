@@ -6,6 +6,7 @@
 //
 
 import Combine
+import SnapKit
 import UIKit
 
 final class RecordViewController: UIViewController {
@@ -19,7 +20,6 @@ final class RecordViewController: UIViewController {
     
     private lazy var scrollView: UIScrollView = {
         let scrollView = UIScrollView()
-        scrollView.translatesAutoresizingMaskIntoConstraints = false
         scrollView.showsVerticalScrollIndicator = true
         scrollView.alwaysBounceVertical = true
         return scrollView
@@ -27,14 +27,12 @@ final class RecordViewController: UIViewController {
     
     private lazy var contentView: UIView = {
         let view = UIView()
-        view.translatesAutoresizingMaskIntoConstraints = false
         return view
     }()
     
     private lazy var backButton: UIButton = {
         let button = UIButton(type: .custom)
         button.setImage(UIImage(named: "goBack"), for: .normal)
-        button.translatesAutoresizingMaskIntoConstraints = false
         button.addTarget(self, action: #selector(backButtonTapped), for: .touchUpInside)
         return button
     }()
@@ -44,13 +42,11 @@ final class RecordViewController: UIViewController {
         label.text = L10n.Record.title
         label.font = UIFont.appFont(AppFont.fancy, size: 24)
         label.textColor = .white
-        label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
     
     private lazy var journalEntryCell: JournalEntryCell = {
         let cell = JournalEntryCell(style: .default, reuseIdentifier: nil)
-        cell.translatesAutoresizingMaskIntoConstraints = false
         return cell
     }()
     
@@ -58,7 +54,8 @@ final class RecordViewController: UIViewController {
         let stackView = UIStackView()
         stackView.axis = .vertical
         stackView.spacing = 24
-        stackView.translatesAutoresizingMaskIntoConstraints = false
+        stackView.distribution = .fill
+        stackView.alignment = .fill
         stackView.setContentCompressionResistancePriority(.required, for: .vertical)
         return stackView
     }()
@@ -70,7 +67,6 @@ final class RecordViewController: UIViewController {
         button.setTitleColor(.black, for: .normal)
         button.layer.cornerRadius = 20
         button.titleLabel?.font = UIFont.appFont(AppFont.regular, size: 16)
-        button.translatesAutoresizingMaskIntoConstraints = false
         button.addTarget(self, action: #selector(saveButtonTapped), for: .touchUpInside)
         return button
     }()
@@ -78,7 +74,6 @@ final class RecordViewController: UIViewController {
     private lazy var loadingIndicator: UIActivityIndicatorView = {
         let indicator = UIActivityIndicatorView(style: .medium)
         indicator.hidesWhenStopped = true
-        indicator.translatesAutoresizingMaskIntoConstraints = false
         return indicator
     }()
     
@@ -183,54 +178,64 @@ final class RecordViewController: UIViewController {
         view.addSubview(saveButton)
         view.addSubview(loadingIndicator)
         
+        setupAccessibilityIdentifiers()
+        setupConstraints()
+    }
+    
+    private func setupAccessibilityIdentifiers() {
         backButton.accessibilityIdentifier = "backButton"
         titleLabel.accessibilityIdentifier = "recordTitleLabel"
         journalEntryCell.accessibilityIdentifier = "journalEntryCell"
         saveButton.accessibilityIdentifier = "saveButton"
         loadingIndicator.accessibilityIdentifier = "loadingIndicator"
         mainStackView.accessibilityIdentifier = "questionsStackView"
+    }
+    
+    private func setupConstraints() {
+        scrollView.snp.makeConstraints { make in
+            make.top.equalTo(view.safeAreaLayoutGuide)
+            make.leading.trailing.equalToSuperview()
+            make.bottom.equalTo(saveButton.snp.top).offset(-20)
+        }
         
-        mainStackView.axis = .vertical
-        mainStackView.spacing = 24
-        mainStackView.distribution = .fill
-        mainStackView.alignment = .fill
+        contentView.snp.makeConstraints { make in
+            make.edges.equalTo(scrollView)
+            make.width.equalTo(scrollView)
+        }
         
-        NSLayoutConstraint.activate([
-            scrollView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
-            scrollView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            scrollView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            scrollView.bottomAnchor.constraint(equalTo: saveButton.topAnchor, constant: -20),
-            
-            contentView.topAnchor.constraint(equalTo: scrollView.topAnchor),
-            contentView.leadingAnchor.constraint(equalTo: scrollView.leadingAnchor),
-            contentView.trailingAnchor.constraint(equalTo: scrollView.trailingAnchor),
-            contentView.bottomAnchor.constraint(equalTo: scrollView.bottomAnchor),
-            contentView.widthAnchor.constraint(equalTo: scrollView.widthAnchor),
-            
-            backButton.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 16),
-            backButton.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
-            
-            titleLabel.centerYAnchor.constraint(equalTo: backButton.centerYAnchor),
-            titleLabel.leadingAnchor.constraint(equalTo: backButton.trailingAnchor, constant: 12),
-            
-            journalEntryCell.topAnchor.constraint(equalTo: backButton.bottomAnchor, constant: 16),
-            journalEntryCell.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
-            journalEntryCell.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
-            journalEntryCell.heightAnchor.constraint(equalToConstant: 174),
-            
-            mainStackView.topAnchor.constraint(equalTo: journalEntryCell.bottomAnchor, constant: 16),
-            mainStackView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
-            mainStackView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16),
-            mainStackView.bottomAnchor.constraint(lessThanOrEqualTo: contentView.bottomAnchor, constant: -16),
-            
-            saveButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -16),
-            saveButton.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            saveButton.widthAnchor.constraint(equalTo: view.widthAnchor, multiplier: 0.9),
-            saveButton.heightAnchor.constraint(equalToConstant: 48),
-            
-            loadingIndicator.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            loadingIndicator.centerYAnchor.constraint(equalTo: view.centerYAnchor)
-        ])
+        backButton.snp.makeConstraints { make in
+            make.top.equalTo(contentView).offset(16)
+            make.leading.equalTo(contentView).offset(16)
+        }
+        
+        titleLabel.snp.makeConstraints { make in
+            make.centerY.equalTo(backButton)
+            make.leading.equalTo(backButton.snp.trailing).offset(12)
+        }
+        
+        journalEntryCell.snp.makeConstraints { make in
+            make.top.equalTo(backButton.snp.bottom).offset(16)
+            make.leading.trailing.equalTo(contentView)
+            make.height.equalTo(174)
+        }
+        
+        mainStackView.snp.makeConstraints { make in
+            make.top.equalTo(journalEntryCell.snp.bottom).offset(16)
+            make.leading.equalTo(contentView).offset(16)
+            make.trailing.equalTo(contentView).offset(-16)
+            make.bottom.lessThanOrEqualTo(contentView).offset(-16)
+        }
+        
+        saveButton.snp.makeConstraints { make in
+            make.bottom.equalTo(view.safeAreaLayoutGuide).offset(-16)
+            make.centerX.equalToSuperview()
+            make.width.equalToSuperview().multipliedBy(0.9)
+            make.height.equalTo(48)
+        }
+        
+        loadingIndicator.snp.makeConstraints { make in
+            make.center.equalToSuperview()
+        }
     }
 
     private func setupQuestionViews(with questions: [String]) {
@@ -239,14 +244,17 @@ final class RecordViewController: UIViewController {
         questionViews = []
         
         for (index, question) in questions.enumerated() {
-            let questionView = QuestionView(question: question) { [weak self] answer in
-                self?.viewModel.setAnswer(answer, forQuestion: index)
+            let questionView = QuestionView(question: question) { [weak self] answer, isCustom in
+                guard let self else { return }
+                if isCustom {
+                    Task {
+                        await self.viewModel.addCustomAnswer(answer, forQuestion: index)
+                    }
+                } else {
+                    self.viewModel.setAnswer(answer, forQuestion: index)
+                }
             }
-            
             questionView.tag = index
-            
-            questionView.translatesAutoresizingMaskIntoConstraints = false
-            
             mainStackView.addArrangedSubview(questionView)
             questionViews.append(questionView)
           

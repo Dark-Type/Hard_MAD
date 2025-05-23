@@ -20,21 +20,36 @@ final class NotificationService: NotificationServiceProtocol {
         self.dbClient = dbClient
     }
 
-    func getNotifications() async throws -> [NotificationTime] {
-        let dtos = try await dbClient.fetchNotificationTimes()
-        return dtos.map(NotificationTime.init(from:))
+    func getNotifications() async -> [NotificationTime] {
+        do {
+            let dtos = try await dbClient.fetchNotificationTimes()
+            return dtos.map(NotificationTime.init(from:))
+        } catch {
+            print("Failed to fetch notifications: \(error)")
+            return []
+        }
     }
 
-    func addNotification(time: String) async throws -> NotificationTime {
+    func addNotification(time: String) async -> NotificationTime {
         let notification = NotificationTime(time: time)
-        let dto = NotificationTimeDTO(from: notification)
-        try await dbClient.saveNotificationTime(dto)
-        return notification
+        do {
+            let dto = NotificationTimeDTO(from: notification)
+            try await dbClient.saveNotificationTime(dto)
+            return notification
+        } catch {
+            print("Failed to add notification: \(error)")
+            return notification
+        }
     }
 
-    func removeNotification(id: UUID) async throws -> Bool {
-        try await dbClient.deleteNotificationTime(id: id)
-        return true
+    func removeNotification(id: UUID) async -> Bool {
+        do {
+            try await dbClient.deleteNotificationTime(id: id)
+            return true
+        } catch {
+            print("Failed to remove notification: \(error)")
+            return false
+        }
     }
 
     func isNotificationsEnabled() async -> Bool {

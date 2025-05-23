@@ -4,6 +4,7 @@
 //
 //  Created by dark type on 27.02.2025.
 //
+import SnapKit
 import UIKit
 
 final class JournalEntryCell: UITableViewCell {
@@ -23,7 +24,6 @@ final class JournalEntryCell: UITableViewCell {
         layer.startPoint = CGPoint(x: 1.0, y: 0.0)
         layer.endPoint = CGPoint(x: 0.0, y: 1.0)
         layer.locations = [0.0, 0.3, 0.7, 1.0]
-
         layer.frame = CGRect(x: 0, y: 0, width: 1000, height: 1000)
         return layer
     }()
@@ -32,7 +32,6 @@ final class JournalEntryCell: UITableViewCell {
         let label = UILabel()
         label.font = UIFont.appFont(AppFont.regular, size: 14)
         label.textColor = .white
-        label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
     
@@ -41,14 +40,12 @@ final class JournalEntryCell: UITableViewCell {
         label.font = UIFont.appFont(AppFont.regular, size: 20)
         label.text = L10n.Journal.Cell.title
         label.textColor = .white
-        label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
     
     private let emotionLabel: UILabel = {
         let label = UILabel()
         label.font = UIFont.appFont(AppFont.fancy, size: 28)
-        label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
     
@@ -56,7 +53,6 @@ final class JournalEntryCell: UITableViewCell {
         let imageView = UIImageView()
         imageView.contentMode = .scaleAspectFit
         imageView.tintColor = .white
-        imageView.translatesAutoresizingMaskIntoConstraints = false
         return imageView
     }()
     
@@ -65,7 +61,6 @@ final class JournalEntryCell: UITableViewCell {
         stack.axis = .vertical
         stack.spacing = 4
         stack.alignment = .leading
-        stack.translatesAutoresizingMaskIntoConstraints = false
         return stack
     }()
     
@@ -105,7 +100,6 @@ final class JournalEntryCell: UITableViewCell {
         selectionStyle = .none
         
         contentView.addSubview(cardView)
-        
         cardView.layer.insertSublayer(gradientLayer, at: 0)
         
         textStack.addArrangedSubview(prefixLabel)
@@ -115,32 +109,43 @@ final class JournalEntryCell: UITableViewCell {
         cardView.addSubview(textStack)
         cardView.addSubview(emotionImageView)
         
+        setupAccessibilityIdentifiers()
+        setupConstraints()
+        
+        cardView.backgroundColor = UIColor(red: 44/255, green: 44/255, blue: 46/255, alpha: 1)
+    }
+    
+    private func setupAccessibilityIdentifiers() {
         textStack.accessibilityIdentifier = "journalRecordCell"
         emotionImageView.accessibilityIdentifier = "emotionImageView"
         dateLabel.accessibilityIdentifier = "dateLabel"
         cardView.accessibilityIdentifier = "journalCellContentView"
+    }
+    
+    private func setupConstraints() {
+        cardView.snp.makeConstraints { make in
+            make.top.equalToSuperview().offset(8)
+            make.leading.equalToSuperview().offset(16)
+            make.trailing.equalToSuperview().offset(-16)
+            make.bottom.equalToSuperview().offset(-8)
+        }
         
-        NSLayoutConstraint.activate([
-            cardView.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 8),
-            cardView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
-            cardView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16),
-            cardView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -8),
-            cardView.heightAnchor.constraint(equalToConstant: 158),
-            
-            dateLabel.topAnchor.constraint(equalTo: cardView.topAnchor, constant: 16),
-            dateLabel.leadingAnchor.constraint(equalTo: cardView.leadingAnchor, constant: 16),
-            
-            textStack.leadingAnchor.constraint(equalTo: cardView.leadingAnchor, constant: 16),
-            textStack.bottomAnchor.constraint(equalTo: cardView.bottomAnchor, constant: -16),
-            textStack.trailingAnchor.constraint(lessThanOrEqualTo: emotionImageView.leadingAnchor, constant: -16),
-            
-            emotionImageView.centerYAnchor.constraint(equalTo: textStack.centerYAnchor),
-            emotionImageView.trailingAnchor.constraint(equalTo: cardView.trailingAnchor, constant: -24),
-            emotionImageView.widthAnchor.constraint(equalToConstant: 60),
-            emotionImageView.heightAnchor.constraint(equalToConstant: 60)
-        ])
+        dateLabel.snp.makeConstraints { make in
+            make.top.equalTo(cardView).offset(16)
+            make.leading.equalTo(cardView).offset(16)
+        }
         
-        cardView.backgroundColor = UIColor(red: 44/255, green: 44/255, blue: 46/255, alpha: 1)
+        textStack.snp.makeConstraints { make in
+            make.leading.equalTo(cardView).offset(16)
+            make.bottom.equalTo(cardView).offset(-16)
+            make.trailing.lessThanOrEqualTo(emotionImageView.snp.leading).offset(-16)
+        }
+        
+        emotionImageView.snp.makeConstraints { make in
+            make.centerY.equalTo(textStack)
+            make.trailing.equalTo(cardView).offset(-24)
+            make.width.height.equalTo(60)
+        }
     }
     
     // MARK: - Configuration
@@ -205,7 +210,6 @@ final class JournalEntryCell: UITableViewCell {
         if currentWeekComponents.yearForWeekOfYear == dateWeekComponents.yearForWeekOfYear &&
             currentWeekComponents.weekOfYear == dateWeekComponents.weekOfYear
         {
-        
             let dateFormatter = DateFormatter()
             dateFormatter.dateFormat = "EEEE, HH:mm"
             dateFormatter.locale = Locale(identifier: "ru_RU")
@@ -216,7 +220,6 @@ final class JournalEntryCell: UITableViewCell {
         let dateComponents = calendar.dateComponents([.year], from: date)
         
         if nowComponents.year == dateComponents.year {
-    
             let dateFormatter = DateFormatter()
             dateFormatter.dateFormat = "d MMMM, HH:mm"
             dateFormatter.locale = Locale(identifier: "ru_RU")

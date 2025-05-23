@@ -28,19 +28,20 @@ final class QuestionService: QuestionServiceProtocol {
     }
 
     func getAnswers(forQuestion index: Int) async -> [String] {
-        // TODO: Replace with dbClient logic when question answers become persistent
-        let defaults: [[String]] = [
-            ["Прием пищи", "Встреча с друзьями", "Тренировка", "Хобби", "Отдых", "Поездка"],
-            ["Один", "Друзья", "Семья", "Коллеги", "Партнер", "Питомцы"],
-            ["Дом", "Работа", "Школа", "Транспорт", "Улица"]
-        ]
-        if index < defaults.count {
-            return defaults[index]
+        do {
+            let answers = try await dbClient.fetchQuestionAnswers(forQuestion: index)
+
+            return answers
+        } catch {
+            return []
         }
-        return []
     }
 
     func addCustomAnswer(_ answer: String, forQuestion index: Int) async {
-        // TODO: Implement persistence using dbClient for custom answers
+        do {
+            try await dbClient.addQuestionAnswer(answer, forQuestion: index)
+        } catch {
+            print("QuestionService: Failed to add custom answer: \(error)")
+        }
     }
 }

@@ -141,7 +141,7 @@ final class QuestionView: UIView {
     
     private var answers: [String] = []
     private var selectedAnswers: Set<String> = []
-    private var onAnswerSelected: (String) -> Void
+    private var onAnswerSelected: (String, Bool) -> Void
     private var textEntryWidthConstraint: NSLayoutConstraint?
     private var collectionViewHeightConstraint: NSLayoutConstraint?
     
@@ -158,7 +158,7 @@ final class QuestionView: UIView {
 
     // MARK: - Initialization
     
-    init(question: String, onAnswerSelected: @escaping (String) -> Void) {
+    init(question: String, onAnswerSelected: @escaping (String, Bool) -> Void) {
         self.onAnswerSelected = onAnswerSelected
         super.init(frame: .zero)
         
@@ -286,6 +286,7 @@ final class QuestionView: UIView {
             toggleAnswerSelection(answer)
             collectionView.reloadData()
             updateCollectionViewHeight()
+            onAnswerSelected(answer, true)
         }
     }
     
@@ -295,9 +296,8 @@ final class QuestionView: UIView {
         } else {
             selectedAnswers.insert(answer)
         }
-        
         let selectedAnswersString = selectedAnswers.joined(separator: ", ")
-        onAnswerSelected(selectedAnswersString)
+        onAnswerSelected(selectedAnswersString, false)
     }
     
     // MARK: - Cell Classes
