@@ -16,3 +16,9 @@ struct NotificationTime: Equatable, Sendable {
         self.time = time
     }
 }
+extension NotificationTime {
+    init(from dto: NotificationTimeDTO) {
+        self.id = dto.id
+        self.time = dto.time
+    }
+}

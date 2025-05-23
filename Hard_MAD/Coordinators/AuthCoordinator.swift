@@ -9,21 +9,31 @@ import UIKit
 
 @MainActor
 final class AuthCoordinator: BaseCoordinator {
-    var onAuthComplete: (@Sendable () async -> Void)?
+    var onAuthComplete: (@MainActor () -> Void)?
 
-    override func start() async {
-        await showLogin()
+    override func start() {
+        showLogin()
     }
 
-    private func showLogin() async {
-        let factory = factoryProvider.getLoginViewModelFactory()
-        let viewModel = await factory.makeViewModel()
-        viewModel.onLoginSuccess = { [weak self] in
-            guard let self = self else { return }
-            await self.onAuthComplete?()
-        }
+    private func showLogin() {
+        let viewModel = createViewModel()
+        let viewController = createViewController(viewModel: viewModel)
 
-        let loginVC = LoginViewController(viewModel: viewModel)
-        navigationController.setViewControllers([loginVC], animated: false)
+        navigationController.setViewControllers([viewController], animated: false)
+    }
+}
+
+extension AuthCoordinator {
+    // MARK: — Factory functions
+
+    func createViewModel() -> AuthViewModel {
+        AuthViewModel(authService: container.authService) { [weak self] in
+            guard let self = self else { return }
+            self.onAuthComplete?()
+        }
+    }
+
+    func createViewController(viewModel: AuthViewModel) -> UIViewController {
+        AuthViewController(viewModel: viewModel, authState: container.authService.authenticationState())
     }
 }

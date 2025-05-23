@@ -47,7 +47,7 @@ final class AnalysisViewModel: BaseViewModel {
                 let weekInterval = weeks[index]
                 let midWeekDate = Date(timeInterval: weekInterval.duration / 2, since: weekInterval.start)
                 
-                currentWeekData = await analysisService.fetchWeeklyData(for: midWeekDate)
+                currentWeekData = try await analysisService.fetchWeeklyData(for: midWeekDate)
             }
         } catch {
             handleError(error)
@@ -56,7 +56,7 @@ final class AnalysisViewModel: BaseViewModel {
     
     func fetchInitialData() async throws {
         try await withLoading { [self] in
-            weeks = await analysisService.fetchAllWeeks()
+            weeks = try await analysisService.fetchAllWeeks()
             
             if !weeks.isEmpty {
                 let today = Date()
@@ -67,7 +67,7 @@ final class AnalysisViewModel: BaseViewModel {
                 
                 self.currentWeekIndex = currentWeekIndex
 
-                currentWeekData = await analysisService.fetchWeeklyData(
+                currentWeekData = try await analysisService.fetchWeeklyData(
                     for: Date(timeInterval: weeks[currentWeekIndex].duration / 2,
                               since: weeks[currentWeekIndex].start)
                 )

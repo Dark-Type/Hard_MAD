@@ -129,8 +129,8 @@ final class AnalysisViewController: UIViewController {
                     sectionView.heightAnchor.constraint(greaterThanOrEqualTo: scrollView.frameLayoutGuide.heightAnchor, multiplier: 0.5).isActive = true
                 case is MoodTimeOfDayView:
                     sectionView.heightAnchor.constraint(greaterThanOrEqualTo: scrollView.frameLayoutGuide.heightAnchor).isActive = true
-            case is MoodTimeOfDayView:
-                sectionView.heightAnchor.constraint(greaterThanOrEqualTo: scrollView.frameLayoutGuide.heightAnchor).isActive = true
+                case is MoodTimeOfDayView:
+                    sectionView.heightAnchor.constraint(greaterThanOrEqualTo: scrollView.frameLayoutGuide.heightAnchor).isActive = true
                 default:
                     sectionView.heightAnchor.constraint(equalTo: scrollView.frameLayoutGuide.heightAnchor, multiplier: 0.8).isActive = true
             }

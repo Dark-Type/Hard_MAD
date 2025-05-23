@@ -38,7 +38,7 @@ actor MockNotificationService: NotificationServiceProtocol {
         return notificationsEnabled
     }
 
-    func setNotificationsEnabled(_ enabled: Bool) async {
+    func toggleNotifications(_ enabled: Bool) async {
         notificationsEnabled = enabled
     }
 }

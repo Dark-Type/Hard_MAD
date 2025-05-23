@@ -1,0 +1,105 @@
+opt_in_rules:
+  - explicit_init
+  - force_unwrapping
+  - first_where
+  - last_where
+  - private_swiftui_state
+  - unowned_variable_capture
+  - xct_specific_matcher
+  - unavailable_function
+  - trailing_closure
+  - toggle_bool
+  - single_test_class
+  - return_value_from_void_function
+  - redundant_type_annotation
+  - redundant_self_in_closure
+  - redundant_nil_coalescing
+  - prohibited_super_call
+  - prefer_self_type_over_type_of_self
+  - overridden_super_call
+  - optional_enum_case_matching
+  - multiline_function_chains
+  - let_var_whitespace
+  - file_name_no_space
+  - fallthrough
+  - enum_case_associated_values_count
+  - empty_xctest_method
+  - empty_string
+  - empty_count
+  - empty_collection_literal
+  - direct_return
+  - convenience_type
+  - contains_over_filter_is_empty
+  - contains_over_first_not_nil
+  - contains_over_filter_count
+  
+empty_count:
+  only_after_dot: true
+
+analyzer_rules:
+  - unused_import
+
+disabled_rules:
+  - weak_delegate
+  - class_delegate_protocol
+  - trailing_comma
+  - blanket_disable_command
+  - line_length
+  - redundant_optional_initialization
+
+cyclomatic_complexity:
+  warning: 12
+  error: 999
+  ignores_case_statements: true
+
+function_body_length: 80
+type_name:
+  allowed_symbols:
+    - _
+  excluded:
+    - ID # Tagged
+    - S # Typealiase S for State from Store
+
+identifier_name:
+  excluded:
+    - ad
+    - at
+    - by
+    - db
+    - di
+    - dx # delta x
+    - dy # delta y
+    - i
+    - id
+    - j
+    - no
+    - ok
+    - on
+    - op # Operation
+    - pk # Primary Key
+    - to
+    - ui
+    - vc # ViewController
+    - vm # ViewModel
+    - x
+    - y
+    - isRequestForNotificationInContextEligible # too long :(
+  allowed_symbols:
+    - _
+
+function_parameter_count:
+  warning: 5
+  error: 999
+  ignores_default_parameters: false
+large_tuple:
+  warning: 2
+  error: 999
+trailing_closure:
+  only_single_muted_parameter: true
+enum_case_associated_values_count:
+  warning: 5
+  error: 999
+nesting:
+  type_level:
+    warning: 3
+

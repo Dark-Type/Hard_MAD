@@ -8,6 +8,6 @@
 import Foundation
 
 protocol AnalysisServiceProtocol: Sendable {
-    func fetchWeeklyData(for date: Date) async -> AnalysisWeekData
-    func fetchAllWeeks() async -> [DateInterval]
+    func fetchWeeklyData(for date: Date) async throws -> AnalysisWeekData
+    func fetchAllWeeks() async throws -> [DateInterval]
 }

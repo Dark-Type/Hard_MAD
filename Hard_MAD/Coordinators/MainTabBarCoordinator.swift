@@ -7,46 +7,41 @@
 
 import UIKit
 
-@MainActor
+import UIKit
+
 final class MainTabBarCoordinator: BaseCoordinator {
+    // MARK: - Properties
+
     private var tabBarController: UITabBarController?
-    
-    override func start() async {
+    private var journalCoordinator: JournalCoordinator!
+    private var analysisCoordinator: AnalysisCoordinator!
+    private var settingsCoordinator: SettingsCoordinator!
+
+    // MARK: - Lifecycle
+
+    override func start() {
         let tabBarController = UITabBarController()
-        
-        let journalCoordinator = JournalCoordinator(
+        self.tabBarController = tabBarController
+
+        journalCoordinator = JournalCoordinator(
             navigationController: UINavigationController(),
             container: container
         )
-        
-        let analysisCoordinator = AnalysisCoordinator(
+        analysisCoordinator = AnalysisCoordinator(
             navigationController: UINavigationController(),
             container: container
         )
-        
-        let settingsCoordinator = SettingsCoordinator(
+        settingsCoordinator = SettingsCoordinator(
             navigationController: UINavigationController(),
             container: container
         )
-        
-        await withTaskGroup(of: Void.self) { group in
-            group.addTask { await journalCoordinator.start() }
-            group.addTask { await analysisCoordinator.start() }
-            group.addTask { await settingsCoordinator.start() }
-        }
-        
-        childCoordinators = [
-            journalCoordinator,
-            analysisCoordinator,
-            settingsCoordinator
-        ]
-        
-        configureTabBarItems(
-            journal: journalCoordinator.navigationController,
-            analysis: analysisCoordinator.navigationController,
-            settings: settingsCoordinator.navigationController
-        )
-        
+
+        [journalCoordinator, analysisCoordinator, settingsCoordinator].forEach { $0.start() }
+
+        childCoordinators = [journalCoordinator, analysisCoordinator, settingsCoordinator]
+
+        configureTabBarItems()
+
         tabBarController.setViewControllers(
             [
                 journalCoordinator.navigationController,
@@ -55,40 +50,45 @@ final class MainTabBarCoordinator: BaseCoordinator {
             ],
             animated: false
         )
-        
-        self.tabBarController = tabBarController
-        
-        let tabBar = tabBarController.tabBar
-        tabBar.tintColor = .white
-        tabBar.unselectedItemTintColor = UIColor(red: 153/255, green: 153/255, blue: 153/255, alpha: 1)
-        tabBar.frame.size.height = 49
-        tabBar.backgroundColor = UIColor(red: 51/255, green: 51/255, blue: 51/255, alpha: 1)
-        
+
+        styleTabBar(tabBarController.tabBar)
+
         navigationController.setViewControllers([tabBarController], animated: true)
         navigationController.setNavigationBarHidden(true, animated: false)
     }
-    
-    private func configureTabBarItems(
-        journal: UINavigationController,
-        analysis: UINavigationController,
-        settings: UINavigationController
-    ) {
-        journal.tabBarItem = UITabBarItem(
+
+    // MARK: - Tab Bar Configuration
+
+    private func configureTabBarItems() {
+        journalCoordinator.navigationController.tabBarItem = UITabBarItem(
             title: L10n.TabBar.journal,
             image: UIImage(named: "journalTabBar"),
             selectedImage: UIImage(named: "journalTabBar")
         )
-        
-        analysis.tabBarItem = UITabBarItem(
+
+        analysisCoordinator.navigationController.tabBarItem = UITabBarItem(
             title: L10n.TabBar.analysis,
             image: UIImage(named: "statsTabBar"),
             selectedImage: UIImage(named: "statsTabBar")
         )
-        
-        settings.tabBarItem = UITabBarItem(
+
+        settingsCoordinator.navigationController.tabBarItem = UITabBarItem(
             title: L10n.TabBar.settings,
             image: UIImage(named: "settingsTabBar"),
             selectedImage: UIImage(named: "settingsTabBar")
         )
+    }
+
+    private func styleTabBar(_ tabBar: UITabBar) {
+        tabBar.tintColor = .white
+        tabBar.unselectedItemTintColor = UIColor(red: 153/255, green: 153/255, blue: 153/255, alpha: 1)
+        tabBar.backgroundColor = UIColor(red: 51/255, green: 51/255, blue: 51/255, alpha: 1)
+        if #available(iOS 15.0, *) {
+            let appearance = UITabBarAppearance()
+            appearance.configureWithOpaqueBackground()
+            appearance.backgroundColor = UIColor(red: 51/255, green: 51/255, blue: 51/255, alpha: 1)
+            tabBar.standardAppearance = appearance
+            tabBar.scrollEdgeAppearance = appearance
+        }
     }
 }

@@ -23,3 +23,13 @@ struct JournalRecord: Sendable {
         self.createdAt = Date()
     }
 }
+extension JournalRecord {
+    init(from dto: JournalRecordDTO) {
+        self.id = dto.id
+        self.emotion = Emotion(rawValue: dto.emotionRaw) ?? .happy 
+        self.answer0 = dto.answer0
+        self.answer1 = dto.answer1
+        self.answer2 = dto.answer2
+        self.createdAt = dto.createdAt
+    }
+}

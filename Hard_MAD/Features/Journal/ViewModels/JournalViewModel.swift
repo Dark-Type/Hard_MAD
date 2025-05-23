@@ -38,7 +38,7 @@ final class JournalViewModel: BaseViewModel {
     func addNewRecord(_ record: JournalRecord) async {
         do {
             try await withLoading { [self] in
-                await journalService.saveRecord(record)
+                try await journalService.saveRecord(record)
                 
                 self.records = [record] + self.records
                 try await self.loadStatistics()
@@ -53,18 +53,18 @@ final class JournalViewModel: BaseViewModel {
 
     private func loadRecords() async throws {
         try await withLoading { [self] in
-            self.records = await journalService.fetchRecords()
+            self.records = try await journalService.fetchRecords()
         }
     }
     
     private func loadStatistics() async throws {
         try await withLoading { [self] in
-            self.statistics = await journalService.fetchStatistics()
+            self.statistics = try await journalService.fetchStatistics()
         }
     }
     
     private func loadTodayEmotions() async throws {
-        todayEmotions = await journalService.fetchTodayEmotions()
+        todayEmotions = try await journalService.fetchTodayEmotions()
     }
     
     func getFormattedDate(for record: JournalRecord) -> String {

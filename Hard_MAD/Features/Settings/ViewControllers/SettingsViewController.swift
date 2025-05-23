@@ -305,7 +305,7 @@ final class SettingsViewController: UIViewController {
     // MARK: - Data Loading
       
     private func loadData() async {
-        if let profile = await viewModel.getUserProfile() {
+        if let profile = viewModel.getUserProfile() {
             await MainActor.run {
                 profileImageView.image = profile.image
                 fullNameLabel.text = profile.fullName
@@ -313,7 +313,7 @@ final class SettingsViewController: UIViewController {
         }
           
         let isNotificationsEnabled = await viewModel.isNotificationsEnabled()
-        let isTouchIDEnabled = await viewModel.isTouchIDEnabled()
+        let isTouchIDEnabled = viewModel.isTouchIDEnabled()
           
         await MainActor.run {
             notificationToggle.isOn = isNotificationsEnabled
@@ -357,7 +357,8 @@ final class SettingsViewController: UIViewController {
     }
       
     @objc private func touchIDToggleChanged() {
-        Task {
+        print(touchIDToggle.isOn)
+        Task{
             await viewModel.setTouchIDEnabled(touchIDToggle.isOn)
         }
     }

@@ -5,19 +5,16 @@
 //  Created by dark type on 27.02.2025.
 //
 
-actor Container: Sendable {
-    private var dependencies: [String: Any] = [:]
+final class Container {
+    let authService: AuthServiceProtocol = AuthService()
 
-    func register<T>(_ type: T.Type, dependency: Any) {
-        let key = String(describing: type)
-        dependencies[key] = dependency
-    }
+    let databaseClient: DatabaseClientProtocol = DatabaseClient()
 
-    func resolve<T>() async -> T {
-        let key = String(describing: T.self)
-        guard let dependency = dependencies[key] as? T else {
-            fatalError("No dependency found for \(key)")
-        }
-        return dependency
-    }
+    lazy var journalService: JournalServiceProtocol = JournalService(dbClient: databaseClient)
+
+    lazy var notificationService: NotificationServiceProtocol = NotificationService(dbClient: databaseClient)
+
+    lazy var analysisService: AnalysisServiceProtocol = AnalysisService(dbClient: databaseClient)
+
+    lazy var questionService: QuestionServiceProtocol = QuestionService(dbClient: databaseClient)
 }

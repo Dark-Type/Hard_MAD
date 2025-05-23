@@ -12,48 +12,44 @@ final class AppCoordinator: BaseCoordinator {
     private var authCoordinator: AuthCoordinator?
     private var mainCoordinator: MainTabBarCoordinator?
     
+    // MARK: — Initializer
+    
     init(window: UIWindow, container: Container) {
         self.window = window
         let navigationController = UINavigationController()
         super.init(navigationController: navigationController, container: container)
     }
     
-    override func start() async {
-        let authService: AuthServiceProtocol = await container.resolve()
-        
-        if await authService.isAuthenticated() {
-            await showMainFlow()
-        } else {
-            await showAuthFlow()
+    override func start() {
+        let state = container.authService.authenticationState()
+        if state == .loggedIn {
+            showMainFlow()
+        }
+        else {
+            showAuthFlow()
         }
         
         window.rootViewController = navigationController
         window.makeKeyAndVisible()
     }
+
+    // MARK: — Flow control
     
-    private func showAuthFlow() async {
+    private func showAuthFlow() {
         let authCoordinator = AuthCoordinator(
             navigationController: navigationController,
             container: container
         )
         
-        authCoordinator.onAuthComplete = { [weak self] in
-            Task { @MainActor [weak self] in
-                await self?.showMainFlow()
-            }
+        authCoordinator.onAuthComplete = { @MainActor [weak self] in
+            self?.showMainFlow()
         }
-        
         self.authCoordinator = authCoordinator
         childCoordinators.append(authCoordinator)
-        await authCoordinator.start()
-        Task {
-            await container.register(JournalServiceProtocol.self, dependency: MockJournalService())
-            await container.register(QuestionServiceProtocol.self, dependency: MockQuestionService())
-            await container.register(AnalysisServiceProtocol.self, dependency: MockAnalysisService())
-        }
+        authCoordinator.start()
     }
     
-    private func showMainFlow() async {
+    private func showMainFlow() {
         if let authCoordinator = authCoordinator {
             childCoordinators.removeAll { $0 === authCoordinator }
             self.authCoordinator = nil
@@ -65,6 +61,6 @@ final class AppCoordinator: BaseCoordinator {
         )
         self.mainCoordinator = mainCoordinator
         childCoordinators.append(mainCoordinator)
-        await mainCoordinator.start()
+        mainCoordinator.start()
     }
 }

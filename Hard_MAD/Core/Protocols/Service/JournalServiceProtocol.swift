@@ -6,8 +6,8 @@
 //
 
 protocol JournalServiceProtocol: Sendable {
-    func fetchRecords() async -> [JournalRecord]
-    func saveRecord(_ record: JournalRecord) async
-    func fetchStatistics() async -> JournalStatistics
-    func fetchTodayEmotions() async -> [Emotion]
+    func fetchRecords() async throws -> [JournalRecord]
+    func saveRecord(_ record: JournalRecord) async throws
+    func fetchStatistics() async throws -> JournalStatistics
+    func fetchTodayEmotions() async throws -> [Emotion]
 }

@@ -9,14 +9,25 @@ import UIKit
 
 @MainActor
 final class SettingsCoordinator: BaseCoordinator {
-    override func start() async {
-        await showSettingsScreen()
+    override func start() {
+        showSettingsScreen()
     }
 
-    private func showSettingsScreen() async {
-        let factory = factoryProvider.getSettingsViewModelFactory()
-        let viewModel = await factory.makeViewModel()
-        let viewController = SettingsViewController(viewModel: viewModel)
+    private func showSettingsScreen() {
+        let viewModel = makeViewModel()
+        let viewController = makeViewController(viewModel: viewModel)
         navigationController.setViewControllers([viewController], animated: false)
+    }
+}
+
+extension SettingsCoordinator {
+    // MARK: — Factory functions
+
+    func makeViewModel() -> SettingsViewModel {
+        SettingsViewModel(authService: container.authService, notificationService: container.notificationService)
+    }
+
+    func makeViewController(viewModel: SettingsViewModel) -> SettingsViewController {
+        SettingsViewController(viewModel: viewModel)
     }
 }
