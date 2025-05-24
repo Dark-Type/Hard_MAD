@@ -40,6 +40,7 @@ final class SettingsViewController: UIViewController {
         imageView.layer.cornerRadius = 50
         imageView.backgroundColor = .systemGray5
         imageView.translatesAutoresizingMaskIntoConstraints = false
+        imageView.isUserInteractionEnabled = true
         return imageView
     }()
    
@@ -168,6 +169,9 @@ final class SettingsViewController: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         navigationController?.setNavigationBarHidden(true, animated: false)
+        
+        // Refresh profile image every time the view appears
+        loadProfileImage()
     }
       
     override func viewWillDisappear(_ animated: Bool) {
@@ -300,6 +304,9 @@ final class SettingsViewController: UIViewController {
         notificationToggle.addTarget(self, action: #selector(notificationToggleChanged), for: .valueChanged)
         touchIDToggle.addTarget(self, action: #selector(touchIDToggleChanged), for: .valueChanged)
         addNotificationButton.addTarget(self, action: #selector(addNotificationTapped), for: .touchUpInside)
+        
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(profileImageTapped))
+        profileImageView.addGestureRecognizer(tapGesture)
     }
       
     // MARK: - Data Loading
@@ -307,10 +314,11 @@ final class SettingsViewController: UIViewController {
     private func loadData() async {
         if let profile = viewModel.getUserProfile() {
             await MainActor.run {
-                profileImageView.image = profile.image
                 fullNameLabel.text = profile.fullName
             }
         }
+        
+        loadProfileImage()
           
         let isNotificationsEnabled = await viewModel.isNotificationsEnabled()
         let isTouchIDEnabled = viewModel.isTouchIDEnabled()
@@ -321,6 +329,18 @@ final class SettingsViewController: UIViewController {
         }
           
         await refreshNotifications()
+    }
+    
+    private func loadProfileImage() {
+        if let profile = viewModel.getUserProfile(), let profileImage = profile.image {
+            profileImageView.image = profileImage
+        } else {
+            if let savedImage = viewModel.loadProfileImage() {
+                profileImageView.image = savedImage
+            } else {
+                profileImageView.image = UIImage(named: "defaultProfileImage")
+            }
+        }
     }
       
     private func refreshNotifications() async {
@@ -349,6 +369,43 @@ final class SettingsViewController: UIViewController {
     }
       
     // MARK: - Actions
+    
+    @objc private func profileImageTapped() {
+        showImagePicker()
+    }
+    
+    private func showImagePicker() {
+        let alertController = UIAlertController(title: "Select Profile Photo", message: nil, preferredStyle: .actionSheet)
+        
+        if UIImagePickerController.isSourceTypeAvailable(.camera) {
+            alertController.addAction(UIAlertAction(title: "Take Photo", style: .default) { _ in
+                self.presentImagePicker(sourceType: .camera)
+            })
+        }
+        
+        if UIImagePickerController.isSourceTypeAvailable(.photoLibrary) {
+            alertController.addAction(UIAlertAction(title: "Choose from Library", style: .default) { _ in
+                self.presentImagePicker(sourceType: .photoLibrary)
+            })
+        }
+        
+        alertController.addAction(UIAlertAction(title: "Cancel", style: .cancel))
+
+        if let popover = alertController.popoverPresentationController {
+            popover.sourceView = profileImageView
+            popover.sourceRect = profileImageView.bounds
+        }
+        
+        present(alertController, animated: true)
+    }
+    
+    private func presentImagePicker(sourceType: UIImagePickerController.SourceType) {
+        let imagePicker = UIImagePickerController()
+        imagePicker.delegate = self
+        imagePicker.sourceType = sourceType
+        imagePicker.allowsEditing = true
+        present(imagePicker, animated: true)
+    }
       
     @objc func notificationToggleChanged() {
         let isCurrentlyOn = notificationToggle.isOn
@@ -462,6 +519,49 @@ final class SettingsViewController: UIViewController {
             let success = await viewModel.removeNotification(id: id)
             if success {
                 await refreshNotifications()
+            }
+        }
+    }
+}
+
+// MARK: - UIImagePickerControllerDelegate & UINavigationControllerDelegate
+
+extension SettingsViewController: UIImagePickerControllerDelegate, UINavigationControllerDelegate {
+    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey: Any]) {
+        var selectedImage: UIImage?
+        
+        if let editedImage = info[.editedImage] as? UIImage {
+            selectedImage = editedImage
+        } else if let originalImage = info[.originalImage] as? UIImage {
+            selectedImage = originalImage
+        }
+        
+        picker.dismiss(animated: true) {
+            if let image = selectedImage {
+                self.saveProfileImage(image)
+            }
+        }
+    }
+    
+    func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
+        picker.dismiss(animated: true)
+    }
+    
+    private func saveProfileImage(_ image: UIImage) {
+        profileImageView.image = image
+        
+        Task {
+            let success = await viewModel.saveProfileImage(image)
+            if !success {
+                await MainActor.run {
+                    let alert = UIAlertController(
+                        title: "Error",
+                        message: "Failed to save profile image. Please try again.",
+                        preferredStyle: .alert
+                    )
+                    alert.addAction(UIAlertAction(title: "OK", style: .default))
+                    self.present(alert, animated: true)
+                }
             }
         }
     }

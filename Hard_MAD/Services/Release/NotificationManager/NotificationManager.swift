@@ -59,7 +59,8 @@ final actor NotificationManager {
         let timeParts = timeString.split(separator: ":")
         if timeParts.count == 2,
            let hour = Int(timeParts[0]),
-           let minute = Int(timeParts[1]) {
+           let minute = Int(timeParts[1])
+        {
             components.hour = hour
             components.minute = minute
         }

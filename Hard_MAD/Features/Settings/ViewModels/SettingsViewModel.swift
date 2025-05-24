@@ -7,6 +7,7 @@
 
 import Foundation
 import LocalAuthentication
+import UIKit
 
 final class SettingsViewModel: BaseViewModel {
     // MARK: - Dependencies
@@ -31,11 +32,29 @@ final class SettingsViewModel: BaseViewModel {
         return authService.getCurrentUser()
     }
 
+    // MARK: - Profile Image Methods
+
+    func saveProfileImage(_ image: UIImage) async -> Bool {
+        do {
+            let authService = self.authService
+            return try await withLoading {
+                authService.saveUserProfileImage(image)
+            }
+        } catch {
+            handleError(error)
+            return false
+        }
+    }
+
+    func loadProfileImage() -> UIImage? {
+        return authService.loadUserProfileImage()
+    }
+
     // MARK: - Notification Methods
 
     func getNotifications() async -> [NotificationTime] {
         do {
-            let service = notificationService
+            let service = self.notificationService
             return try await withLoading {
                 await service.getNotifications()
             }
@@ -47,7 +66,7 @@ final class SettingsViewModel: BaseViewModel {
 
     func addNotification(time: String) async -> NotificationTime? {
         do {
-            let service = notificationService
+            let service = self.notificationService
             let timeToAdd = time
             return try await withLoading {
                 await service.addNotification(time: timeToAdd)
@@ -60,7 +79,7 @@ final class SettingsViewModel: BaseViewModel {
 
     func removeNotification(id: UUID) async -> Bool {
         do {
-            let service = notificationService
+            let service = self.notificationService
             let idToRemove = id
             return try await withLoading {
                 await service.removeNotification(id: idToRemove)
@@ -73,7 +92,7 @@ final class SettingsViewModel: BaseViewModel {
 
     func isNotificationsEnabled() async -> Bool {
         do {
-            let service = notificationService
+            let service = self.notificationService
             return try await withLoading {
                 await service.isNotificationsEnabled()
             }
@@ -85,7 +104,7 @@ final class SettingsViewModel: BaseViewModel {
 
     func setNotificationsEnabled(_ enabled: Bool) async -> Bool {
         do {
-            let service = notificationService
+            let service = self.notificationService
             let shouldEnable = enabled
             return try await withLoading {
                 await service.toggleNotifications(shouldEnable)
@@ -137,7 +156,7 @@ final class SettingsViewModel: BaseViewModel {
         }
 
         do {
-            let auth = authService
+            let auth = self.authService
             return try await withLoading {
                 try await auth.authenticateWithBiometrics(reason: "Enable biometry for quick login")
                 self.authService.setTouchIDEnabled(true)

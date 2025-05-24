@@ -6,7 +6,7 @@
 //
 import UIKit
 
-@MainActor
+
 final class AppCoordinator: BaseCoordinator {
     private let window: UIWindow
     private var authCoordinator: AuthCoordinator?
