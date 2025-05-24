@@ -8,7 +8,7 @@
 import Foundation
 import UserNotifications
 
-final actor NotificationManager {
+final actor NotificationManager: NotificationManagerProtocol {
     func requestAuthorization() async -> Bool {
         do {
             let options: UNAuthorizationOptions = [.alert, .sound, .badge]

@@ -5,132 +5,66 @@
 //  Created by dark type on 27.02.2025.
 //
 
+import SnapKit
 import UIKit
 
 final class SettingsViewController: UIViewController {
+    // MARK: - Constants
+    
+    private enum Constants {
+        enum Layout {
+            static let horizontalPadding: CGFloat = 24
+            static let verticalSpacing: CGFloat = 16
+            static let largeVerticalSpacing: CGFloat = 32
+            static let mediumVerticalSpacing: CGFloat = 24
+            static let stackViewSpacing: CGFloat = 12
+        }
+        
+        enum ProfileImage {
+            static let size: CGFloat = 100
+            static let cornerRadius: CGFloat = 50
+        }
+        
+        enum Container {
+            static let height: CGFloat = 44
+        }
+        
+        enum Icon {
+            static let size: CGFloat = 24
+        }
+        
+        enum Button {
+            static let height: CGFloat = 56
+            static let cornerRadius: CGFloat = 28
+            static let iconSpacing: CGFloat = 16
+        }
+        
+        enum FontSize {
+            static let title: CGFloat = 32
+            static let fullName: CGFloat = 24
+            static let notification: CGFloat = 16
+            static let button: CGFloat = 14
+            static let touchID: CGFloat = 12
+        }
+    }
+    
     // MARK: - UI Components
     
-    private let scrollView: UIScrollView = {
-        let scrollView = UIScrollView()
-        scrollView.showsVerticalScrollIndicator = false
-        scrollView.translatesAutoresizingMaskIntoConstraints = false
-        return scrollView
-    }()
-    
-    private let contentView: UIView = {
-        let view = UIView()
-        view.translatesAutoresizingMaskIntoConstraints = false
-        return view
-    }()
-    
-    private let titleLabel: UILabel = {
-        let label = UILabel()
-        label.text = L10n.Settings.title
-        label.font = UIFont.appFont(AppFont.fancy, size: 32)
-        label.textColor = .white
-        label.textAlignment = .left
-        label.translatesAutoresizingMaskIntoConstraints = false
-        return label
-    }()
-    
-    private let profileImageView: UIImageView = {
-        let imageView = UIImageView()
-        imageView.contentMode = .scaleAspectFill
-        imageView.clipsToBounds = true
-        imageView.layer.cornerRadius = 50
-        imageView.backgroundColor = .systemGray5
-        imageView.translatesAutoresizingMaskIntoConstraints = false
-        imageView.isUserInteractionEnabled = true
-        return imageView
-    }()
-   
-    private let fullNameLabel: UILabel = {
-        let label = UILabel()
-        label.font = .appFont(AppFont.bold, size: 24)
-        label.textAlignment = .center
-        label.textColor = .white
-        label.numberOfLines = 0
-        label.translatesAutoresizingMaskIntoConstraints = false
-        return label
-    }()
-    
-    private let notificationContainer: UIView = {
-        let view = UIView()
-        view.translatesAutoresizingMaskIntoConstraints = false
-        return view
-    }()
-    
-    private let notificationImageView: UIImageView = {
-        let imageView = UIImageView()
-        imageView.image = UIImage(named: "notifications")
-        imageView.contentMode = .scaleAspectFit
-        imageView.translatesAutoresizingMaskIntoConstraints = false
-        return imageView
-    }()
-    
-    private let notificationLabel: UILabel = {
-        let label = UILabel()
-        label.text = L10n.Settings.Notifications.send
-        label.font = UIFont.appFont(AppFont.regular, size: 16)
-        label.textColor = .white
-        label.translatesAutoresizingMaskIntoConstraints = false
-        return label
-    }()
-    
-    private let notificationToggle: UISwitch = {
-        let toggle = UISwitch()
-        toggle.translatesAutoresizingMaskIntoConstraints = false
-        return toggle
-    }()
-    
-    private let notificationsStackView: UIStackView = {
-        let stackView = UIStackView()
-        stackView.axis = .vertical
-        stackView.spacing = 12
-        stackView.distribution = .fillEqually
-        stackView.translatesAutoresizingMaskIntoConstraints = false
-        return stackView
-    }()
-    
-    private let addNotificationButton: UIButton = {
-        let button = UIButton(type: .system)
-        button.setTitle(L10n.Settings.Notifications.add, for: .normal)
-        button.titleLabel?.font = UIFont.appFont(AppFont.regular, size: 14)
-        button.backgroundColor = .white
-        button.setTitleColor(.black, for: .normal)
-        button.layer.cornerRadius = 28
-        button.translatesAutoresizingMaskIntoConstraints = false
-        return button
-    }()
-    
-    private let touchIDContainer: UIView = {
-        let view = UIView()
-        view.translatesAutoresizingMaskIntoConstraints = false
-        return view
-    }()
-    
-    private let touchIDImageView: UIImageView = {
-        let imageView = UIImageView()
-        imageView.image = UIImage(named: "touch")
-        imageView.contentMode = .scaleAspectFit
-        imageView.translatesAutoresizingMaskIntoConstraints = false
-        return imageView
-    }()
-    
-    private let touchIDLabel: UILabel = {
-        let label = UILabel()
-        label.text = L10n.Settings.Login.touchID
-        label.font = UIFont.appFont(AppFont.regular, size: 12)
-        label.textColor = .white
-        label.translatesAutoresizingMaskIntoConstraints = false
-        return label
-    }()
-    
-    private let touchIDToggle: CustomToggleSwitch = {
-        let toggle = CustomToggleSwitch()
-        toggle.translatesAutoresizingMaskIntoConstraints = false
-        return toggle
-    }()
+    private lazy var scrollView = UIScrollView()
+    private lazy var contentView = UIView()
+    private lazy var titleLabel = UILabel()
+    private lazy var profileImageView = UIImageView()
+    private lazy var fullNameLabel = UILabel()
+    private lazy var notificationContainer = UIView()
+    private lazy var notificationImageView = UIImageView()
+    private lazy var notificationLabel = UILabel()
+    private lazy var notificationToggle = UISwitch()
+    private lazy var notificationsStackView = UIStackView()
+    private lazy var addNotificationButton = UIButton(type: .system)
+    private lazy var touchIDContainer = UIView()
+    private lazy var touchIDImageView = UIImageView()
+    private lazy var touchIDLabel = UILabel()
+    private lazy var touchIDToggle = CustomToggleSwitch()
     
     // MARK: - Properties
     
@@ -159,8 +93,7 @@ final class SettingsViewController: UIViewController {
         super.viewDidLoad()
         setupUI()
         setupActions()
-        tabBarController?.tabBar.backgroundImage = UIImage()
-        tabBarController?.tabBar.shadowImage = UIImage()
+        configureTabBar()
         Task {
             await loadData()
         }
@@ -169,18 +102,278 @@ final class SettingsViewController: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         navigationController?.setNavigationBarHidden(true, animated: false)
-        
-        // Refresh profile image every time the view appears
         loadProfileImage()
     }
       
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
- 
         navigationController?.setNavigationBarHidden(false, animated: animated)
     }
-      
+    
     // MARK: - UI Setup
+    
+    private func setupUI() {
+        view.backgroundColor = .black
+        
+        setupScrollView()
+        setupContentView()
+        setupTitleLabel()
+        setupProfileImageView()
+        setupFullNameLabel()
+        setupNotificationSection()
+        setupNotificationsStackView()
+        setupAddNotificationButton()
+        setupTouchIDSection()
+        
+        setupConstraints()
+        setupAccessibilityIdentifiers()
+    }
+    
+    private func setupScrollView() {
+        scrollView.showsVerticalScrollIndicator = false
+        view.addSubview(scrollView)
+    }
+    
+    private func setupContentView() {
+        scrollView.addSubview(contentView)
+    }
+    
+    private func setupTitleLabel() {
+        titleLabel.text = L10n.Settings.title
+        titleLabel.font = UIFont.appFont(AppFont.fancy, size: Constants.FontSize.title)
+        titleLabel.textColor = .white
+        titleLabel.textAlignment = .left
+        contentView.addSubview(titleLabel)
+    }
+    
+    private func setupProfileImageView() {
+        profileImageView.contentMode = .scaleAspectFill
+        profileImageView.clipsToBounds = true
+        profileImageView.layer.cornerRadius = Constants.ProfileImage.cornerRadius
+        profileImageView.backgroundColor = .systemGray5
+        profileImageView.isUserInteractionEnabled = true
+        contentView.addSubview(profileImageView)
+    }
+    
+    private func setupFullNameLabel() {
+        fullNameLabel.font = .appFont(AppFont.bold, size: Constants.FontSize.fullName)
+        fullNameLabel.textAlignment = .center
+        fullNameLabel.textColor = .white
+        fullNameLabel.numberOfLines = 0
+        contentView.addSubview(fullNameLabel)
+    }
+    
+    private func setupNotificationSection() {
+        setupNotificationContainer()
+        setupNotificationImageView()
+        setupNotificationLabel()
+        setupNotificationToggle()
+    }
+    
+    private func setupNotificationContainer() {
+        contentView.addSubview(notificationContainer)
+    }
+    
+    private func setupNotificationImageView() {
+        notificationImageView.image = UIImage(named: "notifications")
+        notificationImageView.contentMode = .scaleAspectFit
+        notificationContainer.addSubview(notificationImageView)
+    }
+    
+    private func setupNotificationLabel() {
+        notificationLabel.text = L10n.Settings.Notifications.send
+        notificationLabel.font = UIFont.appFont(AppFont.regular, size: Constants.FontSize.notification)
+        notificationLabel.textColor = .white
+        notificationContainer.addSubview(notificationLabel)
+    }
+    
+    private func setupNotificationToggle() {
+        notificationContainer.addSubview(notificationToggle)
+    }
+    
+    private func setupNotificationsStackView() {
+        notificationsStackView.axis = .vertical
+        notificationsStackView.spacing = Constants.Layout.stackViewSpacing
+        notificationsStackView.distribution = .fillEqually
+        contentView.addSubview(notificationsStackView)
+    }
+    
+    private func setupAddNotificationButton() {
+        addNotificationButton.setTitle(L10n.Settings.Notifications.add, for: .normal)
+        addNotificationButton.titleLabel?.font = UIFont.appFont(AppFont.regular, size: Constants.FontSize.button)
+        addNotificationButton.backgroundColor = .white
+        addNotificationButton.setTitleColor(.black, for: .normal)
+        addNotificationButton.layer.cornerRadius = Constants.Button.cornerRadius
+        contentView.addSubview(addNotificationButton)
+    }
+    
+    private func setupTouchIDSection() {
+        setupTouchIDContainer()
+        setupTouchIDImageView()
+        setupTouchIDLabel()
+        setupTouchIDToggle()
+    }
+    
+    private func setupTouchIDContainer() {
+        contentView.addSubview(touchIDContainer)
+    }
+    
+    private func setupTouchIDImageView() {
+        touchIDImageView.image = UIImage(named: "touch")
+        touchIDImageView.contentMode = .scaleAspectFit
+        touchIDContainer.addSubview(touchIDImageView)
+    }
+    
+    private func setupTouchIDLabel() {
+        touchIDLabel.text = L10n.Settings.Login.touchID
+        touchIDLabel.font = UIFont.appFont(AppFont.regular, size: Constants.FontSize.touchID)
+        touchIDLabel.textColor = .white
+        touchIDContainer.addSubview(touchIDLabel)
+    }
+    
+    private func setupTouchIDToggle() {
+        touchIDContainer.addSubview(touchIDToggle)
+    }
+    
+    private func setupConstraints() {
+        setupScrollViewConstraints()
+        setupContentViewConstraints()
+        setupTitleLabelConstraints()
+        setupProfileImageViewConstraints()
+        setupFullNameLabelConstraints()
+        setupNotificationSectionConstraints()
+        setupNotificationsStackViewConstraints()
+        setupAddNotificationButtonConstraints()
+        setupTouchIDSectionConstraints()
+    }
+    
+    private func setupScrollViewConstraints() {
+        scrollView.snp.makeConstraints { make in
+            make.top.equalTo(view.safeAreaLayoutGuide)
+            make.leading.trailing.bottom.equalToSuperview()
+        }
+    }
+    
+    private func setupContentViewConstraints() {
+        contentView.snp.makeConstraints { make in
+            make.edges.equalToSuperview()
+            make.width.equalToSuperview()
+        }
+    }
+    
+    private func setupTitleLabelConstraints() {
+        titleLabel.snp.makeConstraints { make in
+            make.top.equalToSuperview().offset(Constants.Layout.mediumVerticalSpacing)
+            make.leading.equalToSuperview().offset(Constants.Layout.horizontalPadding)
+        }
+    }
+    
+    private func setupProfileImageViewConstraints() {
+        profileImageView.snp.makeConstraints { make in
+            make.top.equalTo(titleLabel.snp.bottom).offset(Constants.Layout.mediumVerticalSpacing)
+            make.centerX.equalToSuperview()
+            make.size.equalTo(Constants.ProfileImage.size)
+        }
+    }
+    
+    private func setupFullNameLabelConstraints() {
+        fullNameLabel.snp.makeConstraints { make in
+            make.top.equalTo(profileImageView.snp.bottom).offset(Constants.Layout.verticalSpacing)
+            make.centerX.equalToSuperview()
+            make.leading.equalToSuperview().offset(Constants.Layout.horizontalPadding)
+            make.trailing.equalToSuperview().offset(-Constants.Layout.horizontalPadding)
+        }
+    }
+    
+    private func setupNotificationSectionConstraints() {
+        setupNotificationContainerConstraints()
+        setupNotificationImageViewConstraints()
+        setupNotificationLabelConstraints()
+        setupNotificationToggleConstraints()
+    }
+    
+    private func setupNotificationContainerConstraints() {
+        notificationContainer.snp.makeConstraints { make in
+            make.top.equalTo(fullNameLabel.snp.bottom).offset(Constants.Layout.largeVerticalSpacing)
+            make.leading.equalToSuperview().offset(Constants.Layout.horizontalPadding)
+            make.trailing.equalToSuperview().offset(-Constants.Layout.horizontalPadding)
+            make.height.equalTo(Constants.Container.height)
+        }
+    }
+    
+    private func setupNotificationImageViewConstraints() {
+        notificationImageView.snp.makeConstraints { make in
+            make.leading.centerY.equalToSuperview()
+            make.size.equalTo(Constants.Icon.size)
+        }
+    }
+    
+    private func setupNotificationLabelConstraints() {
+        notificationLabel.snp.makeConstraints { make in
+            make.leading.equalTo(notificationImageView.snp.trailing).offset(Constants.Button.iconSpacing)
+            make.centerY.equalToSuperview()
+        }
+    }
+    
+    private func setupNotificationToggleConstraints() {
+        notificationToggle.snp.makeConstraints { make in
+            make.trailing.centerY.equalToSuperview()
+        }
+    }
+    
+    private func setupNotificationsStackViewConstraints() {
+        notificationsStackView.snp.makeConstraints { make in
+            make.top.equalTo(notificationContainer.snp.bottom).offset(Constants.Layout.verticalSpacing)
+            make.leading.equalToSuperview().offset(Constants.Layout.horizontalPadding)
+            make.trailing.equalToSuperview().offset(-Constants.Layout.horizontalPadding)
+        }
+    }
+    
+    private func setupAddNotificationButtonConstraints() {
+        addNotificationButton.snp.makeConstraints { make in
+            make.top.equalTo(notificationsStackView.snp.bottom).offset(Constants.Layout.verticalSpacing)
+            make.leading.equalToSuperview().offset(Constants.Layout.horizontalPadding)
+            make.trailing.equalToSuperview().offset(-Constants.Layout.horizontalPadding)
+            make.height.equalTo(Constants.Button.height)
+        }
+    }
+    
+    private func setupTouchIDSectionConstraints() {
+        setupTouchIDContainerConstraints()
+        setupTouchIDImageViewConstraints()
+        setupTouchIDLabelConstraints()
+        setupTouchIDToggleConstraints()
+    }
+    
+    private func setupTouchIDContainerConstraints() {
+        touchIDContainer.snp.makeConstraints { make in
+            make.top.equalTo(addNotificationButton.snp.bottom).offset(Constants.Layout.largeVerticalSpacing)
+            make.leading.equalToSuperview().offset(Constants.Layout.horizontalPadding)
+            make.trailing.equalToSuperview().offset(-Constants.Layout.horizontalPadding)
+            make.height.equalTo(Constants.Container.height)
+            make.bottom.equalToSuperview().offset(-Constants.Layout.largeVerticalSpacing)
+        }
+    }
+    
+    private func setupTouchIDImageViewConstraints() {
+        touchIDImageView.snp.makeConstraints { make in
+            make.leading.centerY.equalToSuperview()
+            make.size.equalTo(Constants.Icon.size)
+        }
+    }
+    
+    private func setupTouchIDLabelConstraints() {
+        touchIDLabel.snp.makeConstraints { make in
+            make.leading.equalTo(touchIDImageView.snp.trailing).offset(Constants.Button.iconSpacing)
+            make.centerY.equalToSuperview()
+        }
+    }
+    
+    private func setupTouchIDToggleConstraints() {
+        touchIDToggle.snp.makeConstraints { make in
+            make.trailing.centerY.equalToSuperview()
+        }
+    }
     
     private func setupAccessibilityIdentifiers() {
         titleLabel.accessibilityIdentifier = "settingsTitleLabel"
@@ -201,103 +394,9 @@ final class SettingsViewController: UIViewController {
         touchIDToggle.accessibilityIdentifier = "touchIDToggle"
     }
     
-    private func setupUI() {
-        view.backgroundColor = .black
-        
-        view.addSubview(scrollView)
-        scrollView.addSubview(contentView)
-        
-        contentView.addSubview(titleLabel)
-        
-        contentView.addSubview(profileImageView)
-        contentView.addSubview(fullNameLabel)
-        
-        contentView.addSubview(notificationContainer)
-        notificationContainer.addSubview(notificationImageView)
-        notificationContainer.addSubview(notificationLabel)
-        notificationContainer.addSubview(notificationToggle)
-        
-        contentView.addSubview(notificationsStackView)
-        
-        contentView.addSubview(addNotificationButton)
-
-        contentView.addSubview(touchIDContainer)
-        touchIDContainer.addSubview(touchIDImageView)
-        touchIDContainer.addSubview(touchIDLabel)
-        touchIDContainer.addSubview(touchIDToggle)
-        
-        setupConstraints()
-        setupAccessibilityIdentifiers()
-    }
-    
-    private func setupConstraints() {
-        NSLayoutConstraint.activate([
-            scrollView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
-            scrollView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            scrollView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            scrollView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
-            
-            contentView.topAnchor.constraint(equalTo: scrollView.topAnchor),
-            contentView.leadingAnchor.constraint(equalTo: scrollView.leadingAnchor),
-            contentView.trailingAnchor.constraint(equalTo: scrollView.trailingAnchor),
-            contentView.bottomAnchor.constraint(equalTo: scrollView.bottomAnchor),
-            contentView.widthAnchor.constraint(equalTo: scrollView.widthAnchor),
-            
-            titleLabel.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 24),
-            titleLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 24),
-            
-            profileImageView.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 24),
-            profileImageView.centerXAnchor.constraint(equalTo: contentView.centerXAnchor),
-            profileImageView.widthAnchor.constraint(equalToConstant: 100),
-            profileImageView.heightAnchor.constraint(equalToConstant: 100),
-            
-            fullNameLabel.topAnchor.constraint(equalTo: profileImageView.bottomAnchor, constant: 16),
-            fullNameLabel.centerXAnchor.constraint(equalTo: contentView.centerXAnchor),
-            fullNameLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 24),
-            fullNameLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -24),
-            
-            notificationContainer.topAnchor.constraint(equalTo: fullNameLabel.bottomAnchor, constant: 32),
-            notificationContainer.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 24),
-            notificationContainer.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -24),
-            notificationContainer.heightAnchor.constraint(equalToConstant: 44),
-              
-            notificationImageView.leadingAnchor.constraint(equalTo: notificationContainer.leadingAnchor),
-            notificationImageView.centerYAnchor.constraint(equalTo: notificationContainer.centerYAnchor),
-            notificationImageView.widthAnchor.constraint(equalToConstant: 24),
-            notificationImageView.heightAnchor.constraint(equalToConstant: 24),
-              
-            notificationLabel.leadingAnchor.constraint(equalTo: notificationImageView.trailingAnchor, constant: 16),
-            notificationLabel.centerYAnchor.constraint(equalTo: notificationContainer.centerYAnchor),
-              
-            notificationToggle.trailingAnchor.constraint(equalTo: notificationContainer.trailingAnchor),
-            notificationToggle.centerYAnchor.constraint(equalTo: notificationContainer.centerYAnchor),
-              
-            notificationsStackView.topAnchor.constraint(equalTo: notificationContainer.bottomAnchor, constant: 16),
-            notificationsStackView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 24),
-            notificationsStackView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -24),
-              
-            addNotificationButton.topAnchor.constraint(equalTo: notificationsStackView.bottomAnchor, constant: 16),
-            addNotificationButton.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 24),
-            addNotificationButton.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -24),
-            addNotificationButton.heightAnchor.constraint(equalToConstant: 56),
-              
-            touchIDContainer.topAnchor.constraint(equalTo: addNotificationButton.bottomAnchor, constant: 32),
-            touchIDContainer.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 24),
-            touchIDContainer.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -24),
-            touchIDContainer.heightAnchor.constraint(equalToConstant: 44),
-            touchIDContainer.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -32),
-              
-            touchIDImageView.leadingAnchor.constraint(equalTo: touchIDContainer.leadingAnchor),
-            touchIDImageView.centerYAnchor.constraint(equalTo: touchIDContainer.centerYAnchor),
-            touchIDImageView.widthAnchor.constraint(equalToConstant: 24),
-            touchIDImageView.heightAnchor.constraint(equalToConstant: 24),
-              
-            touchIDLabel.leadingAnchor.constraint(equalTo: touchIDImageView.trailingAnchor, constant: 16),
-            touchIDLabel.centerYAnchor.constraint(equalTo: touchIDContainer.centerYAnchor),
-              
-            touchIDToggle.trailingAnchor.constraint(equalTo: touchIDContainer.trailingAnchor),
-            touchIDToggle.centerYAnchor.constraint(equalTo: touchIDContainer.centerYAnchor)
-        ])
+    private func configureTabBar() {
+        tabBarController?.tabBar.backgroundImage = UIImage()
+        tabBarController?.tabBar.shadowImage = UIImage()
     }
       
     private func setupActions() {
@@ -358,13 +457,7 @@ final class SettingsViewController: UIViewController {
             let notificationView = NotificationTimeView(notification: notification) { [weak self] notificationId in
                 self?.deleteNotification(id: notificationId)
             }
-            notificationView.translatesAutoresizingMaskIntoConstraints = false
             notificationsStackView.addArrangedSubview(notificationView)
-              
-            NSLayoutConstraint.activate([
-                notificationView.leadingAnchor.constraint(equalTo: notificationsStackView.leadingAnchor),
-                notificationView.trailingAnchor.constraint(equalTo: notificationsStackView.trailingAnchor)
-            ])
         }
     }
       

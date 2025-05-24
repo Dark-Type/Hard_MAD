@@ -10,7 +10,9 @@ import UserNotifications
 
 final class NotificationService: NotificationServiceProtocol {
     private let dbClient: DatabaseClientProtocol
-    private let notificationManager: NotificationManager
+    private let notificationManager: NotificationManagerProtocol
+
+    var mockSystemPermission: Bool?
 
     private let kNotificationsAllowed = "notificationsAllowed"
     private var notificationsAllowed: Bool {
@@ -18,9 +20,9 @@ final class NotificationService: NotificationServiceProtocol {
         set { UserDefaults.standard.set(newValue, forKey: kNotificationsAllowed) }
     }
 
-    init(dbClient: DatabaseClientProtocol) {
+    init(dbClient: DatabaseClientProtocol, notificationManager: NotificationManagerProtocol = NotificationManager()) {
         self.dbClient = dbClient
-        self.notificationManager = NotificationManager()
+        self.notificationManager = notificationManager
     }
 
     func getNotifications() async -> [NotificationTime] {
@@ -89,6 +91,10 @@ final class NotificationService: NotificationServiceProtocol {
     }
 
     func hasSystemPermission() async -> Bool {
+        if let mockPermission = mockSystemPermission {
+            return mockPermission
+        }
+
         let settings = await UNUserNotificationCenter.current().notificationSettings()
         return settings.authorizationStatus == .authorized
     }
