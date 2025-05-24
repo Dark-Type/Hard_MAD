@@ -49,7 +49,7 @@ final class NotificationTimeView: UIView {
     // MARK: - UI SetupAppColors.Emotion.Common.commonColor.cgColor
     
     private func setupUI() {
-        layer.backgroundColor = AppColors.Emotion.Common.commonColor
+        layer.backgroundColor = AppColors.Emotion.Common.commonColor 
         layer.cornerRadius = 32
         
         addSubview(timeLabel)
