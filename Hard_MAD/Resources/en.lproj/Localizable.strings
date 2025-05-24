@@ -8,7 +8,8 @@
 /*
   Common UI elements
 */
-
+"common.ok" = "OK";
+"common.cancel" = "Cancel";
 "common.save" = "Save";
 
 /*
@@ -21,6 +22,8 @@
 /*
   Journal Screen
 */
+
+"journal.empty.message" = "Nothing added yet";
 "journal.title" = "How do you feel right now?";
 "journal.cell.title" = "I feel";
 "journal.button.title" = "Add record";
@@ -52,6 +55,15 @@
 "record.question1" = "What did you do?";
 "record.question2" = "With whom were you?";
 "record.question3" = "Where were you?";
+"record.error.incompleteAnswers" = "Please answer all questions to save your journal entry.";
+
+/* Emotion Descriptions */
+"emotion.description.burnout" = "Feeling of exhaustion, emotional depletion";
+"emotion.description.chill" = "State of peace and relaxation";
+"emotion.description.productivity" = "Feeling of efficiency and motivation";
+"emotion.description.anxious" = "Worry and nervous tension";
+"emotion.description.happy" = "Feeling of joy and satisfaction";
+"emotion.description.tired" = "Physical and emotional fatigue";
 
 /*
   Analysis Screen
@@ -60,7 +72,7 @@
 "analysis.title.week" = "Emotions by days of the week";
 "analysis.title.frequent" = "Most frequent emotions";
 "analysis.title.daily" = "Your emotions throught the day";
-
+"analysis.empty.message" = "Please add emotions first";
 
 /*
   Settings Screen
@@ -70,8 +82,28 @@
 "settings.notificatoins.add" = "Add a notification";
 "settings.login.touch" = "Login with Touch ID";
 "settings.notifications.title" = "Notification";
+"settings.profilePhoto.title" = "Select Profile Photo";
+"settings.profilePhoto.takePhoto" = "Take Photo";
+"settings.profilePhoto.chooseLibrary" = "Choose from Library";
+"settings.profilePhoto.error.saveFailed" = "Failed to save profile image. Please try again.";
 
+"settings.notifications.permission.title" = "Notifications Permission";
+"settings.notifications.permission.message" = "Please enable notifications in Settings to use this feature.";
+"settings.notifications.permission.settings" = "Settings";
 
+"settings.biometry.unavailable.title" = "Biometric Authentication Not Available";
+"settings.biometry.unavailable.message" = "Your device doesn't support biometric authentication or it hasn't been set up in your device settings.";
+
+/* Biometry */
+"biometry.loginPrompt" = "Login with biometry";
+"biometry.unavailable" = "Biometry Unavailable";
+"biometry.success" = "Successfully authenticated";
+"biometry.failed" = "Login failed, please use regular login";
+"biometry.tryAgain" = "Try again (%d attempts left)";
+
+/* Date formatting */
+"date.today" = "today, %@";
+"date.yesterday" = "yesterday, %@";
 /*
   TabBar View
 */

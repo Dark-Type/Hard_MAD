@@ -287,7 +287,7 @@ final class RecordViewController: UIViewController {
                 navigationController?.popViewController(animated: true)
             }
         } else {
-            showError("Please answer all questions to save your journal entry.")
+            showError(L10n.Record.Error.incompleteAnswers)
         }
     }
     
@@ -295,12 +295,12 @@ final class RecordViewController: UIViewController {
     
     private func showError(_ message: String) {
         let alertController = UIAlertController(
-            title: "Error",
+            title: L10n.Error.generic,
             message: message,
             preferredStyle: .alert
         )
         
-        let okAction = UIAlertAction(title: "OK", style: .default)
+        let okAction = UIAlertAction(title: L10n.Common.ok, style: .default)
         alertController.addAction(okAction)
         
         present(alertController, animated: true)

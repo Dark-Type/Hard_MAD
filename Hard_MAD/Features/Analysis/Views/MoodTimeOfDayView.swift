@@ -132,7 +132,7 @@ final class MoodTimeOfDayView: UIView {
             
             if sortedEmotionTypes.isEmpty {
                 let emptyBar = UIView()
-                emptyBar.backgroundColor = UIColor(red: 51 / 255, green: 51 / 255, blue: 51 / 255, alpha: 1.0)
+                emptyBar.backgroundColor = AppColors.Surface.primary
                 emptyBar.layer.cornerRadius = 8
                 columnContainer.addSubview(emptyBar)
                 
@@ -147,7 +147,7 @@ final class MoodTimeOfDayView: UIView {
                 let countLabel = UILabel()
                 countLabel.text = "0"
                 countLabel.font = UIFont.appFont(AppFont.regular, size: 12)
-                countLabel.textColor = UIColor(red: 153 / 255, green: 153 / 255, blue: 153 / 255, alpha: 1)
+                countLabel.textColor = AppColors.Text.secondary
                 countLabel.textAlignment = .center
                 chartView.addSubview(countLabel)
 
@@ -230,7 +230,7 @@ final class MoodTimeOfDayView: UIView {
             let countLabel = UILabel()
             countLabel.text = "\(totalRecords)"
             countLabel.font = UIFont.appFont(AppFont.regular, size: 12)
-            countLabel.textColor = UIColor(red: 153 / 255, green: 153 / 255, blue: 153 / 255, alpha: 1)
+            countLabel.textColor = AppColors.Text.secondary
             countLabel.textAlignment = .center
             chartView.addSubview(countLabel)
 

@@ -15,8 +15,8 @@ class CustomToggleSwitch: UIControl {
     
     private let offTrackColor = UIColor.white
     
-    private let onTrackColor = UIColor(red: 51/255, green: 51/255, blue: 51/255, alpha: 1)
-    private let thumbColor = UIColor(red: 102/255, green: 102/255, blue: 102/255, alpha: 1)
+    private let onTrackColor = AppColors.Surface.primary
+    private let thumbColor = AppColors.Surface.tertiary
     
     private let thumbSize: CGFloat = 20.0
     private let trackInsets: CGFloat = 5.0

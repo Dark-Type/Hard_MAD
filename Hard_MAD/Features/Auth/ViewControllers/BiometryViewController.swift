@@ -36,7 +36,7 @@ final class BiometryViewController: UIViewController {
     }
 
     private func setupStatusLabel() {
-        statusLabel.text = "Login with biometry"
+        statusLabel.text = L10n.Biometry.loginPrompt
         statusLabel.numberOfLines = 0
         statusLabel.textAlignment = .center
         view.addSubview(statusLabel)
@@ -50,7 +50,7 @@ final class BiometryViewController: UIViewController {
         let context = LAContext()
         var error: NSError?
         guard context.canEvaluatePolicy(.deviceOwnerAuthenticationWithBiometrics, error: &error) else {
-            statusLabel.text = "Biometry Unavailable"
+            statusLabel.text = L10n.Biometry.unavailable
             DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) { [weak self] in
                 self?.onFailure()
             }
@@ -61,15 +61,15 @@ final class BiometryViewController: UIViewController {
             DispatchQueue.main.async {
                 guard let self else { return }
                 if success {
-                    self.statusLabel.text = "Successfully authenticated"
+                    self.statusLabel.text = L10n.Biometry.success
                     DispatchQueue.main.asyncAfter(deadline: .now() + 0.7) { self.onSuccess() }
                 } else {
                     self.attempt += 1
                     if self.attempt < self.maxAttempts {
-                        self.statusLabel.text = String(format: "Try again", self.maxAttempts - self.attempt)
+                        self.statusLabel.text = L10n.Biometry.tryAgain(self.maxAttempts - self.attempt)
                         DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) { self.attemptBiometry() }
                     } else {
-                        self.statusLabel.text = "Login failed, please use regular login"
+                        self.statusLabel.text = L10n.Biometry.failed
                         DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) { self.onFailure() }
                     }
                 }

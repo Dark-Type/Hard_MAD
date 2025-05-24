@@ -468,21 +468,21 @@ final class SettingsViewController: UIViewController {
     }
     
     private func showImagePicker() {
-        let alertController = UIAlertController(title: "Select Profile Photo", message: nil, preferredStyle: .actionSheet)
+        let alertController = UIAlertController(title: L10n.Settings.ProfilePhoto.title, message: nil, preferredStyle: .actionSheet)
         
         if UIImagePickerController.isSourceTypeAvailable(.camera) {
-            alertController.addAction(UIAlertAction(title: "Take Photo", style: .default) { _ in
+            alertController.addAction(UIAlertAction(title: L10n.Settings.ProfilePhoto.takePhoto, style: .default) { _ in
                 self.presentImagePicker(sourceType: .camera)
             })
         }
         
         if UIImagePickerController.isSourceTypeAvailable(.photoLibrary) {
-            alertController.addAction(UIAlertAction(title: "Choose from Library", style: .default) { _ in
+            alertController.addAction(UIAlertAction(title: L10n.Settings.ProfilePhoto.chooseLibrary, style: .default) { _ in
                 self.presentImagePicker(sourceType: .photoLibrary)
             })
         }
         
-        alertController.addAction(UIAlertAction(title: "Cancel", style: .cancel))
+        alertController.addAction(UIAlertAction(title: L10n.Common.cancel, style: .cancel))
 
         if let popover = alertController.popoverPresentationController {
             popover.sourceView = profileImageView
@@ -552,30 +552,30 @@ final class SettingsViewController: UIViewController {
 
     private func showNotificationsPermissionAlert() {
         let alert = UIAlertController(
-            title: "Notifications Permission",
-            message: "Please enable notifications in Settings to use this feature.",
+            title: L10n.Settings.Notifications.Permission.title,
+            message: L10n.Settings.Notifications.Permission.message,
             preferredStyle: .alert
         )
           
-        alert.addAction(UIAlertAction(title: "Settings", style: .default) { _ in
+        alert.addAction(UIAlertAction(title: L10n.Settings.Notifications.Permission.settings, style: .default) { _ in
             if let url = URL(string: UIApplication.openSettingsURLString) {
                 UIApplication.shared.open(url)
             }
         })
           
-        alert.addAction(UIAlertAction(title: "Cancel", style: .cancel))
+        alert.addAction(UIAlertAction(title: L10n.Common.cancel, style: .cancel))
           
         present(alert, animated: true)
     }
       
     private func showBiometryNotAvailableAlert() {
         let alert = UIAlertController(
-            title: "Biometric Authentication Not Available",
-            message: "Your device doesn't support biometric authentication or it hasn't been set up in your device settings.",
+            title: L10n.Settings.Biometry.Unavailable.title,
+            message: L10n.Settings.Biometry.Unavailable.message,
             preferredStyle: .alert
         )
           
-        alert.addAction(UIAlertAction(title: "OK", style: .default))
+        alert.addAction(UIAlertAction(title: L10n.Common.ok, style: .default))
           
         present(alert, animated: true)
     }
@@ -648,11 +648,11 @@ extension SettingsViewController: UIImagePickerControllerDelegate, UINavigationC
             if !success {
                 await MainActor.run {
                     let alert = UIAlertController(
-                        title: "Error",
-                        message: "Failed to save profile image. Please try again.",
+                        title: L10n.Error.generic,
+                        message: L10n.Settings.ProfilePhoto.Error.saveFailed,
                         preferredStyle: .alert
                     )
-                    alert.addAction(UIAlertAction(title: "OK", style: .default))
+                    alert.addAction(UIAlertAction(title: L10n.Common.ok, style: .default))
                     self.present(alert, animated: true)
                 }
             }

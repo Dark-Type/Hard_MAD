@@ -79,12 +79,12 @@ final class MainTabBarCoordinator: BaseCoordinator {
 
     private func styleTabBar(_ tabBar: UITabBar) {
         tabBar.tintColor = .white
-        tabBar.unselectedItemTintColor = UIColor(red: 153/255, green: 153/255, blue: 153/255, alpha: 1)
-        tabBar.backgroundColor = UIColor(red: 51/255, green: 51/255, blue: 51/255, alpha: 1)
+        tabBar.unselectedItemTintColor = AppColors.Text.secondary
+        tabBar.backgroundColor = AppColors.Surface.primary
         if #available(iOS 15.0, *) {
             let appearance = UITabBarAppearance()
             appearance.configureWithOpaqueBackground()
-            appearance.backgroundColor = UIColor(red: 51/255, green: 51/255, blue: 51/255, alpha: 1)
+            appearance.backgroundColor = AppColors.Surface.primary
             tabBar.standardAppearance = appearance
             tabBar.scrollEdgeAppearance = appearance
         }

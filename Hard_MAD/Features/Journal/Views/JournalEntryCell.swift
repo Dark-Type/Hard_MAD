@@ -112,7 +112,7 @@ final class JournalEntryCell: UITableViewCell {
         setupAccessibilityIdentifiers()
         setupConstraints()
         
-        cardView.backgroundColor = UIColor(red: 44/255, green: 44/255, blue: 46/255, alpha: 1)
+        cardView.backgroundColor = AppColors.Surface.secondary
     }
     
     private func setupAccessibilityIdentifiers() {
@@ -195,13 +195,13 @@ final class JournalEntryCell: UITableViewCell {
         if calendar.isDateInToday(date) {
             let timeFormatter = DateFormatter()
             timeFormatter.dateFormat = "HH:mm"
-            return "сегодня, \(timeFormatter.string(from: date))"
+            return L10n.Date.today(timeFormatter.string(from: date))
         }
         
         if calendar.isDateInYesterday(date) {
             let timeFormatter = DateFormatter()
             timeFormatter.dateFormat = "HH:mm"
-            return "вчера, \(timeFormatter.string(from: date))"
+            return L10n.Date.yesterday(timeFormatter.string(from: date))
         }
         
         let currentWeekComponents = calendar.dateComponents([.yearForWeekOfYear, .weekOfYear], from: now)

@@ -5,55 +5,95 @@
 //  Created by dark type on 04.03.2025.
 //
 
+import SnapKit
 import UIKit
 
 class EmptyStateView: UIView {
-    private let containerView: UIView = {
-        let view = UIView()
-        view.backgroundColor = UIColor(red: 0.15, green: 0.15, blue: 0.15, alpha: 1.0)
-        view.layer.cornerRadius = 16
-        view.translatesAutoresizingMaskIntoConstraints = false
-        return view
-    }()
+    // MARK: - Constants
     
-    private let messageLabel: UILabel = {
-        let label = UILabel()
-        label.text = "Сначала добавьте эмоции"
-        label.textColor = .white
-        label.textAlignment = .center
-        label.font = UIFont.appFont(AppFont.fancy, size: 18)
-        label.numberOfLines = 0
-        label.translatesAutoresizingMaskIntoConstraints = false
-        return label
-    }()
+    private enum Constants {
+        static let containerInsets: CGFloat = 20
+        static let containerCornerRadius: CGFloat = 16
+        static let containerBackgroundColor = AppColors.Surface.primary
+        static let messageInsets: CGFloat = 20
+        static let minContainerHeight: CGFloat = 100
+        static let messageFontSize: CGFloat = 18
+    }
+    
+    // MARK: - Properties
+    
+    private var containerView: UIView!
+    private var messageLabel: UILabel!
+    
+    // MARK: - Initialization
     
     override init(frame: CGRect) {
         super.init(frame: frame)
-        setupUI()
+        setupViews()
+        setupConstraints()
+        setupAccessibilityIdentifiers()
     }
     
     required init?(coder: NSCoder) {
         super.init(coder: coder)
-        setupUI()
+        setupViews()
+        setupConstraints()
+        setupAccessibilityIdentifiers()
     }
     
-    private func setupUI() {
+    // MARK: - Setup Methods
+    
+    private func setupViews() {
+        setupContainerView()
+        setupMessageLabel()
+        addSubviews()
+    }
+    
+    private func setupContainerView() {
+        containerView = UIView()
+        containerView.backgroundColor = Constants.containerBackgroundColor
+        containerView.layer.cornerRadius = Constants.containerCornerRadius
+    }
+    
+    private func setupMessageLabel() {
+        messageLabel = UILabel()
+        messageLabel.text = L10n.Analysis.Empty.message
+        messageLabel.textColor = .white
+        messageLabel.textAlignment = .center
+        messageLabel.font = UIFont.appFont(AppFont.fancy, size: Constants.messageFontSize)
+        messageLabel.numberOfLines = 0
+    }
+    
+    private func addSubviews() {
         addSubview(containerView)
         containerView.addSubview(messageLabel)
-        
-        NSLayoutConstraint.activate([
-            containerView.topAnchor.constraint(equalTo: topAnchor, constant: 20),
-            containerView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 20),
-            containerView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -20),
-            containerView.bottomAnchor.constraint(lessThanOrEqualTo: bottomAnchor, constant: -20),
-            containerView.heightAnchor.constraint(greaterThanOrEqualToConstant: 100),
-            
-            messageLabel.topAnchor.constraint(equalTo: containerView.topAnchor, constant: 20),
-            messageLabel.leadingAnchor.constraint(equalTo: containerView.leadingAnchor, constant: 20),
-            messageLabel.trailingAnchor.constraint(equalTo: containerView.trailingAnchor, constant: -20),
-            messageLabel.bottomAnchor.constraint(equalTo: containerView.bottomAnchor, constant: -20),
-        ])
-        
+    }
+    
+    // MARK: - Constraints
+    
+    private func setupConstraints() {
+        setupContainerConstraints()
+        setupMessageConstraints()
+    }
+    
+    private func setupContainerConstraints() {
+        containerView.snp.makeConstraints { make in
+            make.top.equalToSuperview().offset(Constants.containerInsets)
+            make.leading.trailing.equalToSuperview().inset(Constants.containerInsets)
+            make.bottom.lessThanOrEqualToSuperview().offset(-Constants.containerInsets)
+            make.height.greaterThanOrEqualTo(Constants.minContainerHeight)
+        }
+    }
+    
+    private func setupMessageConstraints() {
+        messageLabel.snp.makeConstraints { make in
+            make.edges.equalToSuperview().inset(Constants.messageInsets)
+        }
+    }
+    
+    // MARK: - Accessibility
+    
+    private func setupAccessibilityIdentifiers() {
         accessibilityIdentifier = "emptyStateView"
         messageLabel.accessibilityIdentifier = "emptyStateMessage"
     }

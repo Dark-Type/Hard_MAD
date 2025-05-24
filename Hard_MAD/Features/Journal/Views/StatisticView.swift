@@ -61,7 +61,7 @@ final class StatisticView: UIView {
 
     private func setupUI() {
         layer.cornerRadius = 16
-        backgroundColor = UIColor(red: 44/255, green: 44/255, blue: 46/255, alpha: 1)
+        backgroundColor = AppColors.Surface.secondary
         
         addSubview(label)
         
@@ -101,7 +101,7 @@ final class StatisticView: UIView {
             string: title,
             attributes: [
                 .font: UIFont.appFont(AppFont.regular, size: titleFontSize),
-                .foregroundColor: UIColor.white.withAlphaComponent(0.85)
+                .foregroundColor: AppColors.Text.primary.withAlphaComponent(0.85)
             ]
         )
         attributedText.append(titlePart)
@@ -139,7 +139,7 @@ final class StatisticView: UIView {
     override func layoutSubviews() {
         super.layoutSubviews()
         
-        layer.cornerRadius = bounds.height/2
+        layer.cornerRadius = bounds.height / 2
         
         if let attributedText = label.attributedText {
             let textWidth = attributedText.size().width

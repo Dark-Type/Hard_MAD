@@ -11,7 +11,6 @@ final class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     var window: UIWindow?
     private var appCoordinator: AppCoordinator?
 
-
     func scene(
         _ scene: UIScene,
         willConnectTo session: UISceneSession,

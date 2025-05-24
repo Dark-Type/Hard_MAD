@@ -20,7 +20,7 @@ final class WeeklyEmotionsView: UIView {
     private let tableView: UITableView = {
         let tableView = UITableView()
         tableView.separatorStyle = .singleLine
-        tableView.separatorColor = UIColor(red: 51 / 255, green: 51 / 255, blue: 51 / 255, alpha: 1)
+        tableView.separatorColor = AppColors.Surface.secondary
         tableView.separatorInset = UIEdgeInsets(top: 0, left: 16, bottom: 0, right: 16)
         tableView.backgroundColor = .clear
         tableView.allowsSelection = false
@@ -239,7 +239,7 @@ final class WeeklyEmotionsView: UIView {
             
             if records.isEmpty {
                 let placeholderView = UIView()
-                placeholderView.backgroundColor = UIColor(red: 51 / 255, green: 51 / 255, blue: 51 / 255, alpha: 1.0)
+                placeholderView.backgroundColor = AppColors.Surface.primary
                 placeholderView.layer.cornerRadius = 15
                 emotionImagesView.addSubview(placeholderView)
                    
@@ -262,7 +262,7 @@ final class WeeklyEmotionsView: UIView {
                     let nameLabel = UILabel()
                     nameLabel.text = emotion.rawValue
                     nameLabel.font = UIFont.appFont(AppFont.regular, size: 12)
-                    nameLabel.textColor = UIColor(red: 153 / 255, green: 153 / 255, blue: 153 / 255, alpha: 1)
+                    nameLabel.textColor = AppColors.Text.secondary
                     nameLabel.setContentCompressionResistancePriority(.required, for: .horizontal)
                     
                     emotionsStackView.addArrangedSubview(nameLabel)

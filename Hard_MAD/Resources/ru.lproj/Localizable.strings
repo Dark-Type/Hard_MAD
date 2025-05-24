@@ -8,7 +8,8 @@
 /*
   Common UI elements
 */
-
+"common.ok" = "ОК";
+"common.cancel" = "Отмена";
 "common.save" = "Сохранить";
 
 /*
@@ -21,6 +22,7 @@
 /*
   Journal Screen
 */
+"journal.empty.message" = "Пока ничего не добавлено";
 "journal.title" = "Что вы сейчас \nчувствуете?";
 "journal.cell.title" = "Я чувтствую";
 "journal.button.title" = "Добавить запись";
@@ -50,6 +52,16 @@
 "record.question1" = "Чем вы занимались?";
 "record.question2" = "С кем вы были?";
 "record.question3" = "Где вы были?";
+"record.error.incompleteAnswers" = "Пожалуйста, ответьте на все вопросы для сохранения записи.";
+
+
+/* Emotion Descriptions */
+"emotion.description.burnout" = "Чувство истощения, эмоциональное опустошение";
+"emotion.description.chill" = "Состояние покоя и расслабления";
+"emotion.description.productivity" = "Ощущение эффективности и мотивации";
+"emotion.description.anxious" = "Беспокойство и нервное напряжение";
+"emotion.description.happy" = "Чувство радости и удовлетворения";
+"emotion.description.tired" = "Физическая и эмоциональная усталость";
 
 /*
   Analysis Screen
@@ -58,7 +70,7 @@
 "analysis.title.week" = "Эмоции \nпо дням недели";
 "analysis.title.frequent" = "Самые частые \nэмоции";
 "analysis.title.daily" = "Ваше настроение \nв течение дня";
-
+"analysis.empty.message" = "Сначала добавьте эмоции";
 
 /*
   Settings Screen
@@ -68,7 +80,28 @@
 "settings.notificatoins.add" = "Добавить напоминание";
 "settings.login.touch" = "Вход по отпечатку пальца";
 "settings.notifications.title" = "Напоминание";
+"settings.profilePhoto.title" = "Выбрать фото профиля";
+"settings.profilePhoto.takePhoto" = "Сделать фото";
+"settings.profilePhoto.chooseLibrary" = "Выбрать из галереи";
+"settings.profilePhoto.error.saveFailed" = "Не удалось сохранить фото профиля. Попробуйте снова.";
 
+"settings.notifications.permission.title" = "Разрешение на уведомления";
+"settings.notifications.permission.message" = "Пожалуйста, включите уведомления в Настройках для использования этой функции.";
+"settings.notifications.permission.settings" = "Настройки";
+
+"settings.biometry.unavailable.title" = "Биометрическая аутентификация недоступна";
+"settings.biometry.unavailable.message" = "Ваше устройство не поддерживает биометрическую аутентификацию или она не настроена в настройках устройства.";
+
+/* Biometry */
+"biometry.loginPrompt" = "Войти с помощью биометрии";
+"biometry.unavailable" = "Биометрия недоступна";
+"biometry.success" = "Успешная аутентификация";
+"biometry.failed" = "Вход не удался, используйте обычный вход";
+"biometry.tryAgain" = "Попробуйте снова (%d попыток осталось)";
+
+/* Date formatting */
+"date.today" = "сегодня, %@";
+"date.yesterday" = "вчера, %@";
 
 /*
   TabBar View

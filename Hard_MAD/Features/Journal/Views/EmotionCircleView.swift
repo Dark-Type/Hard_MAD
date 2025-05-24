@@ -125,7 +125,7 @@ final class EmotionCircleView: UIView {
                                               endAngle: 2 * .pi,
                                               clockwise: true).cgPath
             baseRingLayer.fillColor = nil
-            baseRingLayer.strokeColor = UIColor(red: 26 / 255, green: 26 / 255, blue: 26 / 255, alpha: 1.0).cgColor
+            baseRingLayer.strokeColor = AppColors.Surface.dark.cgColor
             baseRingLayer.lineWidth = ringWidth
             baseRingLayer.frame = rotationContainerView.bounds
             rotationContainerView.layer.addSublayer(baseRingLayer)
@@ -166,7 +166,7 @@ final class EmotionCircleView: UIView {
         defaultGradientLayer.frame = rotationContainerView.bounds
         
         defaultGradientLayer.colors = [
-            UIColor(red: 26 / 255, green: 26 / 255, blue: 26 / 255, alpha: 0).cgColor, UIColor(red: 102 / 255, green: 102 / 255, blue: 102 / 255, alpha: 1.0).cgColor,
+            AppColors.Surface.dark.cgColor, AppColors.Surface.tertiary.cgColor,
         ]
         defaultGradientLayer.startPoint = CGPoint(x: 0.3, y: 0.3)
         defaultGradientLayer.endPoint = CGPoint(x: 1, y: 1)

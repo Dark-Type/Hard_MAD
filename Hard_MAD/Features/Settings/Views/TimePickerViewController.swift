@@ -12,7 +12,7 @@ class TimePickerViewController: UIViewController {
     
     private let containerView: UIView = {
         let view = UIView()
-        view.backgroundColor = UIColor(red: 0.2, green: 0.2, blue: 0.2, alpha: 1)
+        view.backgroundColor = UIColor(cgColor: AppColors.Emotion.Common.commonColor)
         view.layer.cornerRadius = 16
         view.layer.maskedCorners = [.layerMinXMinYCorner, .layerMaxXMinYCorner]
         view.clipsToBounds = true

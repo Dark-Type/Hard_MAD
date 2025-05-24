@@ -18,13 +18,13 @@ enum Emotion: String, Sendable, CaseIterable {
     var color: UIColor {
         switch self {
         case .anxious:
-            return UIColor(red: 1.0, green: 0.0, blue: 0.0, alpha: 1.0)
+            return AppColors.Emotion.red
         case .burnout, .tired:
-            return UIColor(red: 0.0, green: 0.667, blue: 1.0, alpha: 1.0)
+            return AppColors.Emotion.blue
         case .chill:
-            return UIColor(red: 0.0, green: 1.0, blue: 0.333, alpha: 1.0)
+            return AppColors.Emotion.green
         case .happy, .productivity:
-            return UIColor(red: 1.0, green: 0.667, blue: 0.0, alpha: 1.0)
+            return AppColors.Emotion.yellow
         }
     }
     
@@ -46,21 +46,21 @@ enum Emotion: String, Sendable, CaseIterable {
     }
     
     var description: String {
-        switch self {
-        case .burnout:
-            return "Чувство истощения, эмоциональное опустошение"
-        case .chill:
-            return "Состояние покоя и расслабления"
-        case .productivity:
-            return "Ощущение эффективности и мотивации"
-        case .anxious:
-            return "Беспокойство и нервное напряжение"
-        case .happy:
-            return "Чувство радости и удовлетворения"
-        case .tired:
-            return "Физическая и эмоциональная усталость"
-        }
-    }
+           switch self {
+           case .burnout:
+               return L10n.Emotion.Description.burnout
+           case .chill:
+               return L10n.Emotion.Description.chill
+           case .productivity:
+               return L10n.Emotion.Description.productivity
+           case .anxious:
+               return L10n.Emotion.Description.anxious
+           case .happy:
+               return L10n.Emotion.Description.happy
+           case .tired:
+               return L10n.Emotion.Description.tired
+           }
+       }
 }
 
 extension Emotion {
@@ -73,38 +73,26 @@ extension Emotion {
         var color: UIColor {
             switch self {
             case .redEmotion:
-                return UIColor(red: 1.0, green: 0.0, blue: 0.0, alpha: 1.0)
+                return AppColors.Emotion.red
             case .blueEmotion:
-                return UIColor(red: 0.0, green: 0.667, blue: 1.0, alpha: 1.0)
+                return AppColors.Emotion.blue
             case .greenEmotion:
-                return UIColor(red: 0.0, green: 1.0, blue: 0.333, alpha: 1.0)
+                return AppColors.Emotion.green
             case .yellowEmotion:
-                return UIColor(red: 1.0, green: 0.667, blue: 0.0, alpha: 1.0)
+                return AppColors.Emotion.yellow
             }
         }
         
         var gradientType: (start: UIColor, end: UIColor) {
             switch self {
             case .redEmotion:
-                return (
-                    UIColor(red: 255/255, green: 85/255, blue: 51/255, alpha: 1.0),
-                    UIColor(red: 255/255, green: 0/255, blue: 0/255, alpha: 1.0)
-                )
+                return (AppColors.Emotion.Red.gradientStart, AppColors.Emotion.Red.gradientEnd)
             case .blueEmotion:
-                return (
-                    UIColor(red: 51/255, green: 221/255, blue: 255/255, alpha: 1.0),
-                    UIColor(red: 0/255, green: 170/255, blue: 255/255, alpha: 1.0)
-                )
+                return (AppColors.Emotion.Blue.gradientStart, AppColors.Emotion.Blue.gradientEnd)
             case .greenEmotion:
-                return (
-                    UIColor(red: 51/255, green: 255/255, blue: 187/255, alpha: 1.0),
-                    UIColor(red: 0/255, green: 255/255, blue: 85/255, alpha: 1.0)
-                )
+                return (AppColors.Emotion.Green.gradientStart, AppColors.Emotion.Green.gradientEnd)
             case .yellowEmotion:
-                return (
-                    UIColor(red: 255/255, green: 255/255, blue: 51/255, alpha: 1.0),
-                    UIColor(red: 255/255, green: 170/255, blue: 0/255, alpha: 1.0)
-                )
+                return (AppColors.Emotion.Yellow.gradientStart, AppColors.Emotion.Yellow.gradientEnd)
             }
         }
     }

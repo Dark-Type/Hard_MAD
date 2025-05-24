@@ -246,7 +246,7 @@ final class EmotionViewController: UIViewController {
         bottomViewContainer.frame = containerFrame
         
         bottomContentLayer.frame = bottomViewContainer.bounds
-        bottomContentLayer.backgroundColor = UIColor(red: 0.2, green: 0.2, blue: 0.2, alpha: 1).cgColor
+        bottomContentLayer.backgroundColor = AppColors.Emotion.Common.commonColor
         bottomContentLayer.cornerRadius = 40
         
         bottomViewContainer.layer.addSublayer(bottomContentLayer)

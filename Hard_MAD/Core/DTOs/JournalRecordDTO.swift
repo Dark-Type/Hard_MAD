@@ -9,7 +9,7 @@ import Foundation
 
 struct JournalRecordDTO: Codable, Identifiable {
     let id: UUID
-    let emotionRaw: String 
+    let emotionRaw: String
     let answer0: String
     let answer1: String
     let answer2: String

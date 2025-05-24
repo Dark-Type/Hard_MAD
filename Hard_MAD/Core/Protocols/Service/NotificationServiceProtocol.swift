@@ -12,7 +12,7 @@ protocol NotificationServiceProtocol {
     func addNotification(time: String) async -> NotificationTime
     func removeNotification(id: UUID) async -> Bool
     func isNotificationsEnabled() async -> Bool
-    func toggleNotifications(_ enabled: Bool) async -> Bool 
+    func toggleNotifications(_ enabled: Bool) async -> Bool
     func requestNotificationPermission() async -> Bool
     func hasSystemPermission() async -> Bool
 }

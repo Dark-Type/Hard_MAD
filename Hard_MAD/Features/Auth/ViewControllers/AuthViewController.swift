@@ -187,7 +187,7 @@ final class AuthViewController: UIViewController {
                 message: message,
                 preferredStyle: .alert
             )
-            alert.addAction(UIAlertAction(title: Locale.okTitle, style: .default))
+            alert.addAction(UIAlertAction(title: L10n.Common.ok, style: .default))
             self?.present(alert, animated: true)
         }
     }
@@ -211,10 +211,6 @@ private enum Layout {
 
 private enum Images {
     static let apple = "apple"
-}
-
-private enum Locale {
-    static let okTitle = "OK"
 }
 
 private enum Accessibility {

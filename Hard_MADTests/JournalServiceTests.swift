@@ -184,10 +184,8 @@ final class JournalServiceTests: XCTestCase {
         ]
         await mockDatabaseClient.setMockRecords(records)
         
-       
         let statistics = await sut.fetchStatistics()
         
-      
         XCTAssertEqual(statistics.streakDays, 3)
     }
     

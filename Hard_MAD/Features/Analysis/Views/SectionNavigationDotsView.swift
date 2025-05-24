@@ -52,7 +52,7 @@ final class SectionNavigationDotsView: UIView {
     private func createDot() -> UIView {
         let dot = UIView()
         dot.translatesAutoresizingMaskIntoConstraints = false
-        dot.backgroundColor = UIColor(red: 102/255, green: 102/255, blue: 102/255, alpha: 1)
+        dot.backgroundColor = AppColors.Surface.tertiary
         dot.layer.cornerRadius = 3
         dot.widthAnchor.constraint(equalToConstant: 6).isActive = true
         dot.heightAnchor.constraint(equalToConstant: 6).isActive = true
@@ -86,10 +86,10 @@ final class SectionNavigationDotsView: UIView {
             
             if animated {
                 UIView.animate(withDuration: 0.2) {
-                    dot.backgroundColor = isSelected ? .white : UIColor(red: 102/255, green: 102/255, blue: 102/255, alpha: 1)
+                    dot.backgroundColor = isSelected ? .white : AppColors.Surface.tertiary
                 }
             } else {
-                dot.backgroundColor = isSelected ? .white : UIColor(red: 102/255, green: 102/255, blue: 102/255, alpha: 1)
+                dot.backgroundColor = isSelected ? .white : AppColors.Surface.tertiary
             }
         }
     }

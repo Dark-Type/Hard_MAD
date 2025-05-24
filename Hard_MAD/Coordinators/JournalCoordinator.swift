@@ -38,7 +38,6 @@ final class JournalCoordinator: BaseCoordinator {
         navigationController.setViewControllers([viewController], animated: false)
     }
 
-    @MainActor
     private func handleNewEntryRequested() async {
         await startEmotionFlow()
     }

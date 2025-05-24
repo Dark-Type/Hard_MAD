@@ -46,10 +46,10 @@ final class NotificationTimeView: UIView {
         fatalError("init(coder:) has not been implemented")
     }
     
-    // MARK: - UI Setup
+    // MARK: - UI SetupAppColors.Emotion.Common.commonColor.cgColor
     
     private func setupUI() {
-        layer.backgroundColor = UIColor(red: 0.2, green: 0.2, blue: 0.2, alpha: 1).cgColor
+        layer.backgroundColor = AppColors.Emotion.Common.commonColor
         layer.cornerRadius = 32
         
         addSubview(timeLabel)

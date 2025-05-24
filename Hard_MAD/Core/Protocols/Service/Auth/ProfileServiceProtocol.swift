@@ -5,7 +5,6 @@
 //  Created by dark type on 15.05.2025.
 //
 
-
 import UIKit
 
 protocol ProfileServiceProtocol: Sendable {

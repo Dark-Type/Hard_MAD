@@ -11,8 +11,8 @@ final class QuestionView: UIView {
     private enum Constants {
         static let itemHeight: CGFloat = 36
         static let spacing: CGFloat = 8
-        static let unselectedColor = UIColor(red: 44/255, green: 44/255, blue: 46/255, alpha: 1)
-        static let selectedColor = UIColor(red: 102/255, green: 102/255, blue: 102/255, alpha: 1)
+        static let unselectedColor = AppColors.Surface.secondary
+        static let selectedColor = AppColors.Surface.tertiary
         static let horizontalPadding: CGFloat = 16
         static let plusButtonSize: CGFloat = 36
         static let minWidth: CGFloat = 80
