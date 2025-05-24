@@ -7,7 +7,6 @@
 
 import UIKit
 
-@MainActor
 final class AuthCoordinator: BaseCoordinator {
     var onAuthComplete: (@MainActor () -> Void)?
 

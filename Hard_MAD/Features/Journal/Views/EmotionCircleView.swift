@@ -45,7 +45,7 @@ final class EmotionCircleView: UIView {
     
     // MARK: - Action Closure
 
-    var onAddButtonTapped: (() -> Void)?
+    var onAddButtonTapped: (() async -> Void)?
     
     // MARK: - Initialization
 
@@ -282,6 +282,8 @@ final class EmotionCircleView: UIView {
     }
     
     @objc private func addButtonTapped() {
-        onAddButtonTapped?()
+        Task {
+            await onAddButtonTapped?()
+        }
     }
 }

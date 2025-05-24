@@ -350,19 +350,86 @@ final class SettingsViewController: UIViewController {
       
     // MARK: - Actions
       
-    @objc private func notificationToggleChanged() {
+    @objc func notificationToggleChanged() {
+        let isCurrentlyOn = notificationToggle.isOn
+        
         Task {
-            await viewModel.setNotificationsEnabled(notificationToggle.isOn)
+            await MainActor.run {
+                notificationToggle.isEnabled = false
+            }
+            
+            let success = await viewModel.setNotificationsEnabled(isCurrentlyOn)
+            
+            await MainActor.run {
+                notificationToggle.isEnabled = true
+                
+                if success != isCurrentlyOn {
+                    notificationToggle.isOn = success
+                    
+                    if isCurrentlyOn && !success {
+                        showNotificationsPermissionAlert()
+                    }
+                }
+            }
         }
     }
-      
-    @objc private func touchIDToggleChanged() {
-        print(touchIDToggle.isOn)
-        Task{
-            await viewModel.setTouchIDEnabled(touchIDToggle.isOn)
+    
+    @objc func touchIDToggleChanged() {
+        let isCurrentlyOn = touchIDToggle.isOn
+        
+        if isCurrentlyOn && !viewModel.isBiometryAvailable() {
+            touchIDToggle.isOn = false
+            showBiometryNotAvailableAlert()
+            return
+        }
+        
+        Task {
+            await MainActor.run {
+                touchIDToggle.isEnabled = false
+            }
+            
+            let success = await viewModel.setTouchIDEnabled(isCurrentlyOn)
+            
+            await MainActor.run {
+                touchIDToggle.isEnabled = true
+                
+                if success != isCurrentlyOn {
+                    touchIDToggle.isOn = success
+                }
+            }
         }
     }
+
+    private func showNotificationsPermissionAlert() {
+        let alert = UIAlertController(
+            title: "Notifications Permission",
+            message: "Please enable notifications in Settings to use this feature.",
+            preferredStyle: .alert
+        )
+          
+        alert.addAction(UIAlertAction(title: "Settings", style: .default) { _ in
+            if let url = URL(string: UIApplication.openSettingsURLString) {
+                UIApplication.shared.open(url)
+            }
+        })
+          
+        alert.addAction(UIAlertAction(title: "Cancel", style: .cancel))
+          
+        present(alert, animated: true)
+    }
       
+    private func showBiometryNotAvailableAlert() {
+        let alert = UIAlertController(
+            title: "Biometric Authentication Not Available",
+            message: "Your device doesn't support biometric authentication or it hasn't been set up in your device settings.",
+            preferredStyle: .alert
+        )
+          
+        alert.addAction(UIAlertAction(title: "OK", style: .default))
+          
+        present(alert, animated: true)
+    }
+
     @objc private func addNotificationTapped() {
         let timePickerVC = TimePickerViewController()
         timePickerVC.delegate = self

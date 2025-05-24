@@ -10,6 +10,8 @@ final class Container {
 
     let databaseClient: DatabaseClientProtocol = DatabaseClient()
 
+    lazy var notificationManager: NotificationManager = NotificationManager()
+
     lazy var journalService: JournalServiceProtocol = JournalService(dbClient: databaseClient)
 
     lazy var notificationService: NotificationServiceProtocol = NotificationService(dbClient: databaseClient)

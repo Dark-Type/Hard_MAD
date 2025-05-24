@@ -7,8 +7,6 @@
 
 import UIKit
 
-import UIKit
-
 final class MainTabBarCoordinator: BaseCoordinator {
     // MARK: - Properties
 
@@ -90,5 +88,13 @@ final class MainTabBarCoordinator: BaseCoordinator {
             tabBar.standardAppearance = appearance
             tabBar.scrollEdgeAppearance = appearance
         }
+    }
+
+    // MARK: - Deep Link Handling
+
+    func handleEmotionReminderDeepLink() async {
+        tabBarController?.selectedIndex = 0
+
+        await journalCoordinator.handleExternalEmotionRequest()
     }
 }

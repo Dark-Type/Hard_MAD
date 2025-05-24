@@ -6,9 +6,11 @@
 //
 
 import Foundation
+import UserNotifications
 
 final class NotificationService: NotificationServiceProtocol {
     private let dbClient: DatabaseClientProtocol
+    private let notificationManager: NotificationManager
 
     private let kNotificationsAllowed = "notificationsAllowed"
     private var notificationsAllowed: Bool {
@@ -18,6 +20,7 @@ final class NotificationService: NotificationServiceProtocol {
 
     init(dbClient: DatabaseClientProtocol) {
         self.dbClient = dbClient
+        self.notificationManager = NotificationManager()
     }
 
     func getNotifications() async -> [NotificationTime] {
@@ -35,6 +38,12 @@ final class NotificationService: NotificationServiceProtocol {
         do {
             let dto = NotificationTimeDTO(from: notification)
             try await dbClient.saveNotificationTime(dto)
+
+            let hasPermission = await hasSystemPermission()
+            if notificationsAllowed && hasPermission {
+                _ = await notificationManager.scheduleNotification(for: notification)
+            }
+
             return notification
         } catch {
             print("Failed to add notification: \(error)")
@@ -45,6 +54,7 @@ final class NotificationService: NotificationServiceProtocol {
     func removeNotification(id: UUID) async -> Bool {
         do {
             try await dbClient.deleteNotificationTime(id: id)
+            await notificationManager.removeScheduledNotification(id: id)
             return true
         } catch {
             print("Failed to remove notification: \(error)")
@@ -53,10 +63,45 @@ final class NotificationService: NotificationServiceProtocol {
     }
 
     func isNotificationsEnabled() async -> Bool {
-        return notificationsAllowed
+        let hasPermission = await hasSystemPermission()
+        return notificationsAllowed && hasPermission
     }
 
-    func toggleNotifications(_ enabled: Bool) async {
-        notificationsAllowed = enabled
+    func toggleNotifications(_ enabled: Bool) async -> Bool {
+        if enabled {
+            let granted = await requestNotificationPermission()
+            if granted {
+                notificationsAllowed = true
+                await scheduleAllNotifications()
+                return true
+            } else {
+                return false
+            }
+        } else {
+            notificationsAllowed = false
+            await notificationManager.removeAllScheduledNotifications()
+            return false
+        }
+    }
+
+    func requestNotificationPermission() async -> Bool {
+        return await notificationManager.requestAuthorization()
+    }
+
+    func hasSystemPermission() async -> Bool {
+        let settings = await UNUserNotificationCenter.current().notificationSettings()
+        return settings.authorizationStatus == .authorized
+    }
+
+    private func scheduleAllNotifications() async {
+        await notificationManager.removeAllScheduledNotifications()
+
+        let hasPermission = await hasSystemPermission()
+        guard hasPermission else { return }
+
+        let notificationTimes = await getNotifications()
+        for time in notificationTimes {
+            _ = await notificationManager.scheduleNotification(for: time)
+        }
     }
 }

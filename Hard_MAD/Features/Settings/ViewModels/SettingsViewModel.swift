@@ -4,9 +4,10 @@
 //
 //  Created by dark type on 27.02.2025.
 //
-import Foundation
 
-@MainActor
+import Foundation
+import LocalAuthentication
+
 final class SettingsViewModel: BaseViewModel {
     // MARK: - Dependencies
 
@@ -34,8 +35,9 @@ final class SettingsViewModel: BaseViewModel {
 
     func getNotifications() async -> [NotificationTime] {
         do {
+            let service = notificationService
             return try await withLoading {
-                try await notificationService.getNotifications()
+                await service.getNotifications()
             }
         } catch {
             handleError(error)
@@ -45,8 +47,10 @@ final class SettingsViewModel: BaseViewModel {
 
     func addNotification(time: String) async -> NotificationTime? {
         do {
+            let service = notificationService
+            let timeToAdd = time
             return try await withLoading {
-                try await notificationService.addNotification(time: time)
+                await service.addNotification(time: timeToAdd)
             }
         } catch {
             handleError(error)
@@ -56,8 +60,10 @@ final class SettingsViewModel: BaseViewModel {
 
     func removeNotification(id: UUID) async -> Bool {
         do {
+            let service = notificationService
+            let idToRemove = id
             return try await withLoading {
-                try await notificationService.removeNotification(id: id)
+                await service.removeNotification(id: idToRemove)
             }
         } catch {
             handleError(error)
@@ -67,8 +73,9 @@ final class SettingsViewModel: BaseViewModel {
 
     func isNotificationsEnabled() async -> Bool {
         do {
+            let service = notificationService
             return try await withLoading {
-                await notificationService.isNotificationsEnabled()
+                await service.isNotificationsEnabled()
             }
         } catch {
             handleError(error)
@@ -76,13 +83,16 @@ final class SettingsViewModel: BaseViewModel {
         }
     }
 
-    func setNotificationsEnabled(_ enabled: Bool) async {
+    func setNotificationsEnabled(_ enabled: Bool) async -> Bool {
         do {
-            _ = try await withLoading {
-                await notificationService.toggleNotifications(enabled)
+            let service = notificationService
+            let shouldEnable = enabled
+            return try await withLoading {
+                await service.toggleNotifications(shouldEnable)
             }
         } catch {
             handleError(error)
+            return false
         }
     }
 
@@ -92,20 +102,51 @@ final class SettingsViewModel: BaseViewModel {
         return authService.isTouchIDEnabled()
     }
 
-    func setTouchIDEnabled(_ enabled: Bool) async {
-        if enabled {
-            do {
-                print("TRYING TO AUTHENTICATE")
-                try await authService.authenticateWithBiometrics(reason: "Enable biometry for quick login")
-                print("AUTHENTICATED")
-                authService.setTouchIDEnabled(true)
-            } catch {
-                print("NOPE")
-                authService.setTouchIDEnabled(false)
-                handleError(error)
+    func isBiometryAvailable() -> Bool {
+        let context = LAContext()
+        var error: NSError?
+        return context.canEvaluatePolicy(.deviceOwnerAuthenticationWithBiometrics, error: &error)
+    }
+
+    func getBiometryType() -> String {
+        let context = LAContext()
+        var error: NSError?
+
+        if context.canEvaluatePolicy(.deviceOwnerAuthenticationWithBiometrics, error: &error) {
+            switch context.biometryType {
+            case .faceID:
+                return "Face ID"
+            case .touchID:
+                return "Touch ID"
+            default:
+                return "Biometry"
             }
-        } else {
+        }
+
+        return "Biometry"
+    }
+
+    func setTouchIDEnabled(_ enabled: Bool) async -> Bool {
+        if !enabled {
             authService.setTouchIDEnabled(false)
+            return false
+        }
+
+        guard isBiometryAvailable() else {
+            return false
+        }
+
+        do {
+            let auth = authService
+            return try await withLoading {
+                try await auth.authenticateWithBiometrics(reason: "Enable biometry for quick login")
+                self.authService.setTouchIDEnabled(true)
+                return true
+            }
+        } catch {
+            authService.setTouchIDEnabled(false)
+            handleError(error)
+            return false
         }
     }
 }

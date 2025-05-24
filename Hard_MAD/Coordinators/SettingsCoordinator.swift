@@ -7,7 +7,6 @@
 
 import UIKit
 
-@MainActor
 final class SettingsCoordinator: BaseCoordinator {
     override func start() {
         showSettingsScreen()

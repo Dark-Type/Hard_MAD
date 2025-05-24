@@ -14,6 +14,7 @@ final class JournalViewController: UIViewController {
     
     let viewModel: JournalViewModel
     private var cancellables = Set<AnyCancellable>()
+    
     var onNewEntryTapped: (@Sendable () async -> Void)?
     
     // MARK: - UI Components
@@ -202,9 +203,7 @@ final class JournalViewController: UIViewController {
         emotionCircleView.accessibilityIdentifier = "emotionCircleView"
         
         emotionCircleView.onAddButtonTapped = { [weak self] in
-            Task {
-                await self?.onNewEntryTapped?()
-            }
+            await self?.onNewEntryTapped?()
         }
         
         let tableHeightConstraint = tableView.heightAnchor.constraint(equalToConstant: 200)

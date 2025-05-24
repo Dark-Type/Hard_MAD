@@ -7,10 +7,12 @@
 
 import Foundation
 
-protocol NotificationServiceProtocol: Sendable {
-    func getNotifications() async throws-> [NotificationTime]
-    func addNotification(time: String) async throws-> NotificationTime
-    func removeNotification(id: UUID) async throws -> Bool
-    func isNotificationsEnabled() async  -> Bool
-    func toggleNotifications(_ enabled: Bool) async
+protocol NotificationServiceProtocol {
+    func getNotifications() async -> [NotificationTime]
+    func addNotification(time: String) async -> NotificationTime
+    func removeNotification(id: UUID) async -> Bool
+    func isNotificationsEnabled() async -> Bool
+    func toggleNotifications(_ enabled: Bool) async -> Bool 
+    func requestNotificationPermission() async -> Bool
+    func hasSystemPermission() async -> Bool
 }

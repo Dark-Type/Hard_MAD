@@ -81,6 +81,7 @@ final class AuthService: AuthServiceProtocol {
         profileService.loadUserProfileImage()
     }
 }
+
 import AuthenticationServices
 
 protocol AppleIDCredentialRepresentable {

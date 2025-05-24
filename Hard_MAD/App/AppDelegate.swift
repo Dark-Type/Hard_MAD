@@ -2,20 +2,23 @@
 //  AppDelegate.swift
 //  Hard_MAD
 //
-//  Created by dark type on 27.02.2025.
+//  Created by Dark-Type on 27.02.2025.
 //
 
 import UIKit
+import UserNotifications
 
 @main
 class AppDelegate: UIResponder, UIApplicationDelegate {
-    // The DI container is created once and owned here.
     let container = Container()
+    private lazy var notificationHandler = NotificationHandler()
 
     func application(
         _ application: UIApplication,
         didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?
     ) -> Bool {
+        UNUserNotificationCenter.current().delegate = notificationHandler
+
         return true
     }
 
